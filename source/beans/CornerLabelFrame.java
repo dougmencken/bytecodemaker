@@ -10,12 +10,16 @@ import java.awt.event.*;
 /**
  *	<code>CornerLabelFrame</code>
  *
- *	@version 1.58f
+ *	@version 1.60
  */
 
 public class CornerLabelFrame extends Frame implements WindowListener {
 	
 	private CornerLabel[] labels;
+
+	public CornerLabelFrame() {
+		this("untitled", 1);
+	}
 	
 	public CornerLabelFrame(String title, int labelCount) {
 		super(title);

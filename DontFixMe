@@ -1,67 +1,66 @@
 ------------======[ read & fix top to bottom ]======------------
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% BUGS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-% BUGS %-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 >> !!! INFINTE LOOP !!! <<
-Open 'code' for any method in any class, and BM busy-busy-busy-...
-forever!
+Open code for any method in any class to get BM stuck!
 
 >> !!! JVM COMPATIBILITY !!! <<
-Some errors in *Writing class*: the result is not recognizable by
+*Writing class*: the result is not recognizable by
 Java Virtual Machine.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-%%%%%%%%-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-TO DO: fill all renamed 'JavaXxx' with original code.
-FILL AND TEST METHODS IN ConstantPoolLocksmith.
+TODO: fill all renamed 'JavaXxx' with original code.
+FILL AND TEST METHODS IN ConstantPoolXxx.
 
 >> (0.6.0d2) <<
 &code&cleanup&:
-CONSTANT REF RESOLVERS unite somewhere (ConstantPoolLocksmith, JavaConstantPool???)
+CONSTANT REF RESOLVERS -- unite them somewhere (ConstantPoolXxx, JavaConstantPool???)
 (too much code like 'if pool != null else return "* unknown (ref#) *")
 
-Convert ConstantPoolFrame and CodeEditorFrame into customizers!!!
-Enclose instruction editor, constant editor into INNER CLASSES in new editors.
+Convert ConstantPoolFrame and CodeEditorFrame into customizers!
+Enclose instruction editor, constant editor as INNER CLASSES in new editors.
 
-@see_also TODO:
-Editing constant pool: you edit constant, but in Pool Window changes only
-THIS ONE constant. To see all changes here, you must reopen Constant Pool 
-Window. CORRECT THIS.
+@see_also TO CORRECT
+Editing constant pool: you edit constant, but only THIS ONE constant 
+changes inside Pool Window. To see all changes, reopen Constant Pool Window.
 
 ^^^^^^^^^^^^^^^^
 JavaMethod.getInstructionsAsBlock() instead of getInstructions() is used
 to get instructions and edit method's code.
 ^^^^^^^^^^^^^^^^
-!!! Temporary files is no more used for storing methods.
+!!! Temporary files are not used anymore for storing methods.
 
-OPTIMIZATIONS:
-if ((a == b) || (b == a) || (a == b) ...)  ->  if (a == b)
+OPTIMIZE:
+if ((a == b) || (b == a) || (a == b) ...)  --->  if (a == b)
 
 ----------------------------------------------------------------
 >> NEW code-based ENGINE! (0.6.0d1) <<
-*** update all to match new engine! ***
+*** update to match new engine! ***
 
 &&& NEVER STORE INSTRUCTIONS WITHIN THE METHOD!!! &&&
 
-ALL WORK WITH 'instructions' IN 'for' REPLACE WITH WORK WITH 'code' IN 'while'!!!
-(possible PROBLEM: StackCalculator req deref constants and args for 'invokexxx')
+DEALING WITH 'instructions' IN 'for' LOOPS: REPLACE WITH DEALING WITH 'code' IN 'while' LOOPS
+(possible PROBLEM: StackCalculator requires deref-ed constants and args for 'invokexxx')
 
-calculateNextPC -> nextOpcodeIndex
-calculatePreviousPC -> previousOpcodeIndex
+calculateNextPC ---> nextOpcodeIndex
+calculatePreviousPC ---> previousOpcodeIndex
 
 JVMInstructionSet contains its CODE, not a real instructions!
-(may be easily convert to using CodeTransfrm)
+(might be easily converted to/from using CodeTransform)
 
-REWRITE ALL (not only 'protected static void calculateCodeBlock(...)'!)
+REWRITE ALL (not only 'protected static void calculateCodeBlock(...)')
 in Stack & LocalVars Calculator.
-++++++++++++++
+
+++++++++++++++++++
 USE NEW METHOD:
 search for blocks with a constant stack fill (0 or 1, if something have
 pushed val and not popped very long),
 blocks with if push 1 else push 2 (multi-val) stacks.
-++++++++++++++
+++++++++++++++++++
 
 ++	Teach *main calculator methods* in 'StackCalculator' to act as
 	countMaxStack, it works perfectly!
-	! Code flow -> blocks analyzers/converters can also learn something here.
+++	Code flow -> block analyzers/converters can also learn something here.
 
 ----------------------------------------------------------------------------
 - *** Try to decompile java.awt.Component - you'll get a lot of errors *** -
@@ -77,7 +76,7 @@ blocks with if push 1 else push 2 (multi-val) stacks.
 	(but if refs to class_name and constructor_method_name - always
 	(MUST BE) the same, do not copy!!!)
 	
--2. 'Cleaning Up...' is now ICON. Make class "IconWindow" or such to display it!
+-2. make 'Cleaning Up...' an icon. Use class "IconWindow" or such to display it.
 
 -1. ADD 'xxxswitch' bytecodes handling for BytecodeLocksmith and everywhere.
 	
@@ -87,42 +86,41 @@ blocks with if push 1 else push 2 (multi-val) stacks.
 1.	Add to each stack value all its pusher PCs.
 	(Use 'SpecialStack' instead of 'ExpandableStack')
 	
-2.	Calculate STACK VALUES only for each 10th pc value (0th, 9th, 19th, etc.)
-	Calculate for in-between only when required.
+2.	Calculate STACK VALUES only for every 10th pc value (0th, 9th, 19th, etc.)
+	Calculate in-between values only if needed.
 	
-3.	LocalVarsCalculator, StackCalculator and its services must be MULTI-THREADED!!!
+3.	Make LocalVarsCalculator, StackCalculator with its services MULTI-THREADED
 	(WRITE CLASSES LocalVarsCalculatorThread & StackCalculatorThread)
 	
 4.	IMPLEMENT Options->Verify...
 	1) Stack frames are destroyed correctly (empty with 'return').
 	
-5.	reqrd: constant, field, and method DELETION
-	reqrd: constant, field, and method ADDITION
+5.	missing: constant, field, and method DELETION
+	missing: constant, field, and method ADDITION
 	
 	*!* (BUG: to get it, choose Constants->Add Constant for newly created class,
 	and then change tag to Stringref.)
 	
 	*!* (BUG: if you 'REMOVE METHOD...' it is not disappeared from MethodsFrame,
-	menu, etc. And when you choose 5 seconds left removed 'init()', you get
-	'setName(boolean)', which is the next one.)
+	menu, etc. Remove 'init()', wait ~5 seconds, and get 'setName(boolean)', 
+	which is the next method.)
 	
 6.	IMPLEMENT good Local Variable type finder:
 	(use Stack to determine xstore's type - SpecialStack can help!)
-	•	see "THIS METHOD IS REALLY NOT GOOD WORKING!!!" in comments
-	•	Arrays !!! (include 'new String[][] { { "" }, { "" } }' etc.)
+	•	look for "!!! THIS METHOD DOESN'T WORK PERFECTLY !!!" in comments
+	•	use arrays (include 'new String[][] { { "" }, { "" } }' etc.)
 	•	Not only ONE [3]rd slot in one method (with different scopes, of course).
-		All, ALL, A!L!L! must be calculated! (_start_pc_, _end_pc_ etc.)
-		MAY BE 'jvm_ret_addr' [2] and [3] at top of method,
-		and at down, they are [2] int, [3, 4] double!!
+		calculate All, ALL, A!L!L! of them (with _start_pc_, _end_pc_ etc.)
+		it might be 'jvm_ret_addr' [2] and [3] at the top of method,
+		but below, they are changed to [2] int, [3, 4] double
 
-7.	implement in >> JavaSourceBlock << : searching for block end (using block start).
-	NOW Implemented for: switches, simple (just rets last pc, improve with loc vars etc.).
+7.	implement in >> JavaSourceBlock << : search for end of block (use start of block).
+	currently implemented for: switches, simple (just rets last pc, improve for loc vars etc.).
 	
-8.	Check for GOOD BEANOISITY of JavaMethod, JavaClass, JavaConstantPool etc.
+8.	GOOD BEANOISITY of JavaMethod, JavaClass, JavaConstantPool etc.
 
-9.	Don't update each item each moment of time.
-	For example, if you type "sjshdghf" quickly at method's ret type text field,
-	the jvm begins changing and changing constant pool file.
-	(Very slow for big pools!)
-	!!! >>> TO AVOID IT, use some thread.
+9.	Don't update each item at every moment.
+	For example, type "sjshdghf" quickly at method's ret type text field,
+	to get a lot of changes in constant pool. (Very slow for big pools!)
+	>>> use some thread to avoid it
 

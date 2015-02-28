@@ -435,7 +435,7 @@ public class LocalVarsCalculator extends Object implements Externalizable {
 					break;
 					
 //						if (value == slot) {
-// THIS METHOD IS REALLY NOT GOOD WORKING!!!
+// !!! THIS METHOD DOESN'T WORK PERFECTLY !!!
 // USE SOMETHING BETTER, 'COS PREVIOUS MAY BE
 // 'nop', ANOTHER PUSH/STORE etc.
 
