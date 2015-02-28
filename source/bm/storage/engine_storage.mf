@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+
+Name: vcodes/bm/storage/JavaClass.class
+Java-Bean: True
+
+Name: vcodes/bm/storage/JavaConstantPool.class
+Java-Bean: True
+
+Name: vcodes/bm/storage/JavaField.class
+Java-Bean: True
+
+Name: vcodes/bm/storage/JavaMethod.class
+Java-Bean: True
+
+Name: vcodes/bm/storage/JavaBytecodeBlock.class
+Java-Bean: True

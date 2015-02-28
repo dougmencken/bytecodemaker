@@ -1,0 +1,42 @@
+PRJPATH         ?= ./
+MAINCLASS       ?= douglas.mencken.bm.BMMain
+
+MK_CLASSPATH    ?= ./class
+MK_LOGPATH      ?= ./log
+
+COMPILER        := javac
+COMPILE_OPTIONS := -source 1.3 -d $(MK_CLASSPATH) -classpath $(MK_CLASSPATH)
+
+include ./filelist-lib.mk
+include ./filelist-bm.mk
+
+.PHONY: all compile libs run clean
+
+libs: $(MK_LOGPATH)/filelist-lib.log
+	@echo "Libraries done. Filelist is '$(MK_LOGPATH)/filelist-lib.log'."
+
+compile: $(MK_LOGPATH)/filelist-lib.log $(MK_LOGPATH)/filelist-bm.log
+	@echo "Build finished. Filelists are '$(MK_LOGPATH)/filelist-lib.log', '$(MK_LOGPATH)/filelist-bm.log'. To run: 'make run'."
+
+all: compile
+	@echo "All done."
+
+$(MK_LOGPATH)/filelist-lib.log: $(filelist)
+	@mkdir -p $(MK_CLASSPATH) $(MK_LOGPATH)
+	$(COMPILER) $(COMPILE_OPTIONS) $?
+	@echo $^ | tr ' ' '\n' > $(MK_LOGPATH)/filelist-lib.log
+
+$(MK_LOGPATH)/filelist-bm.log: $(filelist-bm)
+	@mkdir -p $(MK_CLASSPATH) $(MK_LOGPATH)
+	$(COMPILER) $(COMPILE_OPTIONS) $?
+	@echo $^ | tr ' ' '\n' > $(MK_LOGPATH)/filelist-bm.log
+
+$(MK_LOGPATH)/run.log: $(MK_LOGPATH)/filelist-lib.log $(MK_LOGPATH)/filelist-bm.log
+	java -classpath $(MK_CLASSPATH) $(MAINCLASS) | tee $(MK_LOGPATH)/run.log
+
+run: $(MK_LOGPATH)/run.log
+	@echo "Results are in '$(MK_LOGPATH)/run.log'. Before re-running: 'rm $(MK_LOGPATH)/run.log' or 'make clean'."
+
+clean:
+	rm -fr $(MK_LOGPATH)
+	rm -fr $(MK_CLASSPATH)

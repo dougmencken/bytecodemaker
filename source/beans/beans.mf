@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+
+Name: vcodes/beans/LWButton.class
+Java-Bean: True
+
+Name: vcodes/beans/LWCheckbox.class
+Java-Bean: True
+
+Name: vcodes/beans/LWLabel.class
+Java-Bean: True
+
+Name: vcodes/beans/CornerLabel.class
+Java-Bean: True
+
+Name: vcodes/beans/RoundButton.class
+Java-Bean: True
+
+Name: vcodes/beans/ButtonedLabel.class
+Java-Bean: True
+
+Name: vcodes/beans/GroupBox.class
+Java-Bean: True
+
+Name: vcodes/beans/BorderBox.class
+Java-Bean: True
+
+Name: vcodes/beans/LWProgressBar.class
+Java-Bean: True
