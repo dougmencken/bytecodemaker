@@ -1,5 +1,5 @@
 // ===========================================================================
-//	LWButton.java (part of douglas.mencken.beans package)
+// LWButton.java (part of douglas.mencken.beans package)
 // ===========================================================================
 
 package douglas.mencken.beans;
@@ -10,7 +10,7 @@ import java.awt.event.*;
 /**
  *	<code>LWButton</code>
  *
- *	@version 1.14f
+ *	@version 1.2
  */
 
 public class LWButton extends Component implements MouseListener {

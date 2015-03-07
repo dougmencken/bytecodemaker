@@ -72,7 +72,7 @@ public class Differencer extends Object {
 		if (size1 == size2) {
 			this.result = getDifferences(is1, is2, "total size is " + size1);
 		} else {
-			ModalDialogs.doDialog(
+			DialogFactory.doDialog(
 				new StopIcon(),
 				this.getPlugInName() + ": Try only at files with the same length!"
 			);

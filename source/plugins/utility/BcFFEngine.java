@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.IOException;
 import douglas.mencken.io.EndOfStreamException;
-import douglas.mencken.tools.UsefulModalDialogs;
+import douglas.mencken.tools.UsefulMessageDialogs;
 
 /**
  *	<code>BcFFEngine</code><br>
@@ -31,7 +31,7 @@ public class BcFFEngine extends Object {
 			this.encode();
 		} catch (EndOfStreamException eos) {
 		} catch (IOException ioe) {
-			UsefulModalDialogs.doErrorDialog("IOException caught in BcFFEngine");
+			UsefulMessageDialogs.doErrorDialog("IOException caught in BcFFEngine");
 		}
 	}
 	

@@ -1,5 +1,5 @@
 // ===========================================================================
-//	ModalDialogs.java (part of douglas.mencken.tools package)
+//	DialogFactory.java (part of douglas.mencken.tools package)
 // ===========================================================================
 
 package douglas.mencken.tools;
@@ -9,14 +9,14 @@ import douglas.mencken.icons.Icon;
 import douglas.mencken.util.InvisibleFrame;
 
 /**
- *	<code>ModalDialogs</code>
+ *	<code>DialogFactory</code>
  *
  *	@version 1.05f
  */
 
-public final class ModalDialogs extends Object {
+public final class DialogFactory extends Object {
 	
-	private ModalDialogs() { super(); }
+	private DialogFactory() { super(); }
 	
 	private static InvisibleFrame intermediaryParent;
 	
@@ -25,7 +25,7 @@ public final class ModalDialogs extends Object {
 	}
 	
 	public static void doDialog(Icon icon, String message, String buttonLabel) {
-		Dialog dialog = ModalDialogMaker.makeModalDialog(
+		Dialog dialog = MessageDialogMaker.makeMessageDialog(
 			intermediaryParent,
 			icon,
 			message,
@@ -43,7 +43,7 @@ public final class ModalDialogs extends Object {
 	}
 	
 	public static int doTwoButtonsDialog(Icon icon, String message, String l1, String l2) {
-		Dialog dialog = ModalDialogMaker.makeModalDialog(
+		Dialog dialog = MessageDialogMaker.makeMessageDialog(
 			intermediaryParent,
 			icon,
 			message,
@@ -51,12 +51,12 @@ public final class ModalDialogs extends Object {
 		);
 		dialog.setVisible(true);
 		
-		return ModalDialogMaker.getLastPressedButtonNumber();
+		return MessageDialogMaker.getLastPressedButtonNumber();
 	}
 	
 	public static int doThreeButtonsDialog(	Icon icon, String message,
 											String l1, String l2, String l3) {
-		Dialog dialog = ModalDialogMaker.makeModalDialog(
+		Dialog dialog = MessageDialogMaker.makeMessageDialog(
 			intermediaryParent,
 			icon,
 			message,
@@ -64,7 +64,7 @@ public final class ModalDialogs extends Object {
 		);
 		dialog.setVisible(true);
 		
-		return ModalDialogMaker.getLastPressedButtonNumber();
+		return MessageDialogMaker.getLastPressedButtonNumber();
 	}
 	
 	public static String askForOneString(String in) {

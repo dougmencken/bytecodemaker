@@ -1,5 +1,5 @@
 // ===========================================================================
-//	LWLabel.java (part of douglas.mencken.beans package)
+// LWLabel.java (part of douglas.mencken.beans package)
 // ===========================================================================
 
 package douglas.mencken.beans;
@@ -9,7 +9,7 @@ import java.awt.*;
 /**
  *	<code>LWLabel</code>
  *
- *	@version 1.41f0
+ *	@version 1.5
  */
 
 public class LWLabel extends Component {

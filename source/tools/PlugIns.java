@@ -12,7 +12,7 @@ import com.apple.mrj.MRJOSType;
 import com.apple.mrj.MRJFileUtils;
 import douglas.mencken.util.FileUtilities;
 import douglas.mencken.util.ClassUtilities;
-import douglas.mencken.tools.UsefulModalDialogs;
+import douglas.mencken.tools.UsefulMessageDialogs;
 import douglas.mencken.exceptions.InvalidClassFormatError;
 
 /**
@@ -74,7 +74,7 @@ public class PlugIns extends Object {
 			Method pluginMethod = plugin.getDeclaredMethod("plugin", null);
 			pluginMethod.invoke(p_in, null);
 		} catch (Exception e) {
-			UsefulModalDialogs.doWarningDialog("Cannot execute plug-in: " + plugin.getName());
+			UsefulMessageDialogs.doWarningDialog("Cannot execute plug-in: " + plugin.getName());
 		}
 	}
 	

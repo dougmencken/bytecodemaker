@@ -1,5 +1,5 @@
 // ===========================================================================
-//	CornerLabel.java (part of douglas.mencken.beans package)
+// CornerLabel.java (part of douglas.mencken.beans package)
 // ===========================================================================
 
 package douglas.mencken.beans;
@@ -9,7 +9,7 @@ import java.awt.*;
 /**
  *	<code>CornerLabel</code>
  *
- *	@version 1.28f
+ *	@version 1.3
  */
 
 public class CornerLabel extends Component {

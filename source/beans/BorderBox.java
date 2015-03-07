@@ -1,5 +1,5 @@
 // ===========================================================================
-//	BorderBox.java (part of douglas.mencken.beans package)
+// BorderBox.java (part of douglas.mencken.beans package)
 // ===========================================================================
 
 package douglas.mencken.beans;
@@ -9,7 +9,7 @@ import java.awt.*;
 /**
  *	<code>BorderBox</code>
  *	
- *	@version 1.33f
+ *	@version 1.4
  */
 
 public class BorderBox extends Container {

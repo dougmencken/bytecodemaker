@@ -1,5 +1,5 @@
 // ===========================================================================
-//	LWCheckbox.java (part of douglas.mencken.beans package)
+// LWCheckbox.java (part of douglas.mencken.beans package)
 // ===========================================================================
 
 package douglas.mencken.beans;
@@ -10,7 +10,7 @@ import java.awt.event.*;
 /**
  *	<code>LWCheckbox</code>
  *
- *	@version 1.02f1
+ *	@version 1.1
  */
 
 public class LWCheckbox extends Component implements MouseListener, ItemSelectable {

@@ -1,8 +1,7 @@
 // ===========================================================================
-//	ModalDialogMaker.java (part of douglas.mencken.tools package)
-//		public class ModalDialogMaker
+//	MessageDialogMaker.java (part of douglas.mencken.tools package)
+//		public class MessageDialogMaker
 //		class ButtonSetActionListener
-//
 // ===========================================================================
 
 package douglas.mencken.tools;
@@ -14,34 +13,34 @@ import douglas.mencken.util.FontUtilities;
 import douglas.mencken.util.WindowUtilities;
 
 /**
- *	<code>ModalDialogMaker</code>
+ *	<code>MessageDialogMaker</code>
  *	All methods here are 'static'.
  *
  *	@version 0.80f2
  */
 
-public class ModalDialogMaker extends Object {
+public class MessageDialogMaker extends Object {
 	
 	private static int lastPressedButtonNumber = 0;
 	
 	/**
 	 * Don't let anyone instantiate this class.
 	 */
-	private ModalDialogMaker() { super(); }
+	private MessageDialogMaker() { super(); }
 	
-	public static Dialog makeModalDialog(Frame parent, String message, Button button) {
-		return makeModalDialog(parent, null, message, new Button[] { button });
+	public static Dialog makeMessageDialog(Frame parent, String message, Button button) {
+		return makeMessageDialog(parent, null, message, new Button[] { button });
 	}
 	
-	public static Dialog makeModalDialog(Frame parent, Icon icon, String message, Button button) {
-		return makeModalDialog(parent, icon, message, new Button[] { button });
+	public static Dialog makeMessageDialog(Frame parent, Icon icon, String message, Button button) {
+		return makeMessageDialog(parent, icon, message, new Button[] { button });
 	}
 	
-	public static Dialog makeModalDialog(Frame parent, String message, Button[] buttons) {
-		return makeModalDialog(parent, null, message, buttons);
+	public static Dialog makeMessageDialog(Frame parent, String message, Button[] buttons) {
+		return makeMessageDialog(parent, null, message, buttons);
 	}
 	
-	public static Dialog makeModalDialog(Frame parent, Icon icon, String message, Button[] buttons) {
+	public static Dialog makeMessageDialog(Frame parent, Icon icon, String message, Button[] buttons) {
 		if ((buttons == null) || (buttons.length == 0)) {
 			throw new IllegalArgumentException(
 				"buttons cannot be null or empty"
@@ -59,7 +58,7 @@ public class ModalDialogMaker extends Object {
 			buttons[i].addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
 					theNewOne.dispose();
-					ModalDialogMaker.lastPressedButtonNumber = copyOf_i;
+					MessageDialogMaker.lastPressedButtonNumber = copyOf_i;
 				}
 			});
 			

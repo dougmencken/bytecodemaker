@@ -1,5 +1,5 @@
 // ===========================================================================
-//	RoundButton.java (part of douglas.mencken.beans package)
+// RoundButton.java (part of douglas.mencken.beans package)
 // ===========================================================================
 
 package douglas.mencken.beans;
@@ -10,7 +10,7 @@ import java.awt.event.*;
 /**
  *	<code>RoundButton</code>
  *
- *	@version 1.04f
+ *	@version 1.1
  */
 
 public class RoundButton extends Component implements MouseListener {
@@ -38,7 +38,9 @@ public class RoundButton extends Component implements MouseListener {
 		this.label = label;
 		this.actionCommand = label;
 		
+		///*** TODO)))) check if font(s) is(are) available ***///
 		super.setFont(new Font("Charcoal", Font.PLAIN, 12));
+		super.setFont(new Font("Chicago", Font.PLAIN, 12));
 		super.setForeground(foreground);
 		super.setBackground(background);
 		

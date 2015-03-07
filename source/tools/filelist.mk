@@ -11,11 +11,11 @@ source/tools/LabelPanel.java \
 source/tools/Log.java \
 source/tools/LogMonitor.java \
 source/tools/MemoryMonitor.java \
-source/tools/ModalDialogMaker.java \
-source/tools/ModalDialogs.java \
+source/tools/MessageDialogMaker.java \
+source/tools/DialogFactory.java \
 source/tools/PlugInClassLoader.java \
 source/tools/PlugIns.java \
 source/tools/QuitHandler.java \
 source/tools/TextViewPopupMenu.java \
 source/tools/ThreadMonitor.java \
-source/tools/UsefulModalDialogs.java
+source/tools/UsefulMessageDialogs.java

@@ -1,5 +1,5 @@
 // ===========================================================================
-//	GroupBox.java (part of douglas.mencken.beans package)
+// GroupBox.java (part of douglas.mencken.beans package)
 // ===========================================================================
 
 package douglas.mencken.beans;
@@ -12,7 +12,7 @@ import java.awt.*;
  *	and titled region.
  *	<i>Note: supports 'null' layouts.</i>
  *
- *	@version 1.02f
+ *	@version 1.1
  */
 
 public class GroupBox extends Container {

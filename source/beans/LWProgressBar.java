@@ -1,5 +1,5 @@
 // ===========================================================================
-//	LWProgressBar.java (part of douglas.mencken.beans package)
+// LWProgressBar.java (part of douglas.mencken.beans package)
 // ===========================================================================
 
 package douglas.mencken.beans;
@@ -9,7 +9,7 @@ import java.awt.*;
 /**
  *	<code>LWProgressBar</code>
  *
- *	@version 1.23f5
+ *	@version 1.3
  */
 
 public class LWProgressBar extends Component {

@@ -47,7 +47,7 @@ public class ClipboardHandler extends Object {
 		
 		if (t == null) {
 			Toolkit.getDefaultToolkit().beep();
-			ModalDialogs.doDialog(
+			DialogFactory.doDialog(
 				new PalmStopIcon(),
 				"The Clipboard is empty"
 			);
@@ -64,7 +64,7 @@ public class ClipboardHandler extends Object {
 		
 		if (t == null) {
 			Toolkit.getDefaultToolkit().beep();
-			ModalDialogs.doDialog(
+			DialogFactory.doDialog(
 				new PalmStopIcon(),
 				"The Clipboard is empty"
 			);
@@ -79,7 +79,7 @@ public class ClipboardHandler extends Object {
 			);
 		} catch (Exception e) {
 			Toolkit.getDefaultToolkit().beep();
-			ModalDialogs.doDialog(
+			DialogFactory.doDialog(
 				new PalmStopIcon(),
 				"Clipboard: Transfer Data is not a String"
 			);
@@ -95,7 +95,7 @@ public class ClipboardHandler extends Object {
 			clipboard.setContents(contents, owner);
 		} else {
 			Toolkit.getDefaultToolkit().beep();
-			ModalDialogs.doDialog(
+			DialogFactory.doDialog(
 				new PalmStopIcon(),
 				"Clipboard: Contents and/or Owner missed"
 			);

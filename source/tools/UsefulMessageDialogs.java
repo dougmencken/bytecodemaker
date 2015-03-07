@@ -1,5 +1,5 @@
 // ===========================================================================
-//	UsefulModalDialogs.java (part of douglas.mencken.tools package)
+//	UsefulMessageDialogs.java (part of douglas.mencken.tools package)
 // ===========================================================================
 
 package douglas.mencken.tools;
@@ -7,16 +7,16 @@ package douglas.mencken.tools;
 import douglas.mencken.icons.*;
 
 /**
- *	<code>UsefulModalDialogs</code>
+ *	<code>UsefulMessageDialogs</code>
  *
  *	@version 1.03f1
  */
 
-public final class UsefulModalDialogs extends Object {
+public final class UsefulMessageDialogs extends Object {
 	
 	public static void doErrorDialog(Throwable t, boolean printStackTrace) {
-		ModalDialogs.doDialog(
-			new CautionIcon(),	t.getClass().getName() + ": " + t.getMessage()
+		DialogFactory.doDialog(
+			new CautionIcon(), t.getClass().getName() + ": " + t.getMessage()
 		);
 		
 		if (printStackTrace) {
@@ -29,7 +29,7 @@ public final class UsefulModalDialogs extends Object {
 			message = "null";
 		}
 		
-		ModalDialogs.doDialog(new PalmStopIcon(), message);
+		DialogFactory.doDialog(new PalmStopIcon(), message);
 	}
 	
 	public static void doWarningDialog(String message) {
@@ -37,7 +37,7 @@ public final class UsefulModalDialogs extends Object {
 			message = "null";
 		}
 		
-		ModalDialogs.doDialog(new NoteIcon(), message);
+		DialogFactory.doDialog(new NoteIcon(), message);
 	}
 	
 	public static void doInformationDialog(String message) {
@@ -45,7 +45,7 @@ public final class UsefulModalDialogs extends Object {
 			message = "null";
 		}
 		
-		ModalDialogs.doDialog(new NoteIcon(), message);
+		DialogFactory.doDialog(new NoteIcon(), message);
 	}
 	
 	public static void doCautionDialog(String message) {
@@ -53,11 +53,11 @@ public final class UsefulModalDialogs extends Object {
 			message = "null";
 		}
 		
-		ModalDialogs.doDialog(new CautionIcon(), message, " Stop ");
+		DialogFactory.doDialog(new CautionIcon(), message, " Stop ");
 	}
 	
 	public static void tellAboutNoMemoryAvailable() {
-		ModalDialogs.doDialog(
+		DialogFactory.doDialog(
 			new PalmStopIcon(),
 			"Not enough memory available",
 			" Stop "
@@ -65,7 +65,7 @@ public final class UsefulModalDialogs extends Object {
 	}
 	
 	public static void tellAboutError(String errorText) {
-		UsefulModalDialogs.doErrorDialog(errorText);
+		UsefulMessageDialogs.doErrorDialog(errorText);
 	}
 	
 	public static void tellAboutError(int errorNumber, String errorText) {
@@ -76,11 +76,11 @@ public final class UsefulModalDialogs extends Object {
 			errorDescription.append(": ").append(errorText);
 		}
 		
-		UsefulModalDialogs.doErrorDialog(errorDescription.toString());
+		UsefulMessageDialogs.doErrorDialog(errorDescription.toString());
 	}
 	
 	public static void tellAboutInternalError(String message) {
-		ModalDialogs.doDialog(
+		DialogFactory.doDialog(
 			new NoteIcon(),
 			"Internal Error: " + message
 		);

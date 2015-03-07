@@ -1,5 +1,5 @@
 // ===========================================================================
-//	ButtonedLabel.java (part of douglas.mencken.beans package)
+// ButtonedLabel.java (part of douglas.mencken.beans package)
 // ===========================================================================
 
 package douglas.mencken.beans;
@@ -12,7 +12,7 @@ import java.awt.event.*;
  *	(Four button placements are supported.)
  *	Also paints one or more lines at the bottom.
  *
- *	@version	1.04f1
+ *	@version	1.1
  */
 
 public class ButtonedLabel extends Component
