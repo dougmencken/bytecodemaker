@@ -35,8 +35,12 @@ public class BMEnvironment extends Object {
 	 */
 	private BMEnvironment() { super(); }
 	
-	public static boolean isMacOS() {
+	public static boolean isOnMacOS() {
 		return System.getProperty("os.name").equals("Mac OS");
+	}
+
+	public static boolean isOnMacOSX() {
+		return System.getProperty("os.name").equals("Mac OS X");
 	}
 	
 	/**
@@ -93,7 +97,7 @@ public class BMEnvironment extends Object {
 		
 		try {
 			ClassFrame.getCurrentFrame().updateContents();
-		} catch (IncompleteException e) {}
+		} catch (Exception e) { /* ... */ }
 	}
 	
 	public static void setCurrentClass(JavaClass newClass) {

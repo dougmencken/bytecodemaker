@@ -1,5 +1,5 @@
 // ===========================================================================
-//	BMMain.java (part of douglas.mencken.bm package)
+// BMMain.java (part of douglas.mencken.bm package)
 // ===========================================================================
 
 package douglas.mencken.bm;
@@ -17,17 +17,16 @@ import douglas.mencken.bm.storage.prefs.BMPreferencesManager;
 /**
  *	Bytecode Maker's main entry point.
  *
- *	@version 1.05f2
+ *	@version 1.06
  */
 
 public final class BMMain extends Object {
 	
 	public static void main(String[] args) {
 		//testAndDebug();
-		
-		if (!BMEnvironment.isMacOS()) {
-			UsefulModalDialogs.doInformationDialog(
-				"Mac OS required to run this version of Bytecode Maker."
+		if (!BMEnvironment.isOnMacOS() && !BMEnvironment.isOnMacOSX()) {
+			UsefulMessageDialogs.doInformationDialog(
+				"Mac OS X or Mac OS is required to run this version of Bytecode Maker."
 			);
 			BMEnvironment.quit();
 		}
