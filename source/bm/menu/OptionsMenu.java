@@ -6,10 +6,10 @@ package douglas.mencken.bm.menu;
 
 import java.awt.*;
 import java.awt.event.*;
-import douglas.mencken.tools.UsefulModalDialogs;
+import douglas.mencken.tools.UsefulMessageDialogs;
 
 import douglas.mencken.bm.storage.JavaClass;
-import douglas.mencken.bm.storage.JavaConstantPoolElement;
+// LOCAL-TO-PACKAGE import douglas.mencken.bm.storage.JavaConstantPoolElement;
 import douglas.mencken.bm.frames.*;
 // REMOVED import douglas.mencken.bm.action.BytecodeOptimizer;
 // REMOVED import douglas.mencken.bm.action.ConstantPoolOptimizer;
@@ -81,25 +81,25 @@ public final class OptionsMenu extends Menu implements BMMenu {
 			
 			if (cp_optimizer.isOptimized()) {
 				currentClass.setConstants(optimizedConstants);
-				UsefulModalDialogs.doInformationDialog("Constant Pool: Optimization complete");
+				UsefulMessageDialogs.doInformationDialog("Constant Pool: Optimization complete");
 				
 				// update frames
 				//ClassFrame.getCurrentFrame().update();
-				//ConstantPoolFrame.getCurrentFrame().update();
+				//JavaConstantPoolCustomizer.getCurrentFrame().update();
 			} else {
-				UsefulModalDialogs.doInformationDialog("Constant Pool: No optimizations made");
+				UsefulMessageDialogs.doInformationDialog("Constant Pool: No optimizations made");
 			}*/
-			UsefulModalDialogs.doInformationDialog("Constant Pool: No optimizations made - IN PROGRESS");
+			UsefulMessageDialogs.doInformationDialog("Constant Pool: No optimizations made - IN PROGRESS");
 		}
 		if ((result & OptimizationSetupDialog.OPTIMIZE_BYTECODES) != 0) {
 			/* REMOVED BytecodeOptimizer bc_optimizer = new BytecodeOptimizer();
 			bc_optimizer.optimizeAll(currentClass.getMethods());
 			if (bc_optimizer.isOptimized()) {
-				UsefulModalDialogs.doInformationDialog("Bytecodes: Optimization complete");
+				UsefulMessageDialogs.doInformationDialog("Bytecodes: Optimization complete");
 			} else {
-				UsefulModalDialogs.doInformationDialog("Bytecodes: No optimizations made");
+				UsefulMessageDialogs.doInformationDialog("Bytecodes: No optimizations made");
 			}*/
-			UsefulModalDialogs.doInformationDialog("Bytecodes: No optimizations made - IN PROGRESS");
+			UsefulMessageDialogs.doInformationDialog("Bytecodes: No optimizations made - IN PROGRESS");
 		}
 	}
 	

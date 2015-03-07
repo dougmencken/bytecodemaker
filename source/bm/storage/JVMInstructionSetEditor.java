@@ -131,7 +131,7 @@ implements ItemListener, WindowListener {
 		super.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		
 		NumbersView view = this.textView.getNumbersView();
-		byte[] opcodes = this.method.getOpcodes();
+		byte[] opcodes = this.method.getCode();
 		
 		int len = opcodes.length;
 		int i = 0;
@@ -156,7 +156,7 @@ implements ItemListener, WindowListener {
 		super.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 		
 		NumbersView view = this.textView.getNumbersView();
-		byte[] opcodes = this.method.getOpcodes();
+		byte[] opcodes = this.method.getCode();
 		
 		int len = opcodes.length;
 		int i = 0;
@@ -259,7 +259,7 @@ implements ItemListener, WindowListener {
 //			super.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 //		} catch (OutOfMemoryError noRAM) {
 //			super.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-//			UsefulModalDialogs.tellAboutNoMemoryAvailable(true);
+//			UsefulMessageDialogs.tellAboutNoMemoryAvailable(true);
 //			
 //			if (stackWindow != null) {
 //				this.stackWindow.dispose();
@@ -481,7 +481,7 @@ class CodeEditorMenuBar extends MenuBar implements ActionListener {
 	/*static Frame makeInformationFrame(MethodItem method, Point location) {
 		if (method == null) return null;
 		
-		Frame infoFrame = new Frame(method.getNameWithParameters() + ": Information");
+		Frame infoFrame = new Frame(method.getMethodName() + ": Information"); // PREVIOUS IMPLEMENTATION HAS method.getNameWithParameters
 		new WindowCloser(infoFrame);
 		infoFrame.setLocation(location);
 		
@@ -512,7 +512,7 @@ class CodeEditorMenuBar extends MenuBar implements ActionListener {
 			newLine = false;
 		}*/
 		
-//		LocalVariableItem[] locals = method.getLocalVariables();
+//		LocalVariable[] locals = method.getLocalVariables();
 //		if (locals.length != 0) {
 //			int llen = locals.length;
 			

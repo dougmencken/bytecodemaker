@@ -41,7 +41,7 @@ implements ActionListener, MRJAboutHandler {
 		LWLabel versionLabel = new LWLabel(BMAbout.getVersionString(), LWLabel.LEFT);
 		
 		LWLabel copyrightLabel = new LWLabel(
-			"(c) 1997-2003, 2015 Douglas Mencken",
+			"(c) 1997-2003, 2015 Douglas Mencken.",
 			FontUtilities.createFont(FontUtilities.GENEVA_9),
 			LWLabel.LEFT
 		);

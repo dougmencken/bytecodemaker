@@ -5,7 +5,7 @@
 package douglas.mencken.bm.engine;
 
 import douglas.mencken.util.Optimizer;
-import douglas.mencken.tools.UsefulModalDialogs;
+import douglas.mencken.tools.UsefulMessageDialogs;
 import douglas.mencken.tools.LogMonitor;
 import douglas.mencken.bm.storage.prefs.BMPreferencesManager;
 import douglas.mencken.bm.storage.JavaConstantPool;
@@ -31,7 +31,7 @@ public class JavaConstantPoolOptimizer extends Object implements Optimizer {
 	 */
 	public Object optimize(Object in) {
 		if ((in == null) || !(in instanceof JavaConstantPool)) {
-			UsefulModalDialogs.doErrorDialog("Invalid object to optimize");
+			UsefulMessageDialogs.doErrorDialog("Invalid object to optimize");
 		}
 		
 		JavaConstantPool pool = (JavaConstantPool)in;

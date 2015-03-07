@@ -65,7 +65,7 @@ public class CodeLocksmith extends Object {
 		
 		if (!isInstructionsValid) {
 			throw new InternalError(
-				"only 'null' Instructions in '" + method.getNameWithParameters() + "'"
+				"only 'null' Instructions in '" + method.getMethodName() + "'" // REVIVE method.getNameWithParameters OR WHAT?
 			);
 		}
 		
@@ -279,7 +279,7 @@ public class CodeLocksmith extends Object {
 										LogMonitor.addToCurrentLog(
 											"'invokeinterface': wrong parameter count" +
 											"\n    " + ret[i] + "\n    " +
-											"(method " + method.getNameWithParameters() + ")"
+											"(method " + method.getMethodName() + ")"
 										);
 									}
 								}
@@ -662,24 +662,24 @@ loop:	while (changesMade) {
 	public static void convertToStatic(JavaMethod method) {
 		if (method.getOwnerClass() == null) {
 			throw new IllegalArgumentException(
-				"method \'" + method.getNameWithParameters() + "\' has no owner"
+				"method \'" + /*method.getNameWithParameters*/ method.getMethodName() + "\' has no owner"
 			);
 		}
 		
-		if (!method.isStatic()) {
-			String[] params = method.getArrayOfParameters();
-			int paramCount = params.length;
-			
-			String[] newParams = new String[paramCount+1];
-			System.arraycopy(params, 0, newParams, 1, paramCount);
-			newParams[0] = method.getOwnerClass().getClassName();
-			
-			method.setArrayOfParameters(newParams);
-		} else {
-			throw new IllegalArgumentException(
-				"method \'" + method.getNameWithParameters() + "\' is already static"
-			);
-		}
+//###		if (!method.isStatic()) {
+//###			String[] params = method.getArrayOfParameters();
+//###			int paramCount = params.length;
+//###			
+//###			String[] newParams = new String[paramCount+1];
+//###			System.arraycopy(params, 0, newParams, 1, paramCount);
+//###			newParams[0] = method.getOwnerClass().getClassName();
+//###			
+//###			method.setArrayOfParameters(newParams);
+//###		} else {
+//###			throw new IllegalArgumentException(
+//###				"method \'" + /*method.getNameWithParameters*/ method.getMethodName() + "\' is already static"
+//###			);
+//###		}
 	}
 	
 	/**
@@ -689,168 +689,168 @@ loop:	while (changesMade) {
 	public static void convertToNonStatic(JavaMethod method) {
 		if (method.getOwnerClass() == null) {
 			throw new IllegalArgumentException(
-				"method \'" + method.getNameWithParameters() + "\' has no owner"
+				"method \'" + /*method.getNameWithParameters*/ method.getMethodName() + "\' has no owner"
 			);
 		}
 		
-		if (method.isStatic()) {
-			String[] params = method.getArrayOfParameters();
-			int paramCount = params.length;
-			if ((paramCount > 0) && (params[0].equals(method.getOwnerClass().getClassName()))) {
-				String[] newParams = new String[paramCount-1];
-				System.arraycopy(params, 1, newParams, 0, paramCount-1);
-				method.setArrayOfParameters(newParams);
-				
-				return;
-			}
-			
-			byte[] opcodes = method.getOpcodes();
-			int codeLength = opcodes.length;
-			boolean wide = false;
-			
-			int i = 0;
-			while (i < codeLength) {
-				switch (opcodes[i]) {
-					// xload
-					// xstore
-					case 21: case 22: case 23: case 24: case 25:
-					case 54: case 55: case 56: case 57: case 58:
-						if (wide) {
-							int slot = ByteTransformer.toUnsignedShort(opcodes, i+1);
-							slot++;
-							
-							opcodes[i+1] = (byte)((slot >>> 8) & 0xFF);
-							opcodes[i+2] = (byte)((slot >>> 0) & 0xFF);
-							
-							wide = false;
-							i += 2;
-						} else {
-							if (opcodes[i+1] == -1 /* 255 */) {
-								// 'wide' is required here
-								throw new InternalError(
-									"can't expand bytecode, 'addBytecode' is in progress"
-								);
-							} else {
-								opcodes[i+1]++;
-								i++;
-							}
-						}
-						
-						break;
-					
-					// xload_0, xload_1, xload_2
-					// xstore_0, xstore_1, xstore_2
-					case 26: case 27: case 28:
-					case 30: case 31: case 32:
-					case 34: case 35: case 36:
-					case 38: case 39: case 40:
-					case 42: case 43: case 44:
-					
-					case 59: case 60: case 61:
-					case 63: case 64: case 65:
-					case 67: case 68: case 69:
-					case 71: case 72: case 73:
-					case 75: case 76: case 77:
-						opcodes[i]++;
-						break;
-					
-					// xload_3
-					// xstore_3
-					case 29: case 33: case 37: case 41: case 45:
-					case 62: case 66: case 70: case 74: case 78:
-						throw new InternalError(
-							"can't expand bytecode, 'addBytecode' is in progress"
-						);
-						
-						// ...
-						// break;
-					
-					// xaload
-					// xastore
-					case 46: case 47: case 48: case 49:
-					case 50: case 51: case 52: case 53:
-					
-					case 79: case 80: case 81: case 82:
-					case 83: case 84: case 85: case 86:
-						throw new InternalError(
-							"can't expand bytecode, 'addBytecode' is in progress"
-						);
-						
-						// ...
-						// break;
-					
-					// iinc
-					case /* 132 */ -124: 
-						if (wide) {
-							int slot = ByteTransformer.toUnsignedShort(opcodes, i+1);
-							slot++;
-							
-							opcodes[i+1] = (byte)((slot >>> 8) & 0xFF);
-							opcodes[i+2] = (byte)((slot >>> 0) & 0xFF);
-							
-							wide = false;
-							i += 4;
-						} else {
-							if (opcodes[i+1] == -1 /* 255 */) {
-								// 'wide' is required here
-								throw new InternalError(
-									"can't expand bytecode, 'addBytecode' is in progress"
-								);
-							} else {
-								opcodes[i+1]++;
-							}
-							
-							i += 2;
-						}
-						
-						break;
-						
-					// ret
-					case /* 169 */ -87:
-						if (opcodes[i+1] == -1 /* 255 */) {
-							// convert to 'ret_w'
-							opcodes[i] = /* 201 */ -47;
-							// ...
-							
-							throw new InternalError(
-								"can't expand bytecode, 'addBytecode' is in progress"
-							);
-						} else {
-							opcodes[i+1]++;
-							i++;
-						}
-						break;
-						
-					// ret_w
-					case /* 201 */ -47:
-						int slot = ByteTransformer.toUnsignedShort(opcodes, i+1);
-						slot++;
-						
-						opcodes[i+1] = (byte)((slot >>> 8) & 0xFF);
-						opcodes[i+2] = (byte)((slot >>> 0) & 0xFF);
-						
-						i += 2;
-						break;
-					
-					// wide
-					case /* 196 */ -60:
-						wide = true;
-						break;
-					
-					default:
-						i = method.nextOpcodeIndex(i);
-						break;
-				}
-				
-				i++;
-			}
-			
-			method.setOpcodes(opcodes);
-		} else {
-			throw new IllegalArgumentException(
-				"method \'" + method.getNameWithParameters() + "\' is already non-static"
-			);
-		}
+//###		if (method.isStatic()) {
+//###			String[] params = method.getArrayOfParameters();
+//###			int paramCount = params.length;
+//###			if ((paramCount > 0) && (params[0].equals(method.getOwnerClass().getClassName()))) {
+//###				String[] newParams = new String[paramCount-1];
+//###				System.arraycopy(params, 1, newParams, 0, paramCount-1);
+//###				method.setArrayOfParameters(newParams);
+//###				
+//###				return;
+//###			}
+//###			
+//###			byte[] opcodes = method.getCode();
+//###			int codeLength = opcodes.length;
+//###			boolean wide = false;
+//###			
+//###			int i = 0;
+//###			while (i < codeLength) {
+//###				switch (opcodes[i]) {
+//###					// xload
+//###					// xstore
+//###					case 21: case 22: case 23: case 24: case 25:
+//###					case 54: case 55: case 56: case 57: case 58:
+//###						if (wide) {
+//###							int slot = ByteTransformer.toUnsignedShort(opcodes, i+1);
+//###							slot++;
+//###							
+//###							opcodes[i+1] = (byte)((slot >>> 8) & 0xFF);
+//###							opcodes[i+2] = (byte)((slot >>> 0) & 0xFF);
+//###							
+//###							wide = false;
+//###							i += 2;
+//###						} else {
+//###							if (opcodes[i+1] == -1 /* 255 */) {
+//###								// 'wide' is required here
+//###								throw new InternalError(
+//###									"can't expand bytecode, 'addBytecode' is in progress"
+//###								);
+//###							} else {
+//###								opcodes[i+1]++;
+//###								i++;
+//###							}
+//###						}
+//###						
+//###						break;
+//###					
+//###					// xload_0, xload_1, xload_2
+//###					// xstore_0, xstore_1, xstore_2
+//###					case 26: case 27: case 28:
+//###					case 30: case 31: case 32:
+//###					case 34: case 35: case 36:
+//###					case 38: case 39: case 40:
+//###					case 42: case 43: case 44:
+//###					
+//###					case 59: case 60: case 61:
+//###					case 63: case 64: case 65:
+//###					case 67: case 68: case 69:
+//###					case 71: case 72: case 73:
+//###					case 75: case 76: case 77:
+//###						opcodes[i]++;
+//###						break;
+//###					
+//###					// xload_3
+//###					// xstore_3
+//###					case 29: case 33: case 37: case 41: case 45:
+//###					case 62: case 66: case 70: case 74: case 78:
+//###						throw new InternalError(
+//###							"can't expand bytecode, 'addBytecode' is in progress"
+//###						);
+//###						
+//###						// ...
+//###						// break;
+//###					
+//###					// xaload
+//###					// xastore
+//###					case 46: case 47: case 48: case 49:
+//###					case 50: case 51: case 52: case 53:
+//###					
+//###					case 79: case 80: case 81: case 82:
+//###					case 83: case 84: case 85: case 86:
+//###						throw new InternalError(
+//###							"can't expand bytecode, 'addBytecode' is in progress"
+//###						);
+//###						
+//###						// ...
+//###						// break;
+//###					
+//###					// iinc
+//###					case /* 132 */ -124: 
+//###						if (wide) {
+//###							int slot = ByteTransformer.toUnsignedShort(opcodes, i+1);
+//###							slot++;
+//###							
+//###							opcodes[i+1] = (byte)((slot >>> 8) & 0xFF);
+//###							opcodes[i+2] = (byte)((slot >>> 0) & 0xFF);
+//###							
+//###							wide = false;
+//###							i += 4;
+//###						} else {
+//###							if (opcodes[i+1] == -1 /* 255 */) {
+//###								// 'wide' is required here
+//###								throw new InternalError(
+//###									"can't expand bytecode, 'addBytecode' is in progress"
+//###								);
+//###							} else {
+//###								opcodes[i+1]++;
+//###							}
+//###							
+//###							i += 2;
+//###						}
+//###						
+//###						break;
+//###						
+//###					// ret
+//###					case /* 169 */ -87:
+//###						if (opcodes[i+1] == -1 /* 255 */) {
+//###							// convert to 'ret_w'
+//###							opcodes[i] = /* 201 */ -47;
+//###							// ...
+//###							
+//###							throw new InternalError(
+//###								"can't expand bytecode, 'addBytecode' is in progress"
+//###							);
+//###						} else {
+//###							opcodes[i+1]++;
+//###							i++;
+//###						}
+//###						break;
+//###						
+//###					// ret_w
+//###					case /* 201 */ -47:
+//###						int slot = ByteTransformer.toUnsignedShort(opcodes, i+1);
+//###						slot++;
+//###						
+//###						opcodes[i+1] = (byte)((slot >>> 8) & 0xFF);
+//###						opcodes[i+2] = (byte)((slot >>> 0) & 0xFF);
+//###						
+//###						i += 2;
+//###						break;
+//###					
+//###					// wide
+//###					case /* 196 */ -60:
+//###						wide = true;
+//###						break;
+//###					
+//###					default:
+//###						i = method.nextOpcodeIndex(i);
+//###						break;
+//###				}
+//###				
+//###				i++;
+//###			}
+//###			
+//###			method.setOpcodes(opcodes);
+//###		} else {
+//###			throw new IllegalArgumentException(
+//###				"method \'" + /*method.getNameWithParameters*/ method.getMethodName() + "\' is already non-static"
+//###			);
+//###		}
 	}
 	
 }

@@ -14,7 +14,7 @@ import douglas.mencken.util.ArrayUtilities;
 import douglas.mencken.util.FileUtilities;
 import douglas.mencken.util.StringUtilities;
 import douglas.mencken.util.Preferences;
-import douglas.mencken.tools.UsefulModalDialogs;
+import douglas.mencken.tools.UsefulMessageDialogs;
 
 /**
  *	<code>BMPreferences</code>
@@ -180,7 +180,7 @@ final class BMPreferences extends Preferences {
 				// 'recentUsedFileCount <= 0' or 'recentUsedFiles == null'
 				super.set("douglas.mencken.bm.recent_used_files", "");
 			} else {
-				UsefulModalDialogs.doErrorDialog(
+				UsefulMessageDialogs.doErrorDialog(
 					MESSAGE_OLD_PREFERENCES + ' ' + MESSAGE_DEFAULT_VALUES
 				);
 				throw new IOException("format version mismatch");

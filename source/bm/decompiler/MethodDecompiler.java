@@ -11,7 +11,7 @@ import douglas.mencken.util.ByteTransformer;
 import douglas.mencken.util.SpecialStack;
 import douglas.mencken.util.StringUtilities;
 import douglas.mencken.util.ArrayUtilities;
-import douglas.mencken.tools.UsefulModalDialogs;
+import douglas.mencken.tools.UsefulMessageDialogs;
 import douglas.mencken.exceptions.InvalidClassFormatError;
 import douglas.mencken.bm.storage.*;
 //////////////////import douglas.mencken.bm.engine.BytecodeLocksmith;
@@ -47,31 +47,31 @@ public class MethodDecompiler extends Object implements Decompiler {
 		}
 		
 		this.method = method;
-		this.declaredVars = new boolean[method.getLocalVariables().length];
+/////////		this.declaredVars = new boolean[method.getLocalVariables().length];
 		this.spaceCount = spaceCount;
 		this.buf = new StringBuffer();
 		
-// System.out.println("----- DECOMPILING: \"" + method.getNameWithParameters() + "\" -----");
+// System.out.println("----- DECOMPILING: \"" + /*method.getNameWithParameters*/ method.getMethodName() + "\" -----");
 		
-		try {
-			this.bytecodeBlocks = MethodDecompiler.prepareBytecodes(method);
-			this.decompile();
-		} catch (BadBytecodesException bbe) {
-			UsefulModalDialogs.doErrorDialog(
-				"BadBytecodesException (caught in MethodDecompiler for method '" +
-				method.getNameWithParameters() + "'): " + bbe.getMessage()
-			);
-			this.bytecodeBlocks = null;
-			return;
-		}
+	//////////	try {
+	//////////		this.bytecodeBlocks = MethodDecompiler.prepareBytecodes(method);
+	//////////		this.decompile();
+	//////////	} catch (Exception exc) { // BadBytecodesException bbe
+	//////////		UsefulMessageDialogs.doErrorDialog(
+	//////////			"Exception (caught in MethodDecompiler for method '" +
+	//////////			method.getName() + "'): " + exc.getMessage()
+	//////////		);
+	//////////		this.bytecodeBlocks = null;
+	//////////		return;
+	//////////	}
 	}
 	
 	protected void doDeclaration() {
 		StringUtilities.addSpaces(buf, spaceCount);
 		
-		if (method.isSynthetic()) {
-			buf.append("// ");
-		}
+/////		if (method.isSynthetic()) {
+/////			buf.append("// ");
+/////		}
 		
 		String methodName = method.getMethodName();
 		if (methodName.equals("<clinit>")) {
@@ -79,8 +79,8 @@ public class MethodDecompiler extends Object implements Decompiler {
 			return;
 		}
 		
-		int access_flags = method.getAccess();
-		if (method.getOwner().isInterface()) {
+		int access_flags = method.getAccessModifiers();
+		if (method.getOwnerClass().isInterface()) {
 			access_flags = access_flags^Modifier.ABSTRACT;
 		}
 		String accessString = Modifier.toString(access_flags);
@@ -94,43 +94,43 @@ public class MethodDecompiler extends Object implements Decompiler {
 			buf.append(unpackager.unpackage(method.getReturnType())).append(' ');
 			buf.append(methodName);
 		} else {
-			buf.append(unpackager.unpackage(method.getOwner().getClassName()));
+			buf.append(unpackager.unpackage(method.getOwnerClass().getClassName()));
 		}
 		
-		LocalVariableItem[] locals = method.getLocalVariables();
-		buf.append("(");
-		buf.append(LocalVariableItem.getParameterList(locals, true));
-		buf.append(")");
+//###		LocalVariable[] locals = method.getLocalVariables();
+//###		buf.append("(");
+//###		buf.append(LocalVariable.getParameterList(locals, true));
+//###		buf.append(")");
 		
 		// unpackaged 'throws ...' string
-		String[] exceptions = method.getExceptions();
+	/******	String[] exceptions = method.getExceptions();
 		int excCount = exceptions.length;
 		if (excCount > 0) {
 			for (int i = 0; i < excCount; i++) {
 				exceptions[i] = unpackager.unpackage(exceptions[i]);
 			}
 			buf.append(JavaMethod.makeThrowsString(exceptions));
-		}
+		}************/
 	}
 	
 	protected void decompile() { //////////////////////throws BadBytecodesException {
-		if (method.isDeprecated()) {
+	/******	if (method.isDeprecated()) {
 			StringUtilities.addSpaces(buf, spaceCount);
-			buf.append("/**\n");
+			buf.append("\/**\n");
 			StringUtilities.addSpaces(buf, spaceCount+1);
 			buf.append("* @deprecated\n");
 			StringUtilities.addSpaces(buf, spaceCount+1);
-			buf.append("*/\n");
-		}
+			buf.append("*\/\n");
+		}******/
 		
 		this.doDeclaration();
 		
-		if (method.isAbstractOrNative()) {
+	/******	if (method.isAbstractOrNative()) {
 			buf.append(";\n");
 			return;
-		}
+		}******/
 		
-		int codeLength = method.getCodeLength();
+		int codeLength = 0; ///////////////////////////method.getCodeLength();
 		if (codeLength <= 1) {
 			// Empty method
 			buf.append(" {}\n");
@@ -303,9 +303,9 @@ public class MethodDecompiler extends Object implements Decompiler {
 *******************************************/
 		
 		StringUtilities.addSpaces(buf, spaceCount);
-		if (method.isSynthetic()) {
-			buf.append("// ");
-		}
+	/////	if (method.isSynthetic()) {
+	/////		buf.append("// ");
+	/////	}
 		
 		buf.append("}\n");
 	}

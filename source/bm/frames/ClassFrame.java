@@ -11,7 +11,7 @@ import java.beans.*;
 import douglas.mencken.util.FontUtilities;
 import douglas.mencken.beans.LWLabel;
 import douglas.mencken.beans.support.CustomizerFrame;
-import douglas.mencken.tools.UsefulModalDialogs;
+import douglas.mencken.tools.UsefulMessageDialogs;
 
 import douglas.mencken.bm.storage.JavaClass;
 import douglas.mencken.bm.storage.JavaConstantPool;
@@ -153,7 +153,7 @@ implements WindowListener, PropertyChangeListener {
 			frame.setResizable(false);
 			frame.setVisible(true);
 		} catch (Exception exc) {
-			UsefulModalDialogs.tellAboutInternalError(
+			UsefulMessageDialogs.tellAboutInternalError(
 				exc.getClass().getName() + ": " + exc.getMessage()
 			);
 		}

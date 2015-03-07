@@ -10,7 +10,7 @@ import douglas.mencken.util.ArrayUtilities;
 import douglas.mencken.util.StringUtilities;
 import douglas.mencken.util.ClassUtilities;
 
-import douglas.mencken.tools.UsefulModalDialogs;
+import douglas.mencken.tools.UsefulMessageDialogs;
 import douglas.mencken.tools.LogMonitor;
 import douglas.mencken.exceptions.InvalidClassFormatError;
 
@@ -346,7 +346,7 @@ implements JavaClassMember, Externalizable {
 		if (constant.isBasicType()) {
 			constant.setContents(contents);
 		} else {
-			UsefulModalDialogs.doErrorDialog(
+			UsefulMessageDialogs.doErrorDialog(
 				"Attempt to change contents for '" +
 				JavaConstantPool.CONSTANT_TAGS[constant.getTag()] + "'"
 			);

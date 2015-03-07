@@ -5,7 +5,7 @@
 package douglas.mencken.bm.decompiler;
 
 import douglas.mencken.util.*;
-import douglas.mencken.tools.UsefulModalDialogs;
+import douglas.mencken.tools.UsefulMessageDialogs;
 import douglas.mencken.bm.storage.prefs.BMPreferencesManager;
 import douglas.mencken.bm.storage.*;
 import douglas.mencken.bm.engine.Unpackager;
@@ -34,31 +34,31 @@ public class DecompilerUtilities extends Object {
 		}
 		
 		StringBuffer buf = new StringBuffer();
-		if (field.isSynthetic()) {
-			buf.append("// ");
-		}
+	//////	if (field.isSynthetic()) {
+	//////		buf.append("// ");
+	//////	}
 		
-		if (field.getAccessString().length() != 0) {
-			buf.append(field.getAccessString());
-			buf.append(' ');
-		}
+///====		if (field.getAccessString().length() != 0) {
+//=/===			buf.append(field.getAccessString());
+//==/==			buf.append(' ');
+//===/=		}
 		
-		String type = field.getType();
+		String type = "blah"; //.//*//+//-// --- WAS field.getType();
 		buf.append(Unpackager.getCurrentUnpackager().unpackage(type));
 		buf.append(' ');
 		buf.append(field.getFieldName());
 		
-		if (field.getConstantValue().length() != 0) {
-			buf.append(" = ");
-			buf.append(field.getConstantValue());
-			if (type.equals("float")) {
-				buf.append('f');
-			} else if (type.equals("long")) {
-				buf.append('L');
-			} else if (type.equals("double")) {
-				buf.append('d');
-			}
-		}
+///////		if (field.getConstantValue().length() != 0) {
+///////			buf.append(" = ");
+///////			buf.append(field.getConstantValue());
+///////			if (type.equals("float")) {
+///////				buf.append('f');
+///////			} else if (type.equals("long")) {
+///////				buf.append('L');
+///////			} else if (type.equals("double")) {
+///////				buf.append('d');
+///////			}
+///////		}
 		
 		return buf.toString();
 	}
@@ -226,9 +226,10 @@ public class DecompilerUtilities extends Object {
 			superName = ClassUtilities.unpackage(theClass.getSuperclassName(), packages);
 		}
 		
-		String declaration = JavaClass.makeDeclaration(
+		String declaration = "class declaration string";
+		/********* WAS JavaClass.makeDeclaration(
 			theClass.getAccess(), name, superName, interfaces
-		);
+		); ****************/
 		declaration = StringUtilities.cut(declaration, "synchronized ");
 		
 		return declaration;
@@ -316,10 +317,11 @@ public class DecompilerUtilities extends Object {
 		if (theClass == null) return "";
 		
 		StringBuffer buf = new StringBuffer();
-		buf.append(theClass.getDeclaration());
+		buf.append(/*theClass.getDeclaration()*/ "class declaration");
 		buf.append(" {\n");
 		
-		JavaField[] fields = theClass.getFields();
+//////		JavaField[] fields = theClass.getFields();
+		Object[] fields = null;
 		if ((fields != null) && (fields.length != 0)) {
 			buf.append('\n');
 			
@@ -330,7 +332,8 @@ public class DecompilerUtilities extends Object {
 			}
 		}
 		
-		JavaMethod[] methods = theClass.getMethods();
+//////		JavaMethod[] methods = theClass.getMethods();
+		Object[] methods = null;
 		if ((methods != null) && (methods.length != 0)) {
 			buf.append('\n');
 			
@@ -338,13 +341,14 @@ public class DecompilerUtilities extends Object {
 			for (int i = 0; i < len; i++) {
 				buf.append("\t");
 				
-				JavaMethod method = methods[i];
-				buf.append(method);
+//////////////				JavaMethod method = methods[i];
+//////////////				buf.append(method);
 				
-				if (!method.isAbstractOrNative()) {
+//////////////				if ( !(method.isAbstract() || method.isNative()) ) { /////---------- !method.isAbstractOrNative()
+/**************
 					buf.append(" {\n");
 					
-					LocalVariableItem[] locals = method.getLocalVariables();
+					LocalVariable[] locals = method.getLocalVariables();
 					if (locals.length != 0) {
 						int llen = locals.length;
 						
@@ -375,11 +379,11 @@ public class DecompilerUtilities extends Object {
 							buf.append('\t');
 							buf.append("try {\n");
 							tabNewDumpLine(buf, method);
-							buf.append("\t\t/* ");
-							buf.append(pcValues[0] /* start_pc */);
+							buf.append("\t\t\/* ");
+							buf.append(pcValues[0]); // start_pc
 							buf.append(" to ");
-							buf.append(pcValues[1] /* end_pc */);
-							buf.append(" */\n");
+							buf.append(pcValues[1]); // end_pc
+							buf.append(" *\/\n");
 							
 							tabNewDumpLine(buf, method);
 							buf.append('\t');
@@ -391,7 +395,7 @@ public class DecompilerUtilities extends Object {
 							
 							tabNewDumpLine(buf, method);
 							buf.append("\t\tgoto ");
-							buf.append(pcValues[2] /* handler_pc */);
+							buf.append(pcValues[2]); // handler_pc
 							buf.append(";\n");
 							tabNewDumpLine(buf, method);
 							buf.append("\t}");
@@ -400,69 +404,69 @@ public class DecompilerUtilities extends Object {
 						}
 						
 						buf.append('\n');
-					}
+					}**********************************************************/
 					
 					if (prepareBytecodes) {
-						BytecodeBlock[] blocks = null;
-						try {
-							blocks = MethodDecompiler.prepareBytecodes(method);
+	///////////////					BytecodeBlock[] blocks = null;
+				/******		try {
+	////////////						blocks = MethodDecompiler.prepareBytecodes(method);
 						} catch (BadBytecodesException bbexc) {
-							UsefulModalDialogs.doErrorDialog(
+							UsefulMessageDialogs.doErrorDialog(
 								"BadBytecodesException while preparing bytecodes (method '" +
 								method.getMethodName() + "'): " + bbexc.getMessage()
 							);
-						}
+						}***********/
 						
-						if (blocks != null) {
-							int bcount = blocks.length;
-							for (int n = 0; n < bcount; n++) {
-								if (n != 0) {
-									buf.append('\n');
-									tabNewDumpLine(buf, method);
-									buf.append("\tsub");
-									buf.append(n);
-									buf.append(": {");
-									buf.append('\n');
-								}
-								
-								BytecodeItem[] bytecodes = blocks[n].getBytecodes();
-								int blen = bytecodes.length;
-								for (int j = 0; j < blen; j++) {
-									if (bytecodes[j] != null) {
-										tabNewDumpLine(buf, method);
-										
-										buf.append('\t');
-										if (n != 0) buf.append('\t');
-										buf.append(bytecodes[j]);
-										buf.append('\n');
-									}
-								}
-								
-								if (n != 0) {
-									tabNewDumpLine(buf, method);
-									buf.append("\t}\n");
-								}
-							}
-						}
+//&&&&&&&&						if (blocks != null) {
+//&&&&&&&&							int bcount = blocks.length;
+//&&&&&&&&							for (int n = 0; n < bcount; n++) {
+//&&&&&&&&								if (n != 0) {
+//&&&&&&&&									buf.append('\n');
+//&&&&&&&&									tabNewDumpLine(buf, method);
+//&&&&&&&&									buf.append("\tsub");
+//&&&&&&&&									buf.append(n);
+//&&&&&&&&									buf.append(": {");
+//&&&&&&&&									buf.append('\n');
+//&&&&&&&&								}
+//&&&&&&&&								
+//&&&&&&&&								/********* BytecodeItem[] bytecodes = blocks[n].getBytecodes();
+//&&&&&&&&								int blen = bytecodes.length;
+//&&&&&&&&								for (int j = 0; j < blen; j++) {
+//&&&&&&&&									if (bytecodes[j] != null) {
+//&&&&&&&&										tabNewDumpLine(buf, method);
+//&&&&&&&&										
+//&&&&&&&&										buf.append('\t');
+//&&&&&&&&										if (n != 0) buf.append('\t');
+//&&&&&&&&										buf.append(bytecodes[j]);
+//&&&&&&&&										buf.append('\n');
+//&&&&&&&&									}
+//&&&&&&&&								}*********************/
+//&&&&&&&&								
+//&&&&&&&&								if (n != 0) {
+//&&&&&&&&									tabNewDumpLine(buf, method);
+//&&&&&&&&									buf.append("\t}\n");
+//&&&&&&&&								}
+//&&&&&&&&							}
+//&&&&&&&&						}
 					} else {
-						BytecodeItem[] bytecodes = method.getBytecodes();
-						int blen = bytecodes.length;
-						for (int j = 0; j < blen; j++) {
-							if (bytecodes[j] != null) {
-								tabNewDumpLine(buf, method);
-								
-								buf.append('\t');
-								buf.append(bytecodes[j]);
-								buf.append('\n');
-							}
-						}
+				/////		BytecodeItem[] bytecodes = method.getBytecodes();
+				/////		int blen = bytecodes.length;
+				/////		for (int j = 0; j < blen; j++) {
+				/////			if (bytecodes[j] != null) {
+				/////				tabNewDumpLine(buf, method);
+				/////				
+				/////				buf.append('\t');
+				/////				buf.append(bytecodes[j]);
+				/////				buf.append('\n');
+				/////			}
+				/////		}
 					}
 					
-					tabNewDumpLine(buf, method);
+		///////			tabNewDumpLine(buf, method);
 					buf.append("}\n");
-				} else {
-					buf.append(";\n");
-				}
+//////////////				} else {
+//////////////					buf.append(";\n");
+//////////////				}
 				
 				if ((i+1) != len) {
 					buf.append('\n');
@@ -476,9 +480,9 @@ public class DecompilerUtilities extends Object {
 	
 	private static void tabNewDumpLine(StringBuffer buffer, JavaMethod method) {
 		buffer.append('\t');
-		if (method.isSynthetic()) {
-			buffer.append("// ");
-		}
+//&&&&&&&&		if (method.isSynthetic()) {
+//&&&&&&&&			buffer.append("// ");
+//&&&&&&&&		}
 	}
 	
 }

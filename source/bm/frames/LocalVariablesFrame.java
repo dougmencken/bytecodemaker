@@ -30,10 +30,10 @@ public class LocalVariablesFrame extends CornerLabelFrame {
 		
 		super.pack();
 		
-		int xpos = codeEditor.getLocation().x + codeEditor.getSize().width + 10;
-		int ypos = codeEditor.getLocation().y;
-		super.setBounds(xpos, ypos, 400, getSize().height);
-		super.setResizable(false);
+//###		int xpos = codeEditor.getLocation().x + codeEditor.getSize().width + 10;
+//###		int ypos = codeEditor.getLocation().y;
+//###		super.setBounds(xpos, ypos, 400, getSize().height);
+//###		super.setResizable(false);
 		
 		new LocalVariablesFrameMenuBar(this);
 		addWindowListener(this);
@@ -100,7 +100,7 @@ public class LocalVariablesFrame extends CornerLabelFrame {
 	 */
 	public void windowClosing(WindowEvent e) {
 		super.setVisible(false);
-		codeEditor.updateMenus();
+////////////		codeEditor.updateMenus();
 	}
 	
 }

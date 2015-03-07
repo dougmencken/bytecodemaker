@@ -65,7 +65,7 @@ public class OptimizationSetupDialog extends Dialog implements ActionListener {
 		optimizeAllButton.setActionCommand("ALL");
 		optimizeAllButton.addActionListener(this);
 		
-		Panel buttonPanel = WindowUtilities.createOKCancelButtonsPanel(
+		Panel buttonPanel = WindowUtilities.createOKCancelButtonPanel(
 			this,
 			new Dimension(
 				super.getSize().width,
@@ -85,7 +85,7 @@ public class OptimizationSetupDialog extends Dialog implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
 		if (command.equals("OK")) {
-			//ConstantPoolFrame.getCurrentFrame().setVisible(false);
+			//JavaConstantPoolCustomizer.getCurrentFrame().setVisible(false);
 			//ViewMenu.updateMenu();
 			this.result = 0;
 			

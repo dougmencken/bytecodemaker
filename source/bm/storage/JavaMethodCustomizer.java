@@ -12,7 +12,7 @@ import java.lang.reflect.Modifier;
 import douglas.mencken.util.FontUtilities;
 import douglas.mencken.beans.*;
 import douglas.mencken.icons.NoteIcon;
-import douglas.mencken.tools.ModalDialogs;
+import douglas.mencken.tools.DialogFactory;
 
 /**
  *	@version	1.03f1

@@ -2,7 +2,6 @@
 //	MethodsFrame.java (part of douglas.mencken.bm.frames package)
 //		public class MethodsFrame
 //		class MethodsFrameMenuBar
-//	
 // ===========================================================================
 
 package douglas.mencken.bm.frames;
@@ -12,7 +11,7 @@ import java.awt.event.*;
 import java.lang.reflect.Modifier;
 import java.beans.*;
 
-import douglas.mencken.tools.UsefulModalDialogs;
+import douglas.mencken.tools.UsefulMessageDialogs;
 import douglas.mencken.util.ClassUtilities;
 import douglas.mencken.util.StringUtilities;
 import douglas.mencken.beans.ButtonedLabel;
@@ -20,11 +19,12 @@ import douglas.mencken.beans.support.*;
 
 import douglas.mencken.bm.storage.JavaClass;
 import douglas.mencken.bm.storage.JavaMethod;
+import douglas.mencken.bm.storage.JVMInstructionSetEditor;
 
 /**
  *	<code>MethodsFrame</code>
  *
- *	@version	1.40f1
+ *	@version	1.41
  */
 
 public class MethodsFrame extends Frame
@@ -54,7 +54,7 @@ implements ActionListener, AdjustmentListener, PropertyChangeListener {
 	public void setClass(JavaClass clazz) {
 		if (this.clazz != clazz) {
 			this.clazz = clazz;
-			this.methodDeclarations = clazz.getMethodDeclarations();
+/////////////			this.methodDeclarations = clazz.getMethodDeclarations();
 			
 			StringBuffer titleBuf = new StringBuffer();
 			if (clazz != null) {
@@ -174,17 +174,19 @@ implements ActionListener, AdjustmentListener, PropertyChangeListener {
 		return this.getPreferredSize();
 	}
 	
-	void addMethod(JavaMethod method) {
+/*****	void addMethod(JavaMethod method) {
 		if (this.clazz != null) {
 			this.clazz.addMethod(method);
 		}
 	}
+*****/
 	
-	void removeMethod(int index) {
+/*****	void removeMethod(int index) {
 		if (this.clazz != null) {
 			this.clazz.removeMethod(index);
 		}
 	}
+*****/
 	
 	public void adjustmentValueChanged(AdjustmentEvent evt) {
 		Adjustable adj = evt.getAdjustable();
@@ -201,19 +203,19 @@ implements ActionListener, AdjustmentListener, PropertyChangeListener {
 		
 		if (cmd.endsWith("$Code")) {
 			super.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			JVMInstructionSetEditor.showEditor(this.clazz.getMethod(this.methodIndex), this.methodIndex);
+//////////			JVMInstructionSetEditor.showEditor(this.clazz.methodByIndex(this.methodIndex), this.methodIndex);
 			super.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		} else if (cmd.endsWith("$Edit")) {
 			try {
-				JavaMethod method = this.clazz.getMethod(this.methodIndex);
+				JavaMethod method = this.clazz.methodByIndex(this.methodIndex);
 				CustomizerFrame frame = CustomizerFrame.customizeBean(
-					method, this, method.getNameWithParameters(), this
+					method, this, /*method.getNameWithParameters*/ method.getMethodName(), this
 				);
 				
 				frame.setResizable(false);
 				frame.setVisible(true);
 			} catch (Exception exc) {
-				UsefulModalDialogs.tellAboutInternalError(
+				UsefulMessageDialogs.tellAboutInternalError(
 					exc.getClass().getName() + ": " + exc.getMessage()
 				);
 			}
@@ -339,24 +341,24 @@ class MethodsFrameMenuBar extends MenuBar implements ActionListener {
 			
 			JavaMethod newJavaMethod = (JavaMethod)newDialog.getBean();
 			if (newJavaMethod != null) {
-				owner.addMethod(newJavaMethod);
+////////////				owner.addMethod(newJavaMethod);
 				
 				this.updateMenu();
 				owner.updateContents();
 				
 				try {
 					ClassFrame.getCurrentFrame().updateContents();
-				} catch (IncompleteException exc) {}
+				} catch (Exception exc) { /** ... **/ }
 			}
 		} else if (c.equals("REMOVE")) {
-			// ... show list of methods ... //
-			owner.removeMethod(0);
+			//// (TODO) ... show list of methods ... ////
+//////////			owner.removeMethod(0);
 			this.updateMenu();
 			owner.updateContents();
 			
 			try {
 				ClassFrame.getCurrentFrame().updateContents();
-			} catch (IncompleteException exc) {}
+			} catch (Exception exc) { /** ... **/ }
 		}
 	}
 	

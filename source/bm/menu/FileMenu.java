@@ -16,9 +16,9 @@ import douglas.mencken.util.FileUtilities;
 
 import douglas.mencken.beans.support.NewBeanCustomizerDialog;
 
-import douglas.mencken.tools.ModalDialogs;
+import douglas.mencken.tools.DialogFactory;
 import douglas.mencken.tools.LogMonitor;
-import douglas.mencken.tools.UsefulModalDialogs;
+import douglas.mencken.tools.UsefulMessageDialogs;
 import douglas.mencken.tools.zip.*;
 
 import douglas.mencken.bm.engine.RandomAccessJavaClass;
@@ -169,7 +169,7 @@ implements BMMenu, MRJOpenDocumentHandler {
 				this.readFromInputStream(is);
 			} catch (Exception exc) {
 				Toolkit.getDefaultToolkit().beep();
-				UsefulModalDialogs.doErrorDialog(
+				UsefulMessageDialogs.doErrorDialog(
 			"FileMenu.actionPerformed(ActionEvent): readFromInputStream caught an Exception (" +
 			exc.getClass().getName() + "): " + exc.getMessage()
 				);
@@ -210,7 +210,7 @@ implements BMMenu, MRJOpenDocumentHandler {
 		
 		if (newDialog.getBean() != null) {
 			JavaClass newJavaClass = (JavaClass)newDialog.getBean();
-			JavaClass.addDefaultConstructor(newJavaClass);
+/////////////			JavaClass.addDefaultConstructor(newJavaClass);
 			LogMonitor.showCurrent();
 			
 			if (newJavaClass != null) {
@@ -237,7 +237,7 @@ implements BMMenu, MRJOpenDocumentHandler {
 		
 		try {
 			ClassFrame.getCurrentFrame().setClass(null);
-		} catch (IncompleteException ignored) {}
+		} catch (Exception ignored) { /* ..... */ }
 	}
 	
 	/* IN PROGRESS */
@@ -280,7 +280,7 @@ implements BMMenu, MRJOpenDocumentHandler {
 		} else {
 			// ask "are you sure?"
 			String filename = (new File(this.revertPath)).getName();
-			int revert_no = ModalDialogs.doTwoButtonsDialog(
+			int revert_no = DialogFactory.doTwoButtonsDialog(
 				null, "Do you want to throw away all unsaved changes to \"" + filename + "\"?",
 				"Revert", "Cancel"
 			);
@@ -334,13 +334,13 @@ implements BMMenu, MRJOpenDocumentHandler {
 					String className = clazz.getClassName();
 					
 					// check if class format version is not 45.3
-					if (clazz.getFormatVersion() != 45.3f) {
-						if (BMPreferencesManager.getShowLog()) {
-							LogMonitor.addToCurrentLog(
-								"class format version is not 45.3"
-							);
-						}
-					}
+/////					if (clazz.getFormatVersion() != 45.3f) {
+/////						if (BMPreferencesManager.getShowLog()) {
+/////							LogMonitor.addToCurrentLog(
+/////								"class format version is not 45.3"
+/////							);
+/////						}
+/////					}
 					
 					// check if class and file names doesn't match
 					if (path != null) {
@@ -368,13 +368,13 @@ implements BMMenu, MRJOpenDocumentHandler {
 					
 					success = true;
 				} catch (IOException ioe) {
-					UsefulModalDialogs.doErrorDialog(
+					UsefulMessageDialogs.doErrorDialog(
 						"FileMenu.openFile() caught " +
 						ClassUtilities.getClassName(ioe.getClass().getName()) + 
 						": " + ioe.getMessage()
 					);
 				} catch (Throwable t) {
-					UsefulModalDialogs.doErrorDialog(t, true);
+					UsefulMessageDialogs.doErrorDialog(t, true);
 				}
 			} else if (FileUtilities.isZipArchive(data)) {
 				try {
@@ -387,7 +387,7 @@ implements BMMenu, MRJOpenDocumentHandler {
 						success = true;
 					}
 				} catch (Exception e) {
-					UsefulModalDialogs.doWarningDialog("Unknown zip file format");
+					UsefulMessageDialogs.doWarningDialog("Unknown zip file format");
 				}
 			} else {
 				// ... SHOW TEXT EDITOR etc.

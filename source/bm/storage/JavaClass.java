@@ -8,7 +8,7 @@ import java.lang.reflect.Modifier;
 import java.io.*;
 
 import douglas.mencken.util.ClassUtilities;
-import douglas.mencken.tools.UsefulModalDialogs;
+import douglas.mencken.tools.UsefulMessageDialogs;
 import douglas.mencken.bm.storage.constants.BMErrorStrings;
 
 /**
@@ -330,7 +330,7 @@ public class JavaClass extends Object implements Externalizable {
 				}
 				
 				if (!this.getSuperclassName().equals("java.lang.Object")) {
-					UsefulModalDialogs.tellAboutError(
+					UsefulMessageDialogs.tellAboutError(
 						12, BMErrorStrings.getErrorString(12)
 					);
 					this.setSuperclassName("java.lang.Object");
@@ -377,6 +377,10 @@ public class JavaClass extends Object implements Externalizable {
 		}
 	}
 	
+	public JavaField[] getFields() {
+		return this.fields;
+	}
+
 	/**
 	 *	Set all fields for this class.
 	 */
@@ -406,6 +410,14 @@ public class JavaClass extends Object implements Externalizable {
 	public int getMethodCount() {
 		return this.methods.length;
 	}
+
+	public JavaMethod methodByIndex(int index) {
+		if (index < this.getMethodCount()) {
+			return this.methods[index];
+		} else {
+			return null;
+		}
+	}
 	
 	public void addField(JavaField field) {
 		// ...
@@ -428,10 +440,10 @@ public class JavaClass extends Object implements Externalizable {
 	
 	/**
 	 *	Gets the list of package names that is used by this class.
-	 *	The package of this class are also included.
+	 *	The package of class itself is also included.
 	 *
 	 *	@return  string array of package names.
-     */
+	 */
 	public String[] obtainPackages() {
 		String[] ret = ClassUtilities.extractPackagesFromNames(this.obtainClassImports());
 		String myPackageName = ClassUtilities.getPackage(this.getClassName());

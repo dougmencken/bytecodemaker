@@ -9,8 +9,8 @@ import java.io.*;
 
 import douglas.mencken.util.ClassUtilities;
 import douglas.mencken.icons.NoteIcon;
-import douglas.mencken.tools.ModalDialogs;
-import douglas.mencken.tools.UsefulModalDialogs;
+import douglas.mencken.tools.DialogFactory;
+import douglas.mencken.tools.UsefulMessageDialogs;
 
 /**
  *	<code>JavaMethod</code>
@@ -195,7 +195,7 @@ implements JavaClassIndexedMember, Externalizable {
 			if (newAbstract) {
 				if (!this.isNative()) {
 					if (showDialog) {
-						int yes_no = ModalDialogs.doTwoButtonsDialog(
+						int yes_no = DialogFactory.doTwoButtonsDialog(
 							new NoteIcon(),
 							"Remove method's code?",
 							" OK ", " Cancel "
@@ -234,7 +234,7 @@ implements JavaClassIndexedMember, Externalizable {
 			if (newNative) {
 				if (!this.isAbstract()) {
 					if (showDialog) {
-						int yes_no = ModalDialogs.doTwoButtonsDialog(
+						int yes_no = DialogFactory.doTwoButtonsDialog(
 							new NoteIcon(),
 							"Remove method's code?",
 							" OK ", " Cancel "
@@ -273,7 +273,7 @@ implements JavaClassIndexedMember, Externalizable {
 			if (newStatic) {
 				if (!this.isAbstract() && !this.isNative()) {
 					if (showDialog) {
-						int yes_no = ModalDialogs.doTwoButtonsDialog(
+						int yes_no = DialogFactory.doTwoButtonsDialog(
 							new NoteIcon(),
 							"Make method static?",
 							" Yes ", " No "
@@ -291,7 +291,7 @@ implements JavaClassIndexedMember, Externalizable {
 			} else {
 				if (!this.isAbstract() && !this.isNative()) {
 					if (showDialog) {
-						int yes_no = ModalDialogs.doTwoButtonsDialog(
+						int yes_no = DialogFactory.doTwoButtonsDialog(
 							new NoteIcon(),
 							"Make method non-static?",
 							" Yes ", " No "
@@ -374,11 +374,11 @@ implements JavaClassIndexedMember, Externalizable {
 		
 		if (newCode != null) {
 			if ((newCode.length != 0) && this.isAbstract()) {
-				UsefulModalDialogs.doWarningDialog(
+				UsefulMessageDialogs.doWarningDialog(
 					"Can't bound code with abstract method"
 				);
 			} else if ((newCode.length != 0) && this.isNative()) {
-				UsefulModalDialogs.doWarningDialog(
+				UsefulMessageDialogs.doWarningDialog(
 					"Can't bound code with native method"
 				);
 			} else {

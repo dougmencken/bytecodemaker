@@ -7,7 +7,7 @@ package douglas.mencken.bm.decompiler;
 import java.util.Vector;
 import java.util.EmptyStackException;
 
-import douglas.mencken.tools.UsefulModalDialogs;
+import douglas.mencken.tools.UsefulMessageDialogs;
 import douglas.mencken.util.ByteTransformer;
 import douglas.mencken.util.ArrayUtilities;
 import douglas.mencken.util.ClassUtilities;
@@ -16,7 +16,7 @@ import douglas.mencken.util.SpecialStack;
 import douglas.mencken.bm.storage.JavaMethod;
 //////////import douglas.mencken.bm.storage.BytecodeItem;
 //////////import douglas.mencken.bm.storage.BytecodeBlock;
-//////////import douglas.mencken.bm.storage.LocalVariableItem;
+//////////import douglas.mencken.bm.storage.LocalVariable;
 
 import douglas.mencken.bm.engine.Unpackager;
 import douglas.mencken.bm.engine.StackCalculator;
@@ -33,7 +33,7 @@ public class BlockDecompiler extends Object implements Decompiler {
 //////////	private BytecodeItem[] bytecodes;
 	private int startPC;
 	private int endPC;
-/////////	private LocalVariableItem[] locals;
+/////////	private LocalVariable[] locals;
 	
 	protected String spaceString;
 	protected String oneSpaceString;
@@ -51,7 +51,7 @@ public class BlockDecompiler extends Object implements Decompiler {
 		this.bytecodes = block.getBytecodes();
 		
 		if ((this.bytecodes == null) || (this.bytecodes.length == 0)) {
-			UsefulModalDialogs.tellAboutInternalError(
+			UsefulMessageDialogs.tellAboutInternalError(
 				"BlockDecompiler: attempt to decompile 'null' or empty bytecode block"
 			);
 			return;
@@ -78,7 +78,7 @@ public class BlockDecompiler extends Object implements Decompiler {
 				decompileBlock(method.getStackCalculator(), startPC, endPC, declaredVars);
 			} catch (InternalError err) {
 				String message = err.getMessage();
-				UsefulModalDialogs.tellAboutInternalError(message);
+				UsefulMessageDialogs.tellAboutInternalError(message);
 				throw new InternalError(message);
 			}
 		}
@@ -99,11 +99,11 @@ try {
 		for (int pc = startPC; pc <= endPC; pc++) {
 ////////////////////			BytecodeItem bytecode = bytecodes[pc];
 			
-			if (bytecode != null) {
+////////////////////			if (bytecode != null) {
 // System.out.println("pc = " + pc + ", stack = " + stack);
 // System.out.println("--> PROCESSING: " + bytecode);
 				
-/////////////////////				int opcode = ByteTransformer.toUnsignedByte(bytecode.getOpcode());
+///				int opcode = ByteTransformer.toUnsignedByte(bytecode.getOpcode());
 				int opcode = 1;
 
 				switch (opcode) {
@@ -112,19 +112,19 @@ try {
 					{
 						StringBuffer buf = new StringBuffer();
 						
-						String type = unpackager.unpackage(bytecode.getArg());
-						String className = unpackager.unpackage(bytecode.getArg2());
-						String fieldName = bytecode.getArg3();
+///////////						String type = unpackager.unpackage(bytecode.getArg());
+///////////						String className = unpackager.unpackage(bytecode.getArg2());
+///////////						String fieldName = bytecode.getArg3();
 						
-						buf.append(className);
-						buf.append(".");
-						buf.append(fieldName);
-						buf.append(" = ");
+///////////						buf.append(className);
+///////////						buf.append(".");
+///////////						buf.append(fieldName);
+///////////						buf.append(" = ");
 						
 						String value = (String)stack.pop();
-						if (type.equals("boolean")) {
-							value = Unpackager.toBooleanValue(value);
-						}
+			/////			if (type.equals("boolean")) {
+			///////				value = Unpackager.toBooleanValue(value);
+			/////			}
 						buf.append(value);
 						
 						linesVector.addElement(buf.toString());
@@ -136,27 +136,27 @@ try {
 					{
 						StringBuffer buf = new StringBuffer();
 						
-						String type = unpackager.unpackage(bytecode.getArg());
-						String className = unpackager.unpackage(bytecode.getArg2());
-						String fieldName = bytecode.getArg3();
+	///////					String type = unpackager.unpackage(bytecode.getArg());
+	///////					String className = unpackager.unpackage(bytecode.getArg2());
+	///////					String fieldName = bytecode.getArg3();
 						
-						String value = (String)stack.pop();
-						String varName = (String)stack.pop();
+	///////					String value = (String)stack.pop();
+	///////					String varName = (String)stack.pop();
 						
-						if (varName.equals("this")) {
-							buf.append(unpackager.castThis(className));
-						} else {
-							buf.append(varName);
-						}
+	///////					if (varName.equals("this")) {
+	///////						buf.append(unpackager.castThis(className));
+	///////					} else {
+	///////						buf.append(varName);
+	///////					}
 						
 						buf.append(".");
-						buf.append(fieldName);
+	///////					buf.append(fieldName);
 						buf.append(" = ");
 						
-						if (type.equals("boolean")) {
-							value = Unpackager.toBooleanValue(value);
-						}
-						buf.append(value);
+	///////					if (type.equals("boolean")) {
+	///////						value = Unpackager.toBooleanValue(value);
+	///////					}
+	///////					buf.append(value);
 						
 						linesVector.addElement(buf.toString());
 					}
@@ -170,12 +170,12 @@ try {
 					case 58:
 					{
 						StringBuffer buf = new StringBuffer();
-						int index = Integer.parseInt(bytecode.getArg());
+						int index = -1; /* --&-&-&-&-- WAS Integer.parseInt(bytecode.getArg()); */
 						boolean varTypeIsBoolean = false;
 						
 /**********************
 						if (locals.length != 0) {
-							LocalVariableItem localVar = locals[index];
+							LocalVariable localVar = locals[index];
 							if (!declaredVars[index]) {
 								if (localVar.isFinal()) {
 									buf.append("final ");
@@ -476,7 +476,7 @@ try {
 					case 132:
 					{
 						StringBuffer buf = new StringBuffer();
-						String index = bytecode.getArg();
+//////////						String index = bytecode.getArg();
 						
 //////////						if (locals.length != 0) {
 //////////							buf.append(locals[Integer.parseInt(index)].getVariableName());
@@ -484,16 +484,16 @@ try {
 //////////							throw new InternalError("method has no LocalVariableTable");
 //////////						}
 						
-						String incValue = bytecode.getArg2();
-						if (incValue.equals("1")) {
-							buf.append("++");
-						} else if (incValue.equals("-1")) {
-							buf.append("--");
-						} else if (incValue.indexOf("-") == 0) {
-							buf.append(" -= " + incValue.substring(1));
-						} else {
-							buf.append(" += " + incValue);
-						}
+//////////						String incValue = bytecode.getArg2();
+//////////						if (incValue.equals("1")) {
+//////////							buf.append("++");
+//////////						} else if (incValue.equals("-1")) {
+//////////							buf.append("--");
+//////////						} else if (incValue.indexOf("-") == 0) {
+//////////							buf.append(" -= " + incValue.substring(1));
+//////////						} else {
+//////////							buf.append(" += " + incValue);
+//////////						}
 						
 						linesVector.addElement(buf.toString());
 					}
@@ -526,10 +526,10 @@ try {
 					case 170: case 171:
 					case 198: case 199:
 						throw new InternalError(
-							"BlockDecompiler: can't handle " +
-							bytecode.getPCValue() + " " + bytecode.getBytecode() +
-							", method '" + this.method.getNameWithParameters() +
-							"' (from " + startPC + " to " + endPC + ")"
+							"BlockDecompiler: can't handle "
+/////////////							+ bytecode.getPCValue() + " " + bytecode.getBytecode() +
+/////////////							", method '" + this.method.getMethodName() /*method.getNameWithParameters*/ +
+/////////////							"' (from " + startPC + " to " + endPC + ")"
 						);
 					
 					// new/invoke bytecodes
@@ -565,7 +565,7 @@ try {
 				} else {
 					stack = calculator.getStackAt(pc);
 				}
-			}
+////////////			}
 		}
 }catch(Exception e){
 System.out.println("*** An exception caught while decompiling bytecode block ***");
@@ -631,23 +631,23 @@ System.out.println("************************************************************
 			int len = lines.length;
 			StringBuffer buf = new StringBuffer();
 			
-			boolean methodIsSynthetic = this.method.isSynthetic();
+////////////			boolean methodIsSynthetic = this.method.isSynthetic();
 			
 			String current;
 			for (int i = 0; i < len; i++) {
 				current = lines[i];
 				if (current != null) {
 					buf.append(spaceString);
-					if (methodIsSynthetic) {
-						buf.append("/* ");
-					}
+///////////					if (methodIsSynthetic) {
+///////////						buf.append("/* ");
+///////////					}
 					buf.append(current);
 					
-					if (methodIsSynthetic) {
-						buf.append("; */\n");
-					} else {
-						buf.append(";\n");
-					}
+///////////					if (methodIsSynthetic) {
+///////////						buf.append("; */\n");
+///////////					} else {
+///////////						buf.append(";\n");
+///////////					}
 				}
 			}
 			
@@ -667,7 +667,7 @@ System.out.println("************************************************************
 		buf.append(super.getClass().getName());
 		buf.append(" [");
 		
-		buf.append("method '").append(this.method.getNameWithParameters()).append("', ");
+		buf.append("method '").append(this./*method.getNameWithParameters*/ method.getMethodName()).append("', ");
 		buf.append("start pc = ").append(this.startPC).append(", ");
 		buf.append("end pc = ").append(this.endPC);
 		

@@ -2,7 +2,6 @@
 //	StackFrame.java (part of douglas.mencken.bm.frames package)
 //		public class StackFrame
 //		class StackFrameMenuBar
-//	
 // ===========================================================================
 
 package douglas.mencken.bm.frames;
@@ -14,7 +13,7 @@ import douglas.mencken.util.SpecialStack;
 import douglas.mencken.beans.CornerLabel;
 import douglas.mencken.beans.CornerLabelFrame;
 import douglas.mencken.bm.storage.JavaMethod;
-import douglas.mencken.bm.storage.JVMInstruction;
+/// LOCAL-TO-PACKAGE import douglas.mencken.bm.storage.JVMInstruction;
 import douglas.mencken.bm.storage.JVMInstructionSetEditor;
 import douglas.mencken.bm.engine.StackCalculator;
 
@@ -39,18 +38,18 @@ public class StackFrame extends CornerLabelFrame {
 	 *	The constructor.
 	 */
 	public StackFrame(JVMInstructionSetEditor codeEditor) {
-		super("Stack", codeEditor.getMethod().getMaxStack());
+		super( /**** "Stack", codeEditor.getMethod().getMaxStack() ****/ );
 		this.maxstack = super.getLabelCount();
 		
 		this.codeEditor = codeEditor;
-		setTitle(codeEditor.getMethod().getNameWithParameters() + ": Stack");
+	/////	setTitle(codeEditor.getMethod().getNameWithParameters() + ": Stack");
 		
 		super.pack();
 		
-		int xpos = codeEditor.getLocation().x + codeEditor.getSize().width + 10;
-		int ypos = codeEditor.getLocation().y;
-		super.setBounds(xpos, ypos, 300, getSize().height);
-		super.setResizable(false);
+	/////	int xpos = codeEditor.getLocation().x + codeEditor.getSize().width + 10;
+	/////	int ypos = codeEditor.getLocation().y;
+	/////	super.setBounds(xpos, ypos, 300, getSize().height);
+	/////	super.setResizable(false);
 		
 		new StackFrameMenuBar(this);
 		addWindowListener(this);
@@ -58,35 +57,35 @@ public class StackFrame extends CornerLabelFrame {
 	
 	public void setVisible(boolean newVisible) {
 		super.setVisible(newVisible);
-		codeEditor.toFront();
+//#####		codeEditor.toFront();
 	}
 	
 	public void updateValues(int pc) {
 		int state = STACK_OK;
 		
-		try {
-			byte opcode = codeEditor.getMethod().getOpcodes()[pc];
+//////////		try {
+//////////			byte opcode = codeEditor.getMethod().getCode()[pc];
 			
-			// ireturn, lreturn, freturn, dreturn, areturn, return
-			if ((opcode >= -84 /* 172 */) && (opcode <= -79 /* 177 */)) {
-				state = STACK_DESTROYED;
-			}
-		} catch (ArrayIndexOutOfBoundsException exc) {
-			state = STACK_PC_OUT_OF_BOUNDS_ERROR;
-		}
+//////////			// ireturn, lreturn, freturn, dreturn, areturn, return
+//////////			if ((opcode >= -84 /* 172 */) && (opcode <= -79 /* 177 */)) {
+//////////				state = STACK_DESTROYED;
+//////////			}
+//////////		} catch (ArrayIndexOutOfBoundsException exc) {
+//////////			state = STACK_PC_OUT_OF_BOUNDS_ERROR;
+//////////		}
 		
-		StackCalculator sc = codeEditor.getMethod().getStackCalculator();
-		if (sc.getStackAt(pc) == null) {
-			state = STACK_IS_NULL;
-		}// else {
-			//if ( (this.maxstack == 0) || (sc.getStackAt(pc).isEmpty()) ) {
-				//state = STACK_IS_NULL;
-			//}
-		//}
+//&&&&&		StackCalculator sc = codeEditor.getMethod().getStackCalculator();
+//&&&&&		if (sc.getStackAt(pc) == null) {
+//&&&&&			state = STACK_IS_NULL;
+//&&&&&		}// else {
+//&&&&&			//if ( (this.maxstack == 0) || (sc.getStackAt(pc).isEmpty()) ) {
+//&&&&&				//state = STACK_IS_NULL;
+//&&&&&			//}
+//&&&&&		//}
 		
 		int curr_pos = 0;
 		
-		if (state == STACK_OK) {
+/******		if (state == STACK_OK) {
 			SpecialStack stack = sc.getStackAt(pc);
 			
 			Object[] values = stack.getStackValues();
@@ -105,9 +104,9 @@ public class StackFrame extends CornerLabelFrame {
 					state = STACK_OVERFLOW_ERROR;
 				}
 			}
-		}
+		} *********/
 		
-		switch (state) {
+/******		switch (state) {
 			case STACK_DESTROYED:
 				for (int i = 0; i < this.maxstack; i++) {
 					super.changeLabel(i, "(destroyed)", "");
@@ -129,7 +128,7 @@ public class StackFrame extends CornerLabelFrame {
 			case STACK_PC_OUT_OF_BOUNDS_ERROR:
 				super.setBorderColor(Color.white);
 				break;
-		}
+		} *************************/
 		
 		for (int i = curr_pos; i < this.maxstack; i++) {
 			super.changeLabel(i, "", "");
@@ -138,7 +137,7 @@ public class StackFrame extends CornerLabelFrame {
 	
 	public void windowClosing(WindowEvent e) {
 		super.setVisible(false);
-		codeEditor.updateMenus();
+/////////////		codeEditor.updateMenus();
 	}
 	
 }

@@ -58,12 +58,12 @@ implements Decompiler, CancelListener {
 		this.spaceCount = spaceCount;
 		StringBuffer buf = new StringBuffer();
 		
-		String packageName = theClass.getPackageName();
-		if (packageName.length() != 0) {
-			buf.append("package ");
-			buf.append(packageName);
-			buf.append(";\n\n");
-		}
+	///////	String packageName = theClass.getPackageName();
+	///////	if (packageName.length() != 0) {
+	///////		buf.append("package ");
+	///////		buf.append(packageName);
+	///////		buf.append(";\n\n");
+	///////	}
 		
 		// imports & class declaration
 		String listOfImports = DecompilerUtilities.makeListOfImports(theClass);
@@ -102,8 +102,9 @@ implements Decompiler, CancelListener {
 		int barStart = 5;
 		int barEnd = barStart + 7;
 		
-		JavaField[] fields = theClass.getFields();
-		int count = fields.length;
+//////		JavaField[] fields = theClass.getFields();
+//////		int count = fields.length;
+		int count = 0;
 		
 		if (count > 0) {
 			buf.append("\n");
@@ -111,19 +112,19 @@ implements Decompiler, CancelListener {
 			// static fields
 			int staticFieldCount = 0;
 			for (int i = 0; i < count; i++) {
-				JavaField currField = fields[i];
-				if (currField.isStatic()) {
-					staticFieldCount++;
+//////////				JavaField currField = fields[i];
+//////////				if (currField.isStatic()) {
+//////////					staticFieldCount++;
+//////////					
+//////////					StringUtilities.addSpaces(buf, spaceCount);
+//////////					buf.append(DecompilerUtilities.toString(fields[i]));
+//////////					buf.append(";\n");
 					
-					StringUtilities.addSpaces(buf, spaceCount);
-					buf.append(DecompilerUtilities.toString(fields[i]));
-					buf.append(";\n");
-					
-					if (pframe != null) {
-						pframe.setValue(barStart, barEnd, count, i);
-					}
-					if (cancelFlag) return;
-				}
+//////////					if (pframe != null) {
+//////////						pframe.setValue(barStart, barEnd, count, i);
+//////////					}
+//////////					if (cancelFlag) return;
+//////////				}
 			}
 			
 			StringBuffer tempBuf = new StringBuffer();
@@ -132,13 +133,13 @@ implements Decompiler, CancelListener {
 			
 			// class fields
 			int classFieldCount = 0;
-			for (int i = 0; i < count; i++) {
+/*****			for (int i = 0; i < count; i++) {
 				JavaField currField = fields[i];
 				if (!currField.isStatic()) {
 					classFieldCount++;
 					
 					StringUtilities.addSpaces(tempBuf, spaceCount);
-					tempBuf.append(DecompilerUtilities.toString(fields[i]));
+	///////////////				tempBuf.append(DecompilerUtilities.toString(currField));
 					tempBuf.append(";\n");
 					
 					if (pframe != null) {
@@ -146,7 +147,7 @@ implements Decompiler, CancelListener {
 					}
 					if (cancelFlag) return;
 				}
-			}
+			} *****/
 			
 			if ((staticFieldCount > 0) && (classFieldCount > 0)) {
 				buf.append('\n');
@@ -167,7 +168,8 @@ implements Decompiler, CancelListener {
 		int barStart = 20;
 		int barEnd = 99;
 		
-		JavaMethod[] methods = theClass.getMethods();
+///////		JavaMethod[] methods = theClass.getMethods();
+		JavaMethod[] methods = null;
 		
 		if ((methods != null) && (methods.length != 0)) {
 			buf.append("\n");

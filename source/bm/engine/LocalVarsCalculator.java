@@ -13,7 +13,7 @@ import java.util.EmptyStackException;
 import douglas.mencken.util.ByteTransformer;
 import douglas.mencken.util.ClassUtilities;
 import douglas.mencken.util.SpecialStack;
-import douglas.mencken.tools.UsefulModalDialogs;
+import douglas.mencken.tools.UsefulMessageDialogs;
 import douglas.mencken.tools.LogMonitor;
 import douglas.mencken.bm.storage.*;
 
@@ -34,7 +34,7 @@ public class LocalVarsCalculator extends Object implements Externalizable {
 		//try {
 			this.localVarValues = LocalVarsCalculator.fromMethod(method);
 		//} catch (BadBytecodesException bbe) {
-		/*	UsefulModalDialogs.doErrorDialog(
+		/*	UsefulMessageDialogs.doErrorDialog(
 				bbe.getClass().getName() + " (caught in " + super.getClass().getName() +
 				" for method '" + method.getMethodName() + "'): " + bbe.getMessage()
 			);
@@ -75,39 +75,39 @@ public class LocalVarsCalculator extends Object implements Externalizable {
 	 */
 	public static LocalVariableValues[] fromMethod(JavaMethod method)
 	throws EmptyStackException, StackOverflowError {
-		try {
+/////		try {
 			int codeLength = method.getCodeLength();
-			int maxlocals = method.getMaxLocals();
-			if ((codeLength == 0) || (maxlocals == 0)) {
+///////			int maxlocals = method.getMaxLocals();
+///////			if ((codeLength == 0) || (maxlocals == 0)) {
 				return null;
-			}
+///////			}
 			
-			LocalVariableValues[] localVarValues = new LocalVariableValues[codeLength];
-			JavaBytecode[] bytecodes = BytecodeLocksmith.extractBytecodes(method);
+/////			LocalVariableValues[] localVarValues = new LocalVariableValues[codeLength];
+//////////.			JavaBytecode[] bytecodes = BytecodeLocksmith.extractBytecodes(method);
 			
 			// initial values
-			localVarValues[0] = new LocalVariableValues(method);
-			calculateCodeBlock(method, bytecodes, 0, codeLength, localVarValues);//, false);
+/////			localVarValues[0] = new LocalVariableValues(method);
+//////////.			calculateCodeBlock(method, bytecodes, 0, codeLength, localVarValues);//, false);
 			
-			return localVarValues;
-		} catch (EmptyStackException exc) {
-			throw exc;
-			/*throw new BadBytecodesException(
-				"LocalVarsCalculator.fromMethod(JavaMethod) caught EmptyStackException"
-			);*/
-		} catch (StackOverflowError err) {
-			throw err;
-			/*throw new BadBytecodesException(
-				"LocalVarsCalculator.fromMethod(JavaMethod) caught StackOverflowError"
-			);*/
-		}
+/////			return localVarValues;
+/////		} catch (EmptyStackException exc) {
+/////			throw exc;
+/////			/*throw new BadBytecodesException(
+/////				"LocalVarsCalculator.fromMethod(JavaMethod) caught EmptyStackException"
+/////			);*/
+/////		} catch (StackOverflowError err) {
+/////			throw err;
+/////			/*throw new BadBytecodesException(
+/////				"LocalVarsCalculator.fromMethod(JavaMethod) caught StackOverflowError"
+/////			);*/
+/////		}
 	}
 	
-	/*
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	protected static void calculateCodeBlock(JavaMethod method, final JavaBytecode[] bytecodes,
 						int startPC, int endPC,
 						LocalVariableValues[] localVarValues) //, boolean _add)
-	throws BadBytecodesException {
+	{ //////////////////// throws BadBytecodesException {
 		LocalVariableValues currentVarValues =
 					(LocalVariableValues)(localVarValues[startPC].clone());
 		StackCalculator s_c = method.getStackCalculator();
@@ -133,8 +133,8 @@ public class LocalVarsCalculator extends Object implements Externalizable {
 							stack = s_c.getStackAt(previous_pc);
 						} catch (NullPointerException npe_ex) {
 							throw new InternalError(
-								"method '" + method.getNameWithParameters() +
-								"', pc = " + previous_pc + ": stack is null"
+								"method '" + method.getMethodName() +
+								"', pc = " + previous_pc + ": no stack (null)"
 							);
 						}
 						
@@ -195,7 +195,7 @@ public class LocalVarsCalculator extends Object implements Externalizable {
 				localVarValues[pc] = null;
 			}
 		}
-	}*/
+	} * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	/**
 	 *	Note:	'jvm_ret_addr' stored using 'astore' bytecode.
@@ -203,67 +203,67 @@ public class LocalVarsCalculator extends Object implements Externalizable {
 	public static int countMaxLocals(JavaMethod method) {
 		int maxlocals = (method.isStatic()) ? 0 : /* this */ 1;
 		
-		int parameterCount = method.getParameterCount();
-		if (maxlocals < parameterCount) {
-			maxlocals = parameterCount;
-		}
-		
-		byte[] opcodes = method.getOpcodes();
-		int codeLength = opcodes.length;
-		
-		int i = 0;
-		while (i < codeLength) {
-			int slot = -1;
-			
-			switch (opcodes[i]) {
-				// xload_0
-				// xstore_0
-				case 26: case 30: case 34: case 38: case 42:
-				case 59: case 63: case 67: case 71: case 75:
-					slot = 0;
-					break;
-				
-				// xload_1
-				// xstore_1
-				case 27: case 31: case 35: case 39: case 43:
-				case 60: case 64: case 68: case 72: case 76:
-					slot = 1;
-					break;
-				
-				// xload_2
-				// xstore_2
-				case 28: case 32: case 36: case 40: case 44:
-				case 61: case 65: case 69: case 73: case 77:
-					slot = 2;
-					break;
-				
-				// xload_3
-				// xstore_3
-				case 29: case 33: case 37: case 41: case 45:
-				case 62: case 66: case 70: case 74: case 78:
-					slot = 3;
-					break;
-				
-				// xload
-				// xstore
-				case 21: case 22: case 23: case 24: case 25:
-				case 54: case 55: case 56: case 57: case 58:
-					slot = ByteTransformer.toUnsignedByte(opcodes[i+1]);
-					break;
-			}
-			
-			int max = slot + 1;
-			if (maxlocals < max) maxlocals = max;
-			
-			i = method.nextOpcodeIndex(i);
-		}
-		
-		if (maxlocals > parameterCount) {
-			String lastVarType = findLocalVariableType(maxlocals - 1, method);
-			if (lastVarType.equals("J") || lastVarType.equals("D")) {
-				maxlocals++;
-			}
-		}
+//++		int parameterCount = method.getParameterCount();
+//++		if (maxlocals < parameterCount) {
+//++			maxlocals = parameterCount;
+//++		}
+//++		
+//++		byte[] opcodes = method.getCode();
+//++		int codeLength = opcodes.length;
+//++		
+//++		int i = 0;
+//++		while (i < codeLength) {
+//++			int slot = -1;
+//++			
+//++			switch (opcodes[i]) {
+//++				// xload_0
+//++				// xstore_0
+//++				case 26: case 30: case 34: case 38: case 42:
+//++				case 59: case 63: case 67: case 71: case 75:
+//++					slot = 0;
+//++					break;
+//++				
+//++				// xload_1
+//++				// xstore_1
+//++				case 27: case 31: case 35: case 39: case 43:
+//++				case 60: case 64: case 68: case 72: case 76:
+//++					slot = 1;
+//++					break;
+//++				
+//++				// xload_2
+//++				// xstore_2
+//++				case 28: case 32: case 36: case 40: case 44:
+//++				case 61: case 65: case 69: case 73: case 77:
+//++					slot = 2;
+//++					break;
+//++				
+//++				// xload_3
+//++				// xstore_3
+//++				case 29: case 33: case 37: case 41: case 45:
+//++				case 62: case 66: case 70: case 74: case 78:
+//++					slot = 3;
+//++					break;
+//++				
+//++				// xload
+//++				// xstore
+//++				case 21: case 22: case 23: case 24: case 25:
+//++				case 54: case 55: case 56: case 57: case 58:
+//++					slot = ByteTransformer.toUnsignedByte(opcodes[i+1]);
+//++					break;
+//++			}
+//++			
+//++			int max = slot + 1;
+//++			if (maxlocals < max) maxlocals = max;
+//++			
+//++			i = method.nextOpcodeIndex(i);
+//++		}
+//++		
+//++		if (maxlocals > parameterCount) {
+//++			String lastVarType = findLocalVariableType(maxlocals - 1, method);
+//++			if (lastVarType.equals("J") || lastVarType.equals("D")) {
+//++				maxlocals++;
+//++			}
+//++		}
 		
 		return maxlocals;
 	}
@@ -282,9 +282,10 @@ public class LocalVarsCalculator extends Object implements Externalizable {
 		JavaClass owner = method.getOwnerClass();
 		if (owner != null) {
 			JavaConstantPool pool = owner.getConstantPool();
-			JavaBytecode[] bytecodes = BytecodeLocksmith.extractBytecodes(method);
+//////////			JavaBytecode[] bytecodes = BytecodeLocksmith.extractBytecodes(method);
 			
-			int paramCount = method.getParameterCount();
+/////////			int paramCount = method.getParameterCount();
+			int paramCount = 0;
 			
 			int start_slot = 0;
 			if (!method.isStatic()) {
@@ -292,8 +293,8 @@ public class LocalVarsCalculator extends Object implements Externalizable {
 				
 				String type = ClassUtilities.parseType(owner.getClassName());
 				
-				// 'this': scopestart = 0, scopesize = last_pc, slot = 0
-				locals[0] = LocalVariable.makeLocalVariable(method, 0, "this", type);
+//==========				// 'this': scopestart = 0, scopesize = last_pc, slot = 0
+//==========				locals[0] = LocalVariable.makeLocalVariable(method, 0, "this", type);
 			}
 			
 			int slot = start_slot;
@@ -303,7 +304,7 @@ public class LocalVarsCalculator extends Object implements Externalizable {
 				int scopesize = 0;
 				
 				if (slot < paramCount) {
-					scopesize = method.calculateLastPC() + 1;
+/////////////					scopesize = method.calculateLastPC() + 1;
 				} else {
 					// ...
 					// IN PROGRESS...
@@ -311,9 +312,9 @@ public class LocalVarsCalculator extends Object implements Externalizable {
 				}
 				
 				String type = findLocalVariableType(slot, method);
-				locals[slot] = LocalVariable.makeLocalVariable(
-					method, scopestart, scopesize, slot, "v" + slot, type
-				);
+///////				locals[slot] = LocalVariable.makeLocalVariable(
+/////					method, scopestart, scopesize, slot, "v" + slot, type
+///				);
 				
 				if (type.equals("D") || type.equals("J")) {
 					slot += 2;
@@ -323,10 +324,10 @@ public class LocalVarsCalculator extends Object implements Externalizable {
 			}
 			
 			// update pool with new [(UTF8): LocalVariableTable]
-			JavaConstantPoolElement newUTF8 = new JavaConstantPoolElement(
-				owner, /* UTF8 */ 1, "LocalVariableTable"
-			);
-			ConstantPoolManager.addConstantToPool(newUTF8, pool);
+	//&&&		JavaConstantPoolElement newUTF8 = new JavaConstantPoolElement(
+	//&&&			owner, /* UTF8 */ 1, "LocalVariableTable"
+	//&&&		);
+	//&&&		ConstantPoolManager.addConstantToPool(newUTF8, pool);
 		}
 		
 		return locals;
@@ -346,16 +347,17 @@ public class LocalVarsCalculator extends Object implements Externalizable {
 			return 'L' + ClassUtilities.fromCommas(method.getOwnerClass().getClassName()) + ';';
 		}
 		
-		int paramCount = method.getParameterCount();
+		int paramCount = 1; /*((((( WAS method.getParameterCount(); )))))*/
 		if (slot < paramCount) {
-			String[] parameters = LocalVarsCalculator.extractRawParameterList(
-				method, method.getArrayOfParameters()
-			);
+			String[] parameters = { "method's parameters" };
+				/////////// WAS LocalVarsCalculator.extractRawParameterList(
+				///////////         method, method.getArrayOfParameters()
+				///////////     );
 			
 			return ClassUtilities.parseType(parameters[slot]);
 		}
 		
-		byte[] opcodes = method.getOpcodes();
+		byte[] opcodes = method.getCode();
 		int codeLength = opcodes.length;
 		
 		int pc = 0;
@@ -471,7 +473,7 @@ public class LocalVarsCalculator extends Object implements Externalizable {
 					break;
 			}
 			
-			pc = method.nextOpcodeIndex(pc);
+//////			pc = method.nextOpcodeIndex(pc);
 		}
 		
 		return "? unknown ?";
@@ -503,25 +505,25 @@ public class LocalVarsCalculator extends Object implements Externalizable {
 			}
 			
 			locals[pos] = rawLocals[i];
-			if (rawLocals[i].isDoubleSize()) {
-				pos += 2;
-			} else {
-				pos++;
-			}
+///@@@@			if (rawLocals[i].isDoubleSize()) {
+///@@@@				pos += 2;
+///@@@@			} else {
+///@@@@				pos++;
+///@@@@			}
 		}
 		
 		if (pos < maxlocals) {
 			// 'jvm_ret_addr' local variables
-			for (int i = pos; i < maxlocals; i++) {
-				if (findLocalVariableType(i, method).equals("jvm_ret_addr")) {
-					locals[i] = LocalVariable.makeLocalVariable(
-						method, /* scopestart */ 0, /* scopesize */ 0, i, "v" + i, "jvm_ret_addr"
-					);
-				} else {
-					/* impossible if method's owner is not 'null' */
-					locals[i] = null;
-				}
-			}
+//%%%%%			for (int i = pos; i < maxlocals; i++) {
+//%%%%%				if (findLocalVariableType(i, method).equals("jvm_ret_addr")) {
+//%%%%%					locals[i] = LocalVariable.makeLocalVariable(
+//%%%%%						method, /* scopestart */ 0, /* scopesize */ 0, i, "v" + i, "jvm_ret_addr"
+//%%%%%					);
+//%%%%%				} else {
+//%%%%%					/* impossible if method's owner is not 'null' */
+//%%%%%					locals[i] = null;
+//%%%%%				}
+//%%%%%			}
 		}
 		
 		return locals;
@@ -615,7 +617,7 @@ class LocalVariableValues extends Object implements Cloneable {
 	private LocalVariableWithValue[] localVariables;
 	
 	LocalVariableValues(JavaMethod method) {
-		LocalVariable[] methodVars = method.getLocalVariables();
+/******		LocalVariable[] methodVars = method.getLocalVariables();
 		int count = methodVars.length;
 		this.localVariables = new LocalVariableWithValue[count];
 		
@@ -626,6 +628,7 @@ class LocalVariableValues extends Object implements Cloneable {
 				this.localVariables[i] = null;
 			}
 		}
+*******/
 	}
 	
 	/**
@@ -636,11 +639,11 @@ class LocalVariableValues extends Object implements Cloneable {
 		int count = copyFrom.localVariables.length;
 		this.localVariables = new LocalVariableWithValue[count];
 		
-		for (int i = 0; i < count; i++) {
-			LocalVariableWithValue current_copyFrom = copyFrom.localVariables[i];
-			this.localVariables[i] = (current_copyFrom != null) ?
-							(LocalVariableWithValue)(current_copyFrom.clone()) : null;
-		}
+///////		for (int i = 0; i < count; i++) {
+///////			LocalVariableWithValue current_copyFrom = copyFrom.localVariables[i];
+///////			this.localVariables[i] = (current_copyFrom != null) ?
+///////							(LocalVariableWithValue)(current_copyFrom.clone()) : null;
+///////		}
 	}
 	
 	/**
@@ -665,13 +668,13 @@ class LocalVariableValues extends Object implements Cloneable {
 	}
 	
 	Object getVariableValueAt(int index) throws IndexOutOfBoundsException {
-		if (index < this.localVariables.length) {
-			return this.localVariables[index].getValue();
-		} else {
+/////		if (index < this.localVariables.length) {
+/////			return this.localVariables[index].getValue();
+/////		} else {
 			throw new IndexOutOfBoundsException(
 				index + " >= " + this.localVariables.length
 			);
-		}
+/////		}
 	}
 	
 	void setVariableAt(int index, LocalVariableWithValue value) throws IndexOutOfBoundsException {
@@ -686,7 +689,7 @@ class LocalVariableValues extends Object implements Cloneable {
 	
 	void setVariableValueAt(int index, Object value) throws IndexOutOfBoundsException {
 		if (index < this.localVariables.length) {
-			this.localVariables[index].setValue(value);
+////////////			this.localVariables[index].setValue(value);
 		} else {
 			throw new IndexOutOfBoundsException(
 				index + " >= " + this.localVariables.length

@@ -9,7 +9,7 @@ import java.lang.reflect.Modifier;
 import douglas.mencken.util.ByteTransformer;
 import douglas.mencken.util.StringUtilities;
 import douglas.mencken.util.ClassUtilities;
-import douglas.mencken.tools.UsefulModalDialogs;
+import douglas.mencken.tools.UsefulMessageDialogs;
 import douglas.mencken.bm.storage.constants.BMErrorStrings;
 
 /**
@@ -41,7 +41,7 @@ public class JavaClassMaker extends Object {
 		}
 		
 		if (keyword_class_idx == -1) {
-			UsefulModalDialogs.tellAboutError(1, BMErrorStrings.getErrorString(1));
+			UsefulMessageDialogs.tellAboutError(1, BMErrorStrings.getErrorString(1));
 			throw new Exception("Error #1");
 		}
 		
@@ -49,7 +49,7 @@ public class JavaClassMaker extends Object {
 			for (int j = i+1; j < keyword_class_idx; j++) {
 				if (tokens[i].equals(tokens[j])) {
 					// Error #3: Repeated modifier.
-					UsefulModalDialogs.tellAboutError(3, BMErrorStrings.getErrorString(3));
+					UsefulMessageDialogs.tellAboutError(3, BMErrorStrings.getErrorString(3));
 					throw new Exception("Error #3");
 				}
 			}
@@ -71,7 +71,7 @@ public class JavaClassMaker extends Object {
 				mod = mod^Modifier.SYNCHRONIZED;
 			} else if (tokens[i].equals("class")) {
 				if (isInterface) {
-					UsefulModalDialogs.tellAboutError(6, BMErrorStrings.getErrorString(6));
+					UsefulMessageDialogs.tellAboutError(6, BMErrorStrings.getErrorString(6));
 					throw new Exception("Error #6");
 				}
 			} else if (tokens[i].equals("interface")) {
@@ -85,10 +85,10 @@ public class JavaClassMaker extends Object {
 						tokens[i].equals("transient") ||
 						tokens[i].equals("native") ||
 						tokens[i].equals("strict")) {
-					UsefulModalDialogs.tellAboutError(2, BMErrorStrings.getErrorString(2));
+					UsefulMessageDialogs.tellAboutError(2, BMErrorStrings.getErrorString(2));
 					throw new Exception("Error #2");
 				} else {
-					UsefulModalDialogs.tellAboutError(4, BMErrorStrings.getErrorString(4));
+					UsefulMessageDialogs.tellAboutError(4, BMErrorStrings.getErrorString(4));
 					throw new Exception("Error #4");
 				}
 			}
@@ -104,7 +104,7 @@ public class JavaClassMaker extends Object {
 					superclassName = tokens[keyword_class_idx+3];
 				} else {
 					if (!tokens[keyword_class_idx+2].equals("implements")) {
-						UsefulModalDialogs.tellAboutError(
+						UsefulMessageDialogs.tellAboutError(
 							5, BMErrorStrings.getErrorString(5)
 						);
 						throw new Exception("Error #5");

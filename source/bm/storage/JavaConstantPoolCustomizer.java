@@ -1,5 +1,5 @@
 // ===========================================================================
-//	JavaConstantPoolCustomizer.java (part of douglas.mencken.bm.storage package)
+// JavaConstantPoolCustomizer.java (part of douglas.mencken.bm.storage package)
 // ===========================================================================
 
 package douglas.mencken.bm.storage;
@@ -9,7 +9,7 @@ import java.awt.event.*;
 import java.beans.*;
 
 import douglas.mencken.beans.*;
-import douglas.mencken.tools.ModalDialogs;
+import douglas.mencken.tools.DialogFactory;
 
 /**
  *	<code>JavaConstantPoolCustomizer</code>
@@ -27,29 +27,28 @@ public class JavaConstantPoolCustomizer {
 
 
 // ===========================================================================
-//	ConstantPoolFrame.java (part of douglas.mencken.bm.frames package)
-//		public class ConstantPoolFrame
-//		class ConstantPoolFrameMenuBar
+//	JavaConstantPoolCustomizer.java (part of douglas.mencken.bm.frames package)
+//		public class JavaConstantPoolCustomizer
+//		class JavaConstantPoolCustomizerMenuBar
 //		class ConstantPoolReferencesFrame
-//	
 // ===========================================================================
 
 /**
- *	<code>ConstantPoolFrame</code>
+ *	<code>JavaConstantPoolCustomizer</code>
  *
  *	@version	1.25f1
  */
 
-/*public class ConstantPoolFrame extends ClassMemberFrame
+/*public class JavaConstantPoolCustomizer extends ClassMemberFrame
 implements ActionListener, PropertyChangeListener {
 	
 	JavaClass theClass = null;
 	List constantsList;
 	private int currentIndex = -1;
 	
-	public ConstantPoolFrame(WindowListener listener) {
+	public JavaConstantPoolCustomizer(WindowListener listener) {
 		super("Constant Pool");
-		new ConstantPoolFrameMenuBar(this, listener);
+		new JavaConstantPoolCustomizerMenuBar(this, listener);
 		
 		Dimension screenSize = super.getToolkit().getScreenSize();
 		setSize(500, screenSize.height - 40);
@@ -114,7 +113,7 @@ implements ActionListener, PropertyChangeListener {
 			frame.setResizable(false);
 			frame.setVisible(true);
 		} catch (Exception exc) {
-			UsefulModalDialogs.tellAboutInternalError(
+			UsefulMessageDialogs.tellAboutInternalError(
 				exc.getClass().getName() + ": " + exc.getMessage()
 			);
 		}
@@ -131,13 +130,13 @@ implements ActionListener, PropertyChangeListener {
 }
 
 
-class ConstantPoolFrameMenuBar extends MenuBar implements ActionListener {
+class JavaConstantPoolCustomizerMenuBar extends MenuBar implements ActionListener {
 	
-	private ConstantPoolFrame owner;
+	private JavaConstantPoolCustomizer owner;
 	private WindowListener listener;
 	private ConstantPoolReferencesFrame refsFrame = null;
 	
-	ConstantPoolFrameMenuBar(ConstantPoolFrame frame, WindowListener listener) {
+	JavaConstantPoolCustomizerMenuBar(JavaConstantPoolCustomizer frame, WindowListener listener) {
 		MenuItem save = new MenuItem("Save...", new MenuShortcut(KeyEvent.VK_S));
 		save.setActionCommand("SAVE");
 		save.addActionListener(this);
@@ -226,7 +225,7 @@ class ConstantPoolFrameMenuBar extends MenuBar implements ActionListener {
 				// add constant
 				ConstantPoolManager poolManager = owner.theClass.getPoolManager();
 				if (!poolManager.addConstant(newJavaConstantPoolElement)) {
-					UsefulModalDialogs.doInformationDialog("No constant has been created.");
+					UsefulMessageDialogs.doInformationDialog("No constant has been created.");
 				} else {
 					owner.addToConstantsList(newJavaConstantPoolElement.toString());
 				}
@@ -436,7 +435,7 @@ class ConstantPoolFrameMenuBar extends MenuBar implements ActionListener {
 	}
 	
 	public void actionPerformed(ActionEvent evt) {
-		String contents = ModalDialogs.askForOneString("Contents:");
+		String contents = DialogFactory.askForOneString("Contents:");
 		if ((contents != null) && (contents != "")) {
 			int reference = 0;
 			ConstantPoolManager poolManager = this.constant.getOwner().getPoolManager();

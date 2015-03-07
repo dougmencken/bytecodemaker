@@ -10,10 +10,11 @@ import java.awt.event.*;
 import douglas.mencken.util.WindowTracker;
 import douglas.mencken.tools.MemoryMonitor;
 import douglas.mencken.tools.ThreadMonitor;
-import douglas.mencken.tools.UsefulModalDialogs;
+import douglas.mencken.tools.UsefulMessageDialogs;
 import douglas.mencken.bm.storage.JavaClass;
 import douglas.mencken.bm.storage.prefs.BMPreferencesManager;
 import douglas.mencken.bm.BMEnvironment;
+import douglas.mencken.bm.storage.JavaConstantPoolCustomizer;
 import douglas.mencken.bm.frames.*;
 
 /**
@@ -161,11 +162,13 @@ implements BMMenu, WindowListener {
 		if (visible) {
 			this.windowTracker.closeWindow("pool window");
 		} else {
-			ConstantPoolFrame window = new ConstantPoolFrame(this);
+/*************
+			JavaConstantPoolCustomizer window = new JavaConstantPoolCustomizer(this);
 			window.setLocation(100, 5);
 			window.addWindowListener(this);
 			window.setClass(BMEnvironment.getCurrentClass());
 			this.windowTracker.showWindow("pool window", window, false);
+*******************/
 		}
 		
 		this.updateMenu();
@@ -246,7 +249,7 @@ implements BMMenu, WindowListener {
 				this.windowTracker.showWindow("class source window", window, false);
 			}
 		} catch (Throwable t) {
-			UsefulModalDialogs.doErrorDialog(t, true);
+			UsefulMessageDialogs.doErrorDialog(t, true);
 			classSource.setState(false);
 		}
 		

@@ -17,8 +17,8 @@ import java.lang.reflect.Modifier;
 import douglas.mencken.beans.*;
 import douglas.mencken.icons.QuestionIcon;
 import douglas.mencken.util.*;
-import douglas.mencken.tools.ModalDialogs;
-import douglas.mencken.tools.UsefulModalDialogs;
+import douglas.mencken.tools.DialogFactory;
+import douglas.mencken.tools.UsefulMessageDialogs;
 
 import douglas.mencken.bm.storage.constants.BMErrorStrings;
 
@@ -164,7 +164,7 @@ implements Customizer, ItemListener {
 				message.append("'interface' to 'class'?");
 			}
 			
-			int yes_no = ModalDialogs.doTwoButtonsDialog(
+			int yes_no = DialogFactory.doTwoButtonsDialog(
 				new QuestionIcon(), message.toString(), "  Yes  ", "  No  "
 			);
 			if (yes_no == 1) {
@@ -526,18 +526,18 @@ class ClassCustomizerPanel extends Panel implements JavaClassCustomizerPart {
 		String superclassName = superclassNameField.getText();
 		
 		if (className.length() == 0) {
-			UsefulModalDialogs.doWarningDialog("You must specify the name of new class");
+			UsefulMessageDialogs.doWarningDialog("You must specify the name of new class");
 			return false;
 		}
 		
 		if ((className.indexOf(' ') != -1) || (superclassName.indexOf(' ') != -1)) {
-			UsefulModalDialogs.tellAboutError(8, BMErrorStrings.getErrorString(8));
+			UsefulMessageDialogs.tellAboutError(8, BMErrorStrings.getErrorString(8));
 			return false;
 		}
 		
 		if (!ClassUtilities.isJavaIdentifier(className) ||
 			 !ClassUtilities.isJavaIdentifier(superclassName)) {
-			UsefulModalDialogs.tellAboutError(9, BMErrorStrings.getErrorString(9));
+			UsefulMessageDialogs.tellAboutError(9, BMErrorStrings.getErrorString(9));
 			return false;
 		}
 		
@@ -548,7 +548,7 @@ class ClassCustomizerPanel extends Panel implements JavaClassCustomizerPart {
 		String command = e.getActionCommand();
 		
 		if (command.equals("ADD_INTERFACE")) {
-			String result = ModalDialogs.askForOneString("Add interface:");
+			String result = DialogFactory.askForOneString("Add interface:");
 			if ((result != null) && (result != "")) {
 				if (result.equals("java.lang.Runnable")) {
 					runnableCheckbox.setState(true);
@@ -558,7 +558,7 @@ class ClassCustomizerPanel extends Panel implements JavaClassCustomizerPart {
 					boolean isValid = true;
 					
 					if (!ClassUtilities.isJavaIdentifier(result)) {
-						UsefulModalDialogs.tellAboutError(9, BMErrorStrings.getErrorString(9));
+						UsefulMessageDialogs.tellAboutError(9, BMErrorStrings.getErrorString(9));
 						isValid = false;
 					}
 					
@@ -787,17 +787,17 @@ class InterfaceCustomizerPanel extends Panel implements JavaClassCustomizerPart 
 		String interfaceName = interfaceNameField.getText();
 		
 		if (interfaceName.length() == 0) {
-			UsefulModalDialogs.doWarningDialog("You must specify the name of new interface");
+			UsefulMessageDialogs.doWarningDialog("You must specify the name of new interface");
 			return false;
 		}
 		
 		if (interfaceName.indexOf(' ') != -1) {
-			UsefulModalDialogs.tellAboutError(8, BMErrorStrings.getErrorString(8));
+			UsefulMessageDialogs.tellAboutError(8, BMErrorStrings.getErrorString(8));
 			return false;
 		}
 		
 		if (!ClassUtilities.isJavaIdentifier(interfaceName)) {
-			UsefulModalDialogs.tellAboutError(9, BMErrorStrings.getErrorString(9));
+			UsefulMessageDialogs.tellAboutError(9, BMErrorStrings.getErrorString(9));
 			return false;
 		}
 		
@@ -808,12 +808,12 @@ class InterfaceCustomizerPanel extends Panel implements JavaClassCustomizerPart 
 		String command = e.getActionCommand();
 		
 		if (command.equals("ADD_INTERFACE")) {
-			String result = ModalDialogs.askForOneString("Add superinterface:");
+			String result = DialogFactory.askForOneString("Add superinterface:");
 			if ((result != null) && (result != "")) {
 				boolean isValid = true;
 				
 				if (!ClassUtilities.isJavaIdentifier(result)) {
-					UsefulModalDialogs.tellAboutError(9, BMErrorStrings.getErrorString(9));
+					UsefulMessageDialogs.tellAboutError(9, BMErrorStrings.getErrorString(9));
 					isValid = false;
 				}
 				

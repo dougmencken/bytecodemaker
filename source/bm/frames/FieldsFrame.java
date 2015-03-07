@@ -11,7 +11,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.*;
 
-import douglas.mencken.tools.UsefulModalDialogs;
+import douglas.mencken.tools.UsefulMessageDialogs;
 import douglas.mencken.util.FontUtilities;
 import douglas.mencken.beans.support.*;
 
@@ -85,14 +85,15 @@ implements ActionListener, PropertyChangeListener {
 		JavaField field = theClass.getFields()[currentIndex];
 		
 		try {
+			String description = "field description"; //**//**//**//* WAS field.getType() + ' ' + field.getFieldName();
 			CustomizerFrame frame = CustomizerFrame.customizeBean(
-				field, this, field.getType() + ' ' + field.getFieldName(), this
+				field, this, description, this
 			);
 			
 			frame.setResizable(false);
 			frame.setVisible(true);
 		} catch (Exception exc) {
-			UsefulModalDialogs.tellAboutInternalError(
+			UsefulMessageDialogs.tellAboutInternalError(
 				exc.getClass().getName() + ": " + exc.getMessage()
 			);
 		}
@@ -153,16 +154,17 @@ class FieldsFrameMenuBar extends MenuBar implements ActionListener {
 			if (this.owner.theClass != null) {
 				fieldsMenu.addSeparator();
 				
-				JavaField[] allFields = this.owner.theClass.getFields();
-				int count = allFields.length;
+//////////////				JavaField[] allFields = this.owner.theClass.getFields();
+//////////////				int count = allFields.length;
+				int count = 0;
 				
 				if (count > 0) {
 					for (int i = 0; i < count; i++) {
-						MenuItem currentField = new MenuItem(allFields[i].getFieldName());
-						currentField.setActionCommand("@FIELD" + i);
-						currentField.addActionListener(this.owner);
+//////////						MenuItem currentField = new MenuItem(allFields[i].getFieldName());
+//////////						currentField.setActionCommand("@FIELD" + i);
+//////////						currentField.addActionListener(this.owner);
 						
-						fieldsMenu.add(currentField);
+//////////						fieldsMenu.add(currentField);
 					}
 					
 					this.removeField.setEnabled(true);
@@ -194,18 +196,18 @@ class FieldsFrameMenuBar extends MenuBar implements ActionListener {
 				
 				try {
 					ClassFrame.getCurrentFrame().updateContents();
-				} catch (IncompleteException exc) {}
+				} catch (Exception exc) { /* ... */ }
 			}
 		} else if (cmd.equals("REMOVE")) {
 			// ... show list of fields with checkboxes ... //
-			owner.theClass.removeField(0);
+///&&&&			owner.theClass.removeField(0);
 			
 			this.updateMenu();
 			owner.updateContents();
 			
 			try {
 				ClassFrame.getCurrentFrame().updateContents();
-			} catch (IncompleteException exc) {}
+			} catch (Exception exc) { /* ... */ }
 		}
 	}
 	

@@ -8,7 +8,7 @@ import java.io.*;
 
 import douglas.mencken.io.ByteArrayIStream;
 import douglas.mencken.io.ByteArrayOStream;
-import douglas.mencken.tools.UsefulModalDialogs;
+import douglas.mencken.tools.UsefulMessageDialogs;
 
 /**
  *	<code>TryCatchFinallyBlock</code>

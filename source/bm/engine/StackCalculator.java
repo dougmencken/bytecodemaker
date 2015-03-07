@@ -12,7 +12,7 @@ import java.util.Vector;
 import java.util.EmptyStackException;
 
 import douglas.mencken.tools.LogMonitor;
-import douglas.mencken.tools.UsefulModalDialogs;
+import douglas.mencken.tools.UsefulMessageDialogs;
 import douglas.mencken.exceptions.*;
 import douglas.mencken.util.*;
 
@@ -31,18 +31,19 @@ public class StackCalculator extends Object implements Externalizable {
 	
 	public StackCalculator(JavaMethod method) {
 		this.method = method;
+		this.stackVariants = null;
+		
 		// for further unpackaging
 		new Unpackager(method.getOwnerClass());
 		
-		try {
-			this.stackVariants = fromMethod(method);
-		} catch (Exception exc) {
-			UsefulModalDialogs.doErrorDialog(
-				exc.getClass().getName() + " (caught in StackCalculator for method '" +
-				method.getMethodName() + "'): " + exc.getMessage()
-			);
-			this.stackVariants = null;
-		}
+///////		try {
+///////			this.stackVariants = fromMethod(method);
+///////		} catch (Exception exc) {
+///			UsefulMessageDialogs.doErrorDialog(
+////////////				exc.getClass().getName() + " (caught in StackCalculator for method '" +
+////////////				method.getMethodName() + "'): " + exc.getMessage()
+///			);
+///////		}
 	}
 	
 	public SpecialStack getStackAt(int pc) {
@@ -55,7 +56,7 @@ public class StackCalculator extends Object implements Externalizable {
 	public SpecialStack getStackAt(int pc, int variantNumber) {
 		// return 'error stack' instead of 'null'
 		if (this.stackVariants == null) {
-			return createStackOfErrors(method.getMaxStack());
+			return createStackOfErrors(2 /****** WAS method.getMaxStack() *******/);
 		}
 		
 		// search for the first not-null variant
@@ -72,7 +73,7 @@ public class StackCalculator extends Object implements Externalizable {
 			
 			// if not found (variantNumber is still < 0), return 'error stack'
 			if (variantNumber < 0) {
-				return createStackOfErrors(method.getMaxStack());
+				return createStackOfErrors(1); /////////////method.getMaxStack()
 			}
 		}
 		
@@ -81,7 +82,7 @@ public class StackCalculator extends Object implements Externalizable {
 	}
 	
 	public int getMaxStack() {
-		return this.method.getMaxStack();
+		return 1; /////////////////////this.method.getMaxStack();
 	}
 	
 	/**
@@ -144,7 +145,7 @@ public class StackCalculator extends Object implements Externalizable {
 	
 	//public static StackValuesVariant[] fromMethod(JavaMethod method)
 	/*****throws BadBytecodesException*****/ //{
-////		byte[] opcodes = method.getOpcodes();
+////		byte[] opcodes = method.getCode();
 ////		int codeLength = opcodes.length;
 ////		if (codeLength == 0) {
 ////			return null;
@@ -232,7 +233,7 @@ public class StackCalculator extends Object implements Externalizable {
 										SpecialStack[] srcStack,
 										SpecialStack[] dstStack,
 										int startPC) {
-		int previousIndex = JavaMethod.previousOpcodeIndex(opcodes, startPC);
+		int previousIndex = -1; /* WAS ==== JavaMethod.previousOpcodeIndex(opcodes, startPC); ==== **/
 		if (previousIndex < 0) previousIndex = 0;
 		
 		SpecialStack stack = (SpecialStack)(srcStack[previousIndex].clone());
@@ -1046,7 +1047,7 @@ public class StackCalculator extends Object implements Externalizable {
 ////		} catch (EmptyStackException ese) {
 ////			if (BMPreferencesManager.getShowLog()) {
 ////				LogMonitor.addToCurrentLog(
-////					"stack is empty: method '" + method.getNameWithParameters() +
+////					"stack is empty: method '" + /*method.getNameWithParameters*/ method.getMethodName() +
 ////					"', pc = " + pc
 ////				);
 ////			}
@@ -1054,7 +1055,7 @@ public class StackCalculator extends Object implements Externalizable {
 ////		} catch (StackOverflowError soe) {
 ////			if (BMPreferencesManager.getShowLog()) {
 ////				LogMonitor.addToCurrentLog(
-////					"stack overflow: method '" + method.getNameWithParameters() +
+////					"stack overflow: method '" + /*method.getNameWithParameters*/ method.getMethodName() +
 ////					"', pc = " + pc
 ////				);
 ////			}
@@ -1070,22 +1071,22 @@ public class StackCalculator extends Object implements Externalizable {
 	public static int countMaxStack(JavaMethod method) {
 		int[] catchHandlerPCs = null;
 		
-		TryCatchFinallyBlock[] catches = method.getTryCatchBlocks();
-		int catchCount = catches.length;
-		if (catchCount > 0) {
-			catchHandlerPCs = new int[catchCount];
-			for (int i = 0; i < catchCount; i++) {
-				catchHandlerPCs[i] = catches[i].getHandlerPCValue();
-			}
-		}
+//////		TryCatchFinallyBlock[] catches = method.getTryCatchBlocks();
+//////		int catchCount = catches.length;
+//////		if (catchCount > 0) {
+//////			catchHandlerPCs = new int[catchCount];
+//////			for (int i = 0; i < catchCount; i++) {
+//////				catchHandlerPCs[i] = catches[i].getHandlerPCValue();
+//////			}
+//////		}
 		
-		JavaBytecode[] bytecodes = method.getBytecodes();
-		int codeLength = bytecodes.length;
+//////		JavaBytecode[] bytecodes = method.getBytecodes();
+//////		int codeLength = bytecodes.length;
 		
 		// (1) pc value = 0, (1) stack top = 0 [, (2) pc value, (2) stack top [, ...]]
-		Vector pcAndStackTopValues = new Vector();
-		pcAndStackTopValues.addElement(new Integer(0));
-		pcAndStackTopValues.addElement(new Integer(0));
+//////		Vector pcAndStackTopValues = new Vector();
+//////		pcAndStackTopValues.addElement(new Integer(0));
+//////		pcAndStackTopValues.addElement(new Integer(0));
 		
 		int maxstack = 0;
 		int stacktop = 0;
@@ -1093,252 +1094,252 @@ public class StackCalculator extends Object implements Externalizable {
 		int valueCount = 1;
 		int pcIncrement = 0;
 		
-		for (int pos = 0; pos < valueCount; pos++) {
-			int startpc = ((Integer)(pcAndStackTopValues.elementAt(pos*2))).intValue();
-			stacktop = ((Integer)(pcAndStackTopValues.elementAt(pos*2 + 1))).intValue();
-			
-			for (int pc = startpc; pc < codeLength; pc++) {
-				JavaBytecode bytecode = bytecodes[pc];
-				if (bytecode != null) {
-					// only forward branches is valid here
-					if (pcIncrement > 0) {
-						int nextpc = pc - pcIncrement + 1;
-						boolean isUnique = true;
-						
-						for (int n = 0; n < valueCount; n++) {
-							Integer currentValue = (Integer)(pcAndStackTopValues.elementAt(n*2));
-							if (currentValue.intValue() == nextpc) {
-								isUnique = false;
-								break;
-							}
-						}
-						
-						// add only if pc value is unique
-						if (isUnique) {
-							pcAndStackTopValues.addElement(new Integer(nextpc));
-							pcAndStackTopValues.addElement(new Integer(stacktop));
-							
-							valueCount++;
-						}
-					}
-					
-					pcIncrement = 0;
-					
-					// push 'Throwable' object if necessary
-					if (catchHandlerPCs != null) {
-						int index = ArrayUtilities.findMatchingElement(catchHandlerPCs, pc);
-						if (index != -1) {
-							stacktop++;
-						}
-					}
-					
-					switch (bytecode.getOpcode()) {
-						// aconst_null
-						// xconst_n
-						// bipush, sipush
-						// ldc1, ldc2, ldc2w
-						case 1:
-						case 2: case 3: case 4: case 5: case 6: case 7: case 8:
-						case 9: case 10:
-						case 11: case 12: case 13:
-						case 14: case 15:
-						case 16: case 17:
-						case 18: case 19: case 20:
-							stacktop++;
-							break;
-						
-						// xload, xload_n
-						case 21: case 22: case 23: case 24: case 25:
-						case 26: case 27: case 28: case 29:
-						case 30: case 31: case 32: case 33:
-						case 34: case 35: case 36: case 37:
-						case 38: case 39: case 40: case 41:
-						case 42: case 43: case 44: case 45:
-							stacktop++;
-							break;
-						
-						// (ilfdabcs)aload
-						case 46: case 47: case 48: case 49:
-						case 50: case 51: case 52: case 53:
-							// pop (index), pop (array), push (element)
-							stacktop--;
-							break;
-						
-						// xstore, xstore_n
-						case 54: case 55: case 56: case 57: case 58:
-						case 59: case 60: case 61: case 62:
-						case 63: case 64: case 65: case 66:
-						case 67: case 68: case 69: case 70:
-						case 71: case 72: case 73: case 74:
-						case 75: case 76: case 77: case 78:
-							stacktop--;
-							break;
-						
-						// (ilfdabcs)astore
-						case 79: case 80: case 81: case 82:
-						case 83: case 84: case 85: case 86:
-							// pop (value), pop (index), pop (array)
-							stacktop -= 3;
-							break;
-						
-						// pop
-						case 87:
-							stacktop--;
-							break;
-						// pop2
-						case 88:
-							stacktop -= 2;
-							break;
-						// dup, dup_x1, dup_x2
-						case 89: case 90: case 91:
-							stacktop++;
-							break;
-						// dup2, dup2_x1, dup2_x2
-						case 92: case 93: case 94:
-							stacktop += 2;
-							break;
-						
-						// xadd, xsub, xmul, xdiv, xrem
-						// (il)and, (il)or, (il)xor
-						case  96: case  97: case  98: case  99:
-						case 100: case 101: case 102: case 103:
-						case 104: case 105: case 106: case 107:
-						case 108: case 109: case 110: case 111:
-						case 112: case 113: case 114: case 115:
-						
-						case 126: case 127:
-						case /* 128 */ -128: case /* 129 */ -127:
-						case /* 130 */ -126: case /* 131 */ -125:
-							// pop (value1), pop (value2), push (result)
-							stacktop--;
-							break;
-						
-						// xshx
-						case 120: case 121:
-						case 122: case 123:
-						case 124: case 125:
-							// pop (shift count), pop (value), push (result)
-							stacktop--;
-							break;
-						
-						// lcmp, fcmp(lq), dcmp(lq)
-						case /* 148 */ -108:
-						case /* 149 */ -107: case /* 150 */ -106:
-						case /* 151 */ -105: case /* 152 */ -104:
-							// pop (value1), pop (value2), push (result)
-							stacktop--;
-							break;
-						
-						// ifxx
-						// ifnull, ifnonull
-						case -103: case -102: case -101: case -100: case -99: case -98:
-						case -58: case -57:
-							stacktop--;
-							
-							pcIncrement = Integer.parseInt(bytecode.getArg());
-							if (pcIncrement > 0) {
-								pc += pcIncrement - 1;
-							}
-							
-							break;
-						
-						// if_icmpxx
-						// if_acmpxx
-						case -97: case -96: case -95: case -94: case -93: case -92:
-						case -91: case -90:
-							stacktop -= 2;
-							pcIncrement = Integer.parseInt(bytecode.getArg());
-							if (pcIncrement > 0) {
-								pc += pcIncrement - 1;
-							}
-							
-							break;
-						
-						/* goto, goto_2 */
-						case /* 167 */ -89: case /* 200 */ -56:
-							pcIncrement = Integer.parseInt(bytecode.getArg());
-							if (pcIncrement > 0) {
-								pc += pcIncrement - 1;
-							}
-							
-							break;
-						
-						// jsr, jsr_w
-						case /* 168 */ -88: case /* 201 */ -55:
-							// push (next pc)
-							stacktop++;
-							break;
-						
-						// xswitch, xreturn
-						case /* 170 */ -86: case /* 171 */ -85:
-						case -84: case -83: case -82: case -81: case -80:
-							stacktop--;
-							break;
-						
-						// getstatic
-						case /* 178 */ -78:
-							stacktop++;
-							break;
-						// putstatic
-						case /* 179 */ -77:
-							stacktop--;
-							break;
-						// putfield
-						case /* 181 */ -75:
-							// pop (value), pop (varName)
-							stacktop -= 2;
-							break;
-						
-						// invokevirtual
-						case /* 182 */ -74:
-						// invokenonvirtual
-						case /* 183 */ -73:
-						// invokestatic
-						case /* 184 */ -72:
-						// invokeinterface
-						case /* 185 */ -71:
-							String arg2 = StringUtilities.removeFirstLastSymbols(bytecode.getArg2());
-							String parameters = StringUtilities.splitByChar(arg2, '(')[1];
-							
-							int paramCount = ClassUtilities.countParameters(parameters, false);
-							int correction = (bytecode.getOpcode() == -72 /* 184 */) ? 0 : 1;
-							int popCount = paramCount + correction;
-							stacktop -= popCount;
-							
-							String returnType = StringUtilities.getBefore(arg2, ' ');
-							if (!returnType.equals("void")) {
-								stacktop++; // push (result)
-							}
-							
-							break;
-						
-						// new
-						case /* 187 */ -69:
-							stacktop++;
-							break;
-						
-						// athrow
-						case /* 191 */ -65:
-							stacktop--;
-							break;
-						
-						// multianewarray
-						case /* 197 */ -59:
-							int numberOfDimensions = Integer.parseInt(bytecode.getArg3());
-							
-							stacktop -= numberOfDimensions;
-							stacktop++; // push (array)
-							break;
-						
-						default:
-							// do nothing
-							break;
-					}
-					
-					if (maxstack < stacktop) maxstack = stacktop;
-				}
-			}
-		}
+//###		for (int pos = 0; pos < valueCount; pos++) {
+//###			int startpc = ((Integer)(pcAndStackTopValues.elementAt(pos*2))).intValue();
+//###			stacktop = ((Integer)(pcAndStackTopValues.elementAt(pos*2 + 1))).intValue();
+//###			
+//###			for (int pc = startpc; pc < codeLength; pc++) {
+//###				JavaBytecode bytecode = bytecodes[pc];
+//###				if (bytecode != null) {
+//###					// only forward branches is valid here
+//###					if (pcIncrement > 0) {
+//###						int nextpc = pc - pcIncrement + 1;
+//###						boolean isUnique = true;
+//###						
+//###						for (int n = 0; n < valueCount; n++) {
+//###							Integer currentValue = (Integer)(pcAndStackTopValues.elementAt(n*2));
+//###							if (currentValue.intValue() == nextpc) {
+//###								isUnique = false;
+//###								break;
+//###							}
+//###						}
+//###						
+//###						// add only if pc value is unique
+//###						if (isUnique) {
+//###							pcAndStackTopValues.addElement(new Integer(nextpc));
+//###							pcAndStackTopValues.addElement(new Integer(stacktop));
+//###							
+//###							valueCount++;
+//###						}
+//###					}
+//###					
+//###					pcIncrement = 0;
+//###					
+//###					// push 'Throwable' object if necessary
+//###					if (catchHandlerPCs != null) {
+//###						int index = ArrayUtilities.findMatchingElement(catchHandlerPCs, pc);
+//###						if (index != -1) {
+//###							stacktop++;
+//###						}
+//###					}
+//###					
+//###					switch (bytecode.getOpcode()) {
+//###						// aconst_null
+//###						// xconst_n
+//###						// bipush, sipush
+//###						// ldc1, ldc2, ldc2w
+//###						case 1:
+//###						case 2: case 3: case 4: case 5: case 6: case 7: case 8:
+//###						case 9: case 10:
+//###						case 11: case 12: case 13:
+//###						case 14: case 15:
+//###						case 16: case 17:
+//###						case 18: case 19: case 20:
+//###							stacktop++;
+//###							break;
+//###						
+//###						// xload, xload_n
+//###						case 21: case 22: case 23: case 24: case 25:
+//###						case 26: case 27: case 28: case 29:
+//###						case 30: case 31: case 32: case 33:
+//###						case 34: case 35: case 36: case 37:
+//###						case 38: case 39: case 40: case 41:
+//###						case 42: case 43: case 44: case 45:
+//###							stacktop++;
+//###							break;
+//###						
+//###						// (ilfdabcs)aload
+//###						case 46: case 47: case 48: case 49:
+//###						case 50: case 51: case 52: case 53:
+//###							// pop (index), pop (array), push (element)
+//###							stacktop--;
+//###							break;
+//###						
+//###						// xstore, xstore_n
+//###						case 54: case 55: case 56: case 57: case 58:
+//###						case 59: case 60: case 61: case 62:
+//###						case 63: case 64: case 65: case 66:
+//###						case 67: case 68: case 69: case 70:
+//###						case 71: case 72: case 73: case 74:
+//###						case 75: case 76: case 77: case 78:
+//###							stacktop--;
+//###							break;
+//###						
+//###						// (ilfdabcs)astore
+//###						case 79: case 80: case 81: case 82:
+//###						case 83: case 84: case 85: case 86:
+//###							// pop (value), pop (index), pop (array)
+//###							stacktop -= 3;
+//###							break;
+//###						
+//###						// pop
+//###						case 87:
+//###							stacktop--;
+//###							break;
+//###						// pop2
+//###						case 88:
+//###							stacktop -= 2;
+//###							break;
+//###						// dup, dup_x1, dup_x2
+//###						case 89: case 90: case 91:
+//###							stacktop++;
+//###							break;
+//###						// dup2, dup2_x1, dup2_x2
+//###						case 92: case 93: case 94:
+//###							stacktop += 2;
+//###							break;
+//###						
+//###						// xadd, xsub, xmul, xdiv, xrem
+//###						// (il)and, (il)or, (il)xor
+//###						case  96: case  97: case  98: case  99:
+//###						case 100: case 101: case 102: case 103:
+//###						case 104: case 105: case 106: case 107:
+//###						case 108: case 109: case 110: case 111:
+//###						case 112: case 113: case 114: case 115:
+//###						
+//###						case 126: case 127:
+//###						case /* 128 */ -128: case /* 129 */ -127:
+//###						case /* 130 */ -126: case /* 131 */ -125:
+//###							// pop (value1), pop (value2), push (result)
+//###							stacktop--;
+//###							break;
+//###						
+//###						// xshx
+//###						case 120: case 121:
+//###						case 122: case 123:
+//###						case 124: case 125:
+//###							// pop (shift count), pop (value), push (result)
+//###							stacktop--;
+//###							break;
+//###						
+//###						// lcmp, fcmp(lq), dcmp(lq)
+//###						case /* 148 */ -108:
+//###						case /* 149 */ -107: case /* 150 */ -106:
+//###						case /* 151 */ -105: case /* 152 */ -104:
+//###							// pop (value1), pop (value2), push (result)
+//###							stacktop--;
+//###							break;
+//###						
+//###						// ifxx
+//###						// ifnull, ifnonull
+//###						case -103: case -102: case -101: case -100: case -99: case -98:
+//###						case -58: case -57:
+//###							stacktop--;
+//###							
+//###							pcIncrement = Integer.parseInt(bytecode.getArg());
+//###							if (pcIncrement > 0) {
+//###								pc += pcIncrement - 1;
+//###							}
+//###							
+//###							break;
+//###						
+//###						// if_icmpxx
+//###						// if_acmpxx
+//###						case -97: case -96: case -95: case -94: case -93: case -92:
+//###						case -91: case -90:
+//###							stacktop -= 2;
+//###							pcIncrement = Integer.parseInt(bytecode.getArg());
+//###							if (pcIncrement > 0) {
+//###								pc += pcIncrement - 1;
+//###							}
+//###							
+//###							break;
+//###						
+//###						/* goto, goto_2 */
+//###						case /* 167 */ -89: case /* 200 */ -56:
+//###							pcIncrement = Integer.parseInt(bytecode.getArg());
+//###							if (pcIncrement > 0) {
+//###								pc += pcIncrement - 1;
+//###							}
+//###							
+//###							break;
+//###						
+//###						// jsr, jsr_w
+//###						case /* 168 */ -88: case /* 201 */ -55:
+//###							// push (next pc)
+//###							stacktop++;
+//###							break;
+//###						
+//###						// xswitch, xreturn
+//###						case /* 170 */ -86: case /* 171 */ -85:
+//###						case -84: case -83: case -82: case -81: case -80:
+//###							stacktop--;
+//###							break;
+//###						
+//###						// getstatic
+//###						case /* 178 */ -78:
+//###							stacktop++;
+//###							break;
+//###						// putstatic
+//###						case /* 179 */ -77:
+//###							stacktop--;
+//###							break;
+//###						// putfield
+//###						case /* 181 */ -75:
+//###							// pop (value), pop (varName)
+//###							stacktop -= 2;
+//###							break;
+//###						
+//###						// invokevirtual
+//###						case /* 182 */ -74:
+//###						// invokenonvirtual
+//###						case /* 183 */ -73:
+//###						// invokestatic
+//###						case /* 184 */ -72:
+//###						// invokeinterface
+//###						case /* 185 */ -71:
+//###							String arg2 = StringUtilities.removeFirstLastSymbols(bytecode.getArg2());
+//###							String parameters = StringUtilities.splitByChar(arg2, '(')[1];
+//###							
+//###							int paramCount = ClassUtilities.countParameters(parameters, false);
+//###							int correction = (bytecode.getOpcode() == -72 /* 184 */) ? 0 : 1;
+//###							int popCount = paramCount + correction;
+//###							stacktop -= popCount;
+//###							
+//###							String returnType = StringUtilities.getBefore(arg2, ' ');
+//###							if (!returnType.equals("void")) {
+//###								stacktop++; // push (result)
+//###							}
+//###							
+//###							break;
+//###						
+//###						// new
+//###						case /* 187 */ -69:
+//###							stacktop++;
+//###							break;
+//###						
+//###						// athrow
+//###						case /* 191 */ -65:
+//###							stacktop--;
+//###							break;
+//###						
+//###						// multianewarray
+//###						case /* 197 */ -59:
+//###							int numberOfDimensions = Integer.parseInt(bytecode.getArg3());
+//###							
+//###							stacktop -= numberOfDimensions;
+//###							stacktop++; // push (array)
+//###							break;
+//###						
+//###						default:
+//###							// do nothing
+//###							break;
+//###					}
+//###					
+//###					if (maxstack < stacktop) maxstack = stacktop;
+//###				}
+//###			}
+//###		}
 		
 		return maxstack;
 	}
