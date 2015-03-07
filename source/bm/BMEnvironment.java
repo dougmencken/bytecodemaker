@@ -22,11 +22,13 @@ import douglas.mencken.bm.menu.*;
  *	The utility class <code>BMEnvironment</code>.
  *	(static methods only)
  *
- *	@version 1.30f3
+ *	@version 1.31
  */
 
 public class BMEnvironment extends Object {
-	
+
+	public static final String CURRENT_VERSION = "version A.6";
+
 	private static QuitHandler quitHandler;
 	private static JavaClass currentClass;
 	
@@ -87,7 +89,11 @@ public class BMEnvironment extends Object {
 		}
 		quitHandler.handleQuit();
 	}
-	
+
+	public static String makeVersionString() {
+                return BMEnvironment.CURRENT_VERSION;
+        }
+
 	public static JavaClass getCurrentClass() {
 		return currentClass;
 	}

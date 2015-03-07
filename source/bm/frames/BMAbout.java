@@ -16,6 +16,7 @@ import douglas.mencken.util.InvisibleFrame;
 import douglas.mencken.util.WindowUtilities;
 import douglas.mencken.util.FontUtilities;
 import douglas.mencken.icons.IconCanvas;
+import douglas.mencken.bm.BMEnvironment;
 
 /**
  *	<code>BMAbout</code>
@@ -101,7 +102,7 @@ implements ActionListener, MRJAboutHandler {
 	}
 	
 	public static String getVersionString() {
-		return "version 0.6.0";
+		return BMEnvironment.makeVersionString();
 	}
 	
 	public void handleAbout() {
