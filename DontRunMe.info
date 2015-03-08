@@ -1,0 +1,3 @@
+To build and run, use:
+
+make all && make run
