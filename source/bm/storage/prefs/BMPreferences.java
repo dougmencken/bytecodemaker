@@ -1,5 +1,5 @@
 // ===========================================================================
-//	BMPreferences.java (part of douglas.mencken.bm.storage.prefs package)
+// BMPreferences.java (part of douglas.mencken.bm.storage.prefs package)
 // ===========================================================================
 
 package douglas.mencken.bm.storage.prefs;
@@ -20,7 +20,7 @@ import douglas.mencken.tools.UsefulMessageDialogs;
  *	<code>BMPreferences</code>
  *	(local to package)
  *	
- *	@version 2.06
+ *	@version 2.1
  */
 
 final class BMPreferences extends Preferences {
@@ -30,6 +30,22 @@ final class BMPreferences extends Preferences {
 	private static final String MESSAGE_DEFAULT_VALUES = "The default values are used.";
 	
 	// --------------------------------------------------------------------------------------
+
+	static final String PREF_BRANCH_DISPLAY_MODE	= "bytecode.maker.branch_display_mode";
+	static final String PREF_SHOW_PROGRESS_BAR	= "bytecode.maker.show_progress_bar";
+	static final String PREF_SHOW_MEMORY_MONITOR	= "bytecode.maker.show_memory_monitor";
+	static final String PREF_SHOW_LOG_WINDOW	= "bytecode.maker.show_log";
+	static final String PREF_QUALIFIED_NAMES_ONLY	= "bytecode.maker.use_fully_qualified_names";
+
+	static final String PREF_USE_PACKAGE_IMPORT	= "bytecode.maker.use_package_import";
+	static final String PREF_JAVA_SUN_PACKAGES	= "bytecode.maker.java_sun_packages";
+	static final String PREF_MORE_THAN_3_IMPORTS	= "bytecode.maker.more_than_3_imports";
+
+	static final String PREF_SAVE_CLASS_TYPE	= "bytecode.maker.class_type";
+
+	static final String PREF_RECENTLY_USED_FILES	= "bytecode.maker.recently_used_files";
+
+	// --------------------------------------------------------------------------------------
 	
 	/** The default preferences */
 	private static final Preferences DEFAULT_PREFERENCES;
@@ -38,22 +54,22 @@ final class BMPreferences extends Preferences {
 		DEFAULT_PREFERENCES = new Preferences();
 		
 		// general preferences
-		DEFAULT_PREFERENCES.put("douglas.mencken.bm.branch_display_mode", "2");
-		DEFAULT_PREFERENCES.put("douglas.mencken.bm.show_progress_bar", "true");
-		DEFAULT_PREFERENCES.put("douglas.mencken.bm.show_memory_monitor", "false");
-		DEFAULT_PREFERENCES.put("douglas.mencken.bm.show_log", "true");
-		DEFAULT_PREFERENCES.put("douglas.mencken.bm.always_use_fully_qualified_names", "true");
+		DEFAULT_PREFERENCES.put(PREF_BRANCH_DISPLAY_MODE, "2");
+		DEFAULT_PREFERENCES.put(PREF_SHOW_PROGRESS_BAR, "true");
+		DEFAULT_PREFERENCES.put(PREF_SHOW_MEMORY_MONITOR, "false");
+		DEFAULT_PREFERENCES.put(PREF_SHOW_LOG_WINDOW, "true");
+		DEFAULT_PREFERENCES.put(PREF_QUALIFIED_NAMES_ONLY, "true");
 		
 		// decompiler preferences
-		DEFAULT_PREFERENCES.put("douglas.mencken.bm.use_package_import", "false");
-		DEFAULT_PREFERENCES.put("douglas.mencken.bm.java_sun_packages", "true");
-		DEFAULT_PREFERENCES.put("douglas.mencken.bm.more_than_3_imports", "false");
+		DEFAULT_PREFERENCES.put(PREF_USE_PACKAGE_IMPORT, "false");
+		DEFAULT_PREFERENCES.put(PREF_JAVA_SUN_PACKAGES, "true");
+		DEFAULT_PREFERENCES.put(PREF_MORE_THAN_3_IMPORTS, "false");
 		
 		// save preferences
-		DEFAULT_PREFERENCES.put("douglas.mencken.bm.class_type", "Clss");
+		DEFAULT_PREFERENCES.put(PREF_SAVE_CLASS_TYPE, "Clss");
 		
-		// recent used files
-		DEFAULT_PREFERENCES.put("douglas.mencken.bm.recent_used_files", "");
+		// recently used files
+		DEFAULT_PREFERENCES.put(PREF_RECENTLY_USED_FILES, "");
 	}
 	
 	// --------------------------------------------------------------------------------------
@@ -62,9 +78,9 @@ final class BMPreferences extends Preferences {
 	private static final int DISPLAY_PACKAGES_IF_MORE_THAN_3 = 4;
 	
 	private static final int MAGIC = 0xFF84834C;
-	private static final long FORMAT_VERSION = /*0.6.0 1.1.6*/ 60116L;
+	private static final long FORMAT_VERSION = /*A.6 0 1.1.7*/ 160117L;
 	
-	private static final int MAX_RECENT_USED_FILES = 10;
+	private static final int MAX_RECENTLY_USED_FILES = 10;
 	
 	// --------------------------------------------------------------------------------------
 	
@@ -109,26 +125,26 @@ final class BMPreferences extends Preferences {
 				// general preferences
 				String classType = /* UTF */ is.readUTF();
 				if (classType.length() != 4) throw new IOException("bad format");
-				super.set("douglas.mencken.bm.class_type", classType);
+				super.setPreference(PREF_SAVE_CLASS_TYPE, classType);
 				
 				String branchDisplayMode = String.valueOf(/* unsigned byte */ is.read());
-				super.set("douglas.mencken.bm.branch_display_mode", branchDisplayMode);
+				super.setPreference(PREF_BRANCH_DISPLAY_MODE, branchDisplayMode);
 				
 				int showProgressBar = /* unsigned byte */ is.read();
-				super.set(
-					"douglas.mencken.bm.show_progress_bar",
+				super.setPreference(
+					PREF_SHOW_PROGRESS_BAR,
 					(showProgressBar == 0) ? "false" : "true"
 				);
 				
 				int showMemoryMonitor = /* unsigned byte */ is.read();
-				super.set(
-					"douglas.mencken.bm.show_memory_monitor",
+				super.setPreference(
+					PREF_SHOW_MEMORY_MONITOR,
 					(showMemoryMonitor == 0) ? "false" : "true"
 				);
 				
 				int showLog = /* unsigned byte */ is.read();
-				super.set(
-					"douglas.mencken.bm.show_log",
+				super.setPreference(
+					PREF_SHOW_LOG_WINDOW,
 					(showLog == 0) ? "false" : "true"
 				);
 				
@@ -136,49 +152,49 @@ final class BMPreferences extends Preferences {
 				if (/* unsigned byte */ is.read() == 1) {
 					useFullyQualifiedNames = "true";
 				}
-				super.set("douglas.mencken.bm.always_use_fully_qualified_names", useFullyQualifiedNames);
+				super.setPreference(PREF_QUALIFIED_NAMES_ONLY, useFullyQualifiedNames);
 				
 				// decompiler preferences
 				int usePackageImport = /* unsigned byte */ is.read();
-				super.set(
-					"douglas.mencken.bm.use_package_import",
+				super.setPreference(
+					PREF_USE_PACKAGE_IMPORT,
 					(usePackageImport == 0) ? "false" : "true"
 				);
 				
 				int packageImportFilter = /* unsigned byte */ is.read();
 				boolean java_sun_packages = (packageImportFilter & DISPLAY_PACKAGES_java_sun) != 0;
-				super.set("douglas.mencken.bm.java_sun_packages", (java_sun_packages) ? "true" : "false");
+				super.setPreference(PREF_JAVA_SUN_PACKAGES, (java_sun_packages) ? "true" : "false");
 				
 				boolean more_than_3_imports =
 							(packageImportFilter & DISPLAY_PACKAGES_IF_MORE_THAN_3) != 0;
-				super.set(
-					"douglas.mencken.bm.more_than_3_imports",
+				super.setPreference(
+					PREF_MORE_THAN_3_IMPORTS,
 					(more_than_3_imports) ? "true" : "false"
 				);
 				
 				// recent used files
-				int recentUsedFileCount = is.readByte();
-				if (recentUsedFileCount > 0) {
-					String[] recentUsedFiles = new String[recentUsedFileCount];
-					for (int i = 0; i < recentUsedFileCount;  i++) {
-						recentUsedFiles[i] = /* UTF */ is.readUTF();
+				int recentlyUsedFileCount = is.readByte();
+				if (recentlyUsedFileCount > 0) {
+					String[] recentlyUsedFiles = new String[recentlyUsedFileCount];
+					for (int i = 0; i < recentlyUsedFileCount;  i++) {
+						recentlyUsedFiles[i] = /* UTF */ is.readUTF();
 					}
 					
-					recentUsedFiles = FileUtilities.checkAndFilterFileList(
-						recentUsedFiles, MAX_RECENT_USED_FILES
+					recentlyUsedFiles = FileUtilities.checkAndFilterFileList(
+						recentlyUsedFiles, MAX_RECENTLY_USED_FILES
 					);
 					
-					if (recentUsedFiles != null) {
-						super.set(
-							"douglas.mencken.bm.recent_used_files",
-							StringUtilities.stringArrayToString(recentUsedFiles, "\n")
+					if (recentlyUsedFiles != null) {
+						super.setPreference(
+							PREF_RECENTLY_USED_FILES,
+							StringUtilities.stringArrayToString(recentlyUsedFiles, "\n")
 						);
 						return;
 					}
 				}
 				
-				// 'recentUsedFileCount <= 0' or 'recentUsedFiles == null'
-				super.set("douglas.mencken.bm.recent_used_files", "");
+				// 'recentlyUsedFileCount <= 0' or 'recentlyUsedFiles == null'
+				super.setPreference(PREF_RECENTLY_USED_FILES, "");
 			} else {
 				UsefulMessageDialogs.doErrorDialog(
 					MESSAGE_OLD_PREFERENCES + ' ' + MESSAGE_DEFAULT_VALUES
@@ -196,10 +212,10 @@ final class BMPreferences extends Preferences {
 		FileUtilities.writeBytesToFile(os.toByteArray(), super.getPreferencesFile());
 	}
 	
-    /**
-     *	Stores the preferences to the specified output stream. The 
+	/**
+	 *	Stores the preferences to the specified output stream. The 
 	 *	'String header' is ignored here.
-     */
+	 */
 	public synchronized void save(OutputStream out, String header) {
 		ByteArrayOStream os = this.writePreferences();
 		
@@ -216,45 +232,45 @@ final class BMPreferences extends Preferences {
 			os.writeLong(/* long */ super.getFormatVersion());
 			
 			// general preferences
-			os.writeUTF(/* UTF */ (String)super.get("douglas.mencken.bm.class_type"));
+			os.writeUTF(/* UTF */ (String)super.getPreference(PREF_SAVE_CLASS_TYPE));
 			os.write(/* byte */ Integer.parseInt(
-				(String)super.get("douglas.mencken.bm.branch_display_mode")
+				(String)super.getPreference(PREF_BRANCH_DISPLAY_MODE)
 			));
 			
 			os.write(/* byte */
-				(super.get("douglas.mencken.bm.show_progress_bar").equals("true")) ? 1 : 0
+				(super.getPreference(PREF_SHOW_PROGRESS_BAR).equals("true")) ? 1 : 0
 			);
 			os.write(/* byte */
-				(super.get("douglas.mencken.bm.show_memory_monitor").equals("true")) ? 1 : 0
+				(super.getPreference(PREF_SHOW_MEMORY_MONITOR).equals("true")) ? 1 : 0
 			);
 			os.write(/* byte */
-				(super.get("douglas.mencken.bm.show_log").equals("true")) ? 1 : 0
+				(super.getPreference(PREF_SHOW_LOG_WINDOW).equals("true")) ? 1 : 0
 			);
 			
 			os.write(/* byte */
-				(super.get("douglas.mencken.bm.always_use_fully_qualified_names").equals("true")) ? 1 : 0
+				(super.getPreference(PREF_QUALIFIED_NAMES_ONLY).equals("true")) ? 1 : 0
 			);
 			
 			// decompiler preferences
 			int usePackageImport = 0;
-			if (super.get("douglas.mencken.bm.use_package_import").equals("true")) {
+			if (super.getPreference(PREF_USE_PACKAGE_IMPORT).equals("true")) {
 				usePackageImport = 1;
 			}
 			os.write(/* byte */ usePackageImport);
 			
 			int packageImportFilter = 0;
-			if (super.get("douglas.mencken.bm.java_sun_packages").equals("true")) {
+			if (super.getPreference(PREF_JAVA_SUN_PACKAGES).equals("true")) {
 				packageImportFilter = packageImportFilter^DISPLAY_PACKAGES_java_sun;
 			}
-			if (super.get("douglas.mencken.bm.more_than_3_imports").equals("true")) {
+			if (super.getPreference(PREF_MORE_THAN_3_IMPORTS).equals("true")) {
 				packageImportFilter = packageImportFilter^DISPLAY_PACKAGES_IF_MORE_THAN_3;
 			}
 			os.write(/* byte */ packageImportFilter);
 			
 			// recent used files
-			String recentUsedFiles = (String)super.get("douglas.mencken.bm.recent_used_files");
-			if (recentUsedFiles.length() != 0) {
-				String[] files = StringUtilities.tokenize(recentUsedFiles, "\n");
+			String recentlyUsedFiles = (String)super.getPreference(PREF_RECENTLY_USED_FILES);
+			if (recentlyUsedFiles.length() != 0) {
+				String[] files = StringUtilities.tokenize(recentlyUsedFiles, "\n");
 				int count = files.length;
 				os.writeByte(/* byte */ count);
 				
@@ -273,8 +289,8 @@ final class BMPreferences extends Preferences {
 	 *	Set the preference, append the list to the system properties,
 	 *	and save.
 	 */
-	public void set(String preference, String value) {
-		super.set(preference, value);
+	public void setPreference(String preference, String value) {
+		super.setPreference(preference, value);
 		super.appendToSystemProperties();
 		this.save();
 	}
@@ -282,18 +298,18 @@ final class BMPreferences extends Preferences {
 	/**
 	 *	Add a new recent used file to the list.
 	 */
-	public void addRecentUsedFile(String newRecent) {
+	public void addRecentlyUsedFile(String newRecent) {
 		// ignore 'null' and 'empty' ("") strings
 		if ((newRecent == null) || (newRecent.length() == 0)) return;
 		
-		String recentUsedFiles = (String)super.get("douglas.mencken.bm.recent_used_files");
+		String recentlyUsedFiles = super.getPreference(PREF_RECENTLY_USED_FILES);
 		
-		if (recentUsedFiles.length() == 0) {
-			this.set("douglas.mencken.bm.recent_used_files", newRecent);
+		if (recentlyUsedFiles.length() == 0) {
+			this.setPreference(PREF_RECENTLY_USED_FILES, newRecent);
 			return;
 		}
 		
-		String[] files = StringUtilities.tokenize(recentUsedFiles, "\n");
+		String[] files = StringUtilities.tokenize(recentlyUsedFiles, "\n");
 		int count = files.length;
 		
 		for (int i = 0; i < count; i++) {
@@ -301,30 +317,30 @@ final class BMPreferences extends Preferences {
 				// move it to the top
 				files = ArrayUtilities.move(files, i, count-1);
 				
-				this.set(
-					"douglas.mencken.bm.recent_used_files",
+				this.setPreference(
+					PREF_RECENTLY_USED_FILES,
 					StringUtilities.stringArrayToString(files, "\n")
 				);
 				return;
 			}
 		}
 		
-		if (count < MAX_RECENT_USED_FILES) {
-			this.set(
-				"douglas.mencken.bm.recent_used_files",
-				recentUsedFiles + '\n' + newRecent
+		if (count < MAX_RECENTLY_USED_FILES) {
+			this.setPreference(
+				PREF_RECENTLY_USED_FILES,
+				recentlyUsedFiles + '\n' + newRecent
 			);
-		} else if (count == MAX_RECENT_USED_FILES) {
-			String withoutFirst = StringUtilities.getAfterFirst(recentUsedFiles, '\n');
-			this.set(
-				"douglas.mencken.bm.recent_used_files",
+		} else if (count == MAX_RECENTLY_USED_FILES) {
+			String withoutFirst = StringUtilities.getAfterFirst(recentlyUsedFiles, '\n');
+			this.setPreference(
+				PREF_RECENTLY_USED_FILES,
 				withoutFirst + '\n' + newRecent
 			);
 		}
 	}
 	
-	public void clearRecentUsedFileList() {
-		this.set("douglas.mencken.bm.recent_used_files", "");
+	public void clearRecentlyUsedFileList() {
+		this.setPreference(PREF_RECENTLY_USED_FILES, "");
 	}
 	
 }

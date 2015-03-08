@@ -1,5 +1,5 @@
 // ===========================================================================
-//	BMPreferencesManager.java (part of douglas.mencken.bm.storage.prefs package)
+// BMPreferencesManager.java (part of douglas.mencken.bm.storage.prefs package)
 // ===========================================================================
 
 package douglas.mencken.bm.storage.prefs;
@@ -10,7 +10,7 @@ import douglas.mencken.util.StringUtilities;
  *	<code>BMPreferencesManager</code> is interface to set
  *	of preferences for Bytecode Maker.
  *	
- *	@version	1.05
+ *	@version	1.1
  *	@since		Bytecode Maker 0.5.9
  */
 
@@ -56,7 +56,7 @@ public class BMPreferencesManager extends Object {
 	/**
 	 *	Show the special dialog to customize the preferences.
 	 *	
-	 *	@see	douglas.mencken.bm.frames.PreferencesDialog
+	 *	@see	douglas.mencken.bm.storage.prefs.BMPreferencesDialog
 	 */
 	public static void showPreferencesDialog() {
 		BMPreferencesDialog prefsDialog = new BMPreferencesDialog();
@@ -66,98 +66,98 @@ public class BMPreferencesManager extends Object {
 	// ------------------------------- General Preferences ------------------------------- //
 	
 	public static String getClassType() {
-		return (String)(thePreferences.get("douglas.mencken.bm.class_type"));
+		return thePreferences.getPreference(BMPreferences.PREF_SAVE_CLASS_TYPE);
 	}
 	
 	public static void setClassType(String newType) {
 		if ((newType.equals(DEFAULT_CLASS_TYPE)) || (newType.equals(JDK_CLASS_TYPE))) {
-			thePreferences.set("douglas.mencken.bm.class_type", newType);
+			thePreferences.setPreference(BMPreferences.PREF_SAVE_CLASS_TYPE, newType);
 		} else {
 			throw new IllegalArgumentException("illegal class type: " + newType);
 		}
 	}
 	
 	public static int getBranchDisplayMode() {
-		return Integer.parseInt((String)(thePreferences.get("douglas.mencken.bm.branch_display_mode")));
+		return Integer.parseInt(thePreferences.getPreference(BMPreferences.PREF_BRANCH_DISPLAY_MODE));
 	}
 	
 	public static void setBranchDisplayMode(int newval) {
-		thePreferences.set("douglas.mencken.bm.branch_display_mode", String.valueOf(newval));
+		thePreferences.setPreference(BMPreferences.PREF_BRANCH_DISPLAY_MODE, String.valueOf(newval));
 	}
 	
 	public static boolean getShowProgressBar() {
-		return thePreferences.get("douglas.mencken.bm.show_progress_bar").equals("true");
+		return thePreferences.getPreference(BMPreferences.PREF_SHOW_PROGRESS_BAR).equals("true");
 	}
 	
 	public static void setShowProgressBar(boolean show) {
-		thePreferences.set("douglas.mencken.bm.show_progress_bar", (show) ? "true" : "false");
+		thePreferences.setPreference(BMPreferences.PREF_SHOW_PROGRESS_BAR, (show) ? "true" : "false");
 	}
 	
 	public static boolean getShowMemoryMonitorAtStartup() {
-		return thePreferences.get("douglas.mencken.bm.show_memory_monitor").equals("true");
+		return thePreferences.getPreference(BMPreferences.PREF_SHOW_MEMORY_MONITOR).equals("true");
 	}
 	
 	public static void setShowMemoryMonitorAtStartup(boolean use) {
-		thePreferences.set("douglas.mencken.bm.show_memory_monitor", (use) ? "true" : "false");
+		thePreferences.setPreference(BMPreferences.PREF_SHOW_MEMORY_MONITOR, (use) ? "true" : "false");
 	}
 	
 	public static boolean getShowLog() {
-		return thePreferences.get("douglas.mencken.bm.show_log").equals("true");
+		return thePreferences.getPreference(BMPreferences.PREF_SHOW_LOG_WINDOW).equals("true");
 	}
 	
 	public static void setShowLog(boolean use) {
-		thePreferences.set("douglas.mencken.bm.show_log", (use) ? "true" : "false");
+		thePreferences.setPreference(BMPreferences.PREF_SHOW_LOG_WINDOW, (use) ? "true" : "false");
 	}
 	
 	public static boolean getUseFullyQualifiedNames() {
-		return thePreferences.get("douglas.mencken.bm.always_use_fully_qualified_names").equals("true");
+		return thePreferences.getPreference(BMPreferences.PREF_QUALIFIED_NAMES_ONLY).equals("true");
 	}
 	
 	public static void setUseFullyQualifiedNames(boolean use) {
-		thePreferences.set("douglas.mencken.bm.always_use_fully_qualified_names", (use) ? "true" : "false");
+		thePreferences.setPreference(BMPreferences.PREF_QUALIFIED_NAMES_ONLY, (use) ? "true" : "false");
 	}
 	
 	// ----------------------------- Decompiler Preferences ------------------------------ //
 	
 	public static boolean getUsePackageImport() {
-		return thePreferences.get("douglas.mencken.bm.use_package_import").equals("true");
+		return thePreferences.getPreference(BMPreferences.PREF_USE_PACKAGE_IMPORT).equals("true");
 	}
 	
 	public static void setUsePackageImport(boolean use) {
-		thePreferences.set("douglas.mencken.bm.use_package_import", (use) ? "true" : "false");
+		thePreferences.setPreference(BMPreferences.PREF_USE_PACKAGE_IMPORT, (use) ? "true" : "false");
 	}
 	
 	public static boolean getUsePackageImport_java_sun() {
-		return thePreferences.get("douglas.mencken.bm.java_sun_packages").equals("true");
+		return thePreferences.getPreference(BMPreferences.PREF_JAVA_SUN_PACKAGES).equals("true");
 	}
 	
 	public static void setUsePackageImport_java_sun(boolean use) {
-		thePreferences.set("douglas.mencken.bm.java_sun_packages", (use) ? "true" : "false");
+		thePreferences.setPreference(BMPreferences.PREF_JAVA_SUN_PACKAGES, (use) ? "true" : "false");
 	}
 	
 	public static boolean getUsePackageImportIfMoreThan3Imports() {
-		return thePreferences.get("douglas.mencken.bm.more_than_3_imports").equals("true");
+		return thePreferences.getPreference(BMPreferences.PREF_MORE_THAN_3_IMPORTS).equals("true");
 	}
 	
 	public static void setUsePackageImportIfMoreThan3Imports(boolean use) {
-		thePreferences.set("douglas.mencken.bm.more_than_3_imports", (use) ? "true" : "false");
+		thePreferences.setPreference(BMPreferences.PREF_MORE_THAN_3_IMPORTS, (use) ? "true" : "false");
 	}
 	
 	// -------------------------------- Recent Used Files -------------------------------- //
 	
-	public static String[] getRecentUsedFiles() {
+	public static String[] getRecentlyUsedFiles() {
 		return StringUtilities.tokenize(
-			(String)(thePreferences.get("douglas.mencken.bm.recent_used_files")),
+			thePreferences.getPreference(BMPreferences.PREF_RECENTLY_USED_FILES),
 			"\n"
 		);
 	}
 	
-	public static void addRecentUsedFile(String file) {
-		thePreferences.addRecentUsedFile(file);
+	public static void addRecentlyUsedFile(String file) {
+		thePreferences.addRecentlyUsedFile(file);
 	}
 	
-	public static void clearRecentUsedFileList() {
-		thePreferences.clearRecentUsedFileList();
+	public static void clearRecentlyUsedFileList() {
+		thePreferences.clearRecentlyUsedFileList();
 	}
 	
 }

@@ -31,7 +31,7 @@ import douglas.mencken.bm.BMEnvironment;
 /**
  *	Menu <b>File</b>.
  *
- *	@version 1.56f5
+ *	@version 1.6
  */
 
 public final class FileMenu extends Menu
@@ -110,16 +110,16 @@ implements BMMenu, MRJOpenDocumentHandler {
 			saveAs.setEnabled(true);
 		}
 		
-		String[] recentUsedFiles = BMPreferencesManager.getRecentUsedFiles();
+		String[] recentlyUsedFiles = BMPreferencesManager.getRecentlyUsedFiles();
 		this.openRecent.removeAll();
 		this.openRecent.setEnabled(false);
 		
-		if ((recentUsedFiles != null) && (recentUsedFiles.length != 0)) {
-			int len = recentUsedFiles.length;
+		if ((recentlyUsedFiles != null) && (recentlyUsedFiles.length != 0)) {
+			int len = recentlyUsedFiles.length;
 			
 			File[] recent = new File[len];
 			for (int i = 0; i < len; i++) {
-				recent[i] = (recentUsedFiles[i] == null) ? null : new File(recentUsedFiles[i]);
+				recent[i] = (recentlyUsedFiles[i] == null) ? null : new File(recentlyUsedFiles[i]);
 			}
 			
 			boolean[] includeFullPath = new boolean[len];
@@ -193,11 +193,11 @@ implements BMMenu, MRJOpenDocumentHandler {
 		} else if (command.equals("QUIT")) {
 			BMEnvironment.quit();
 		} else if (command.startsWith("RECENT")) {
-			String[] recentUsedFiles = BMPreferencesManager.getRecentUsedFiles();
+			String[] recentlyUsedFiles = BMPreferencesManager.getRecentlyUsedFiles();
 			int index = Integer.parseInt(command.substring(7));
-			this.handleOpenFile(new File(recentUsedFiles[index]));
+			this.handleOpenFile(new File(recentlyUsedFiles[index]));
 		} else if (command.equals("CLEAR_OPEN_RECENT_MENU")) {
-			BMPreferencesManager.clearRecentUsedFileList();
+			BMPreferencesManager.clearRecentlyUsedFileList();
 			this.updateMenu();
 		}
 	}
@@ -265,7 +265,7 @@ implements BMMenu, MRJOpenDocumentHandler {
 			);
 			FileUtilities.writeBytesToFile(out.toByteArray(), path);
 			
-			BMPreferencesManager.addRecentUsedFile(path);
+			BMPreferencesManager.addRecentlyUsedFile(path);
 			this.revertPath = path;
 			revert.setEnabled(false);
 			
@@ -295,7 +295,7 @@ implements BMMenu, MRJOpenDocumentHandler {
 	public void handleOpenFile(File file) {
 		if (this.readFromFile(file)) {
 			String path = file.getPath();
-			BMPreferencesManager.addRecentUsedFile(path);
+			BMPreferencesManager.addRecentlyUsedFile(path);
 			this.revertPath = path;
 			this.updateMenu();
 		}

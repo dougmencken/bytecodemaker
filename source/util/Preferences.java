@@ -18,7 +18,7 @@ import java.util.Properties;
  *	A preference list can contain another preference list as its 
  *	"defaults".
  *
- *	@version 1.02
+ *	@version 1.1
  */
 
 public class Preferences extends Properties {
@@ -59,7 +59,7 @@ public class Preferences extends Properties {
 	public Preferences(Preferences defaults) {
 		super(defaults);
 	}
-	
+
 	/**
 	 *	Reset all preferences to its default values.
 	 */
@@ -80,12 +80,16 @@ public class Preferences extends Properties {
 	public void appendToSystemProperties() {
 		System.setProperties(concat(System.getProperties(), this));
 	}
+
+	public String getPreference(String preference) {
+		return super.getProperty(preference);
+	}
 	
 	/**
 	 *	Sets the preference to the specified value.
 	 */
-	public void set(String preference, String value) {
-		super.put(preference, value);
+	public void setPreference(String preference, String value) {
+		super.setProperty(preference, value);
 	}
 	
 	/**
