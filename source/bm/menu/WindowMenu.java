@@ -12,9 +12,7 @@ import douglas.mencken.tools.MemoryMonitor;
 import douglas.mencken.tools.ThreadMonitor;
 import douglas.mencken.tools.UsefulMessageDialogs;
 import douglas.mencken.bm.storage.JavaClass;
-import douglas.mencken.bm.storage.prefs.BMPreferencesManager;
 import douglas.mencken.bm.BMEnvironment;
-import douglas.mencken.bm.storage.JavaConstantPoolCustomizer;
 import douglas.mencken.bm.frames.*;
 
 /**
@@ -60,10 +58,6 @@ implements BMMenu, WindowListener {
 		this.threadMonitor.setActionCommand("THREAD_MONITOR");
 		this.threadMonitor.addActionListener(this);
 		super.add(this.threadMonitor);
-		
-		if (BMPreferencesManager.getShowMemoryMonitorAtStartup()) {
-			this.showHideMemoryMonitor();
-		}
 		
 		super.addSeparator();
 		

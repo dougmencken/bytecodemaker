@@ -18,7 +18,7 @@ import java.util.Properties;
  *	A preference list can contain another preference list as its 
  *	"defaults".
  *
- *	@version 1.01f
+ *	@version 1.02
  */
 
 public class Preferences extends Properties {
@@ -27,7 +27,6 @@ public class Preferences extends Properties {
 	private long formatVersion = /* 1.0.0 */ 100L;
 	
 	public static final File PREFERENCES_FOLDER;
-	public static final Properties SYSTEM_PROPERTIES;
 	
 	static {
 		if (System.getProperty("os.name").equals("Mac OS")) {
@@ -42,8 +41,6 @@ public class Preferences extends Properties {
 		} else {
 			PREFERENCES_FOLDER = new File(System.getProperty("user.dir"));
 		}
-		
-		SYSTEM_PROPERTIES = System.getProperties();
 	}
 	
 	/** The name of the preferences file. */
@@ -81,7 +78,7 @@ public class Preferences extends Properties {
 	}
 	
 	public void appendToSystemProperties() {
-		System.setProperties(concat(SYSTEM_PROPERTIES, this));
+		System.setProperties(concat(System.getProperties(), this));
 	}
 	
 	/**

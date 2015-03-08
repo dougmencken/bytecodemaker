@@ -45,6 +45,10 @@ public final class BMMain extends Object {
 		ClassFrame frame = new ClassFrame();
 		frame.setMenuBar(mbar);
 		frame.setVisible(true);
+
+		if (BMPreferencesManager.getShowMemoryMonitorAtStartup()) {
+			mbar.getWindowMenu().showHideMemoryMonitor();
+		}
 	}
 	
 	/*

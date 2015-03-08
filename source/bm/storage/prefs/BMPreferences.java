@@ -20,7 +20,7 @@ import douglas.mencken.tools.UsefulMessageDialogs;
  *	<code>BMPreferences</code>
  *	(local to package)
  *	
- *	@version 2.05v
+ *	@version 2.06
  */
 
 final class BMPreferences extends Preferences {

@@ -7,10 +7,10 @@ package douglas.mencken.bm.storage.prefs;
 import douglas.mencken.util.StringUtilities;
 
 /**
- *	<code>BMPreferencesManager</code> is an interface to set
- *	of Bytecode Maker preferences.
+ *	<code>BMPreferencesManager</code> is interface to set
+ *	of preferences for Bytecode Maker.
  *	
- *	@version	1.04v
+ *	@version	1.05
  *	@since		Bytecode Maker 0.5.9
  */
 
