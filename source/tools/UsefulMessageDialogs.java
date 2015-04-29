@@ -1,5 +1,5 @@
 // ===========================================================================
-//	UsefulMessageDialogs.java (part of douglas.mencken.tools package)
+// UsefulMessageDialogs.java (part of douglas.mencken.tools package)
 // ===========================================================================
 
 package douglas.mencken.tools;
@@ -9,18 +9,18 @@ import douglas.mencken.icons.*;
 /**
  *	<code>UsefulMessageDialogs</code>
  *
- *	@version 1.03f1
+ *	@version 1.1
  */
 
 public final class UsefulMessageDialogs extends Object {
 	
-	public static void doErrorDialog(Throwable t, boolean printStackTrace) {
+	public static void doErrorDialog(Throwable th, boolean printStackTrace) {
 		DialogFactory.doDialog(
-			new CautionIcon(), t.getClass().getName() + ": " + t.getMessage()
+			new CautionIcon(), th.getClass().getName() + ": " + th.getMessage()
 		);
 		
 		if (printStackTrace) {
-			t.printStackTrace();
+			th.printStackTrace();
 		}
 	}
 	
@@ -40,7 +40,7 @@ public final class UsefulMessageDialogs extends Object {
 		DialogFactory.doDialog(new NoteIcon(), message);
 	}
 	
-	public static void doInformationDialog(String message) {
+	public static void doInfoDialog(String message) {
 		if (message == null) {
 			message = "null";
 		}
@@ -56,7 +56,7 @@ public final class UsefulMessageDialogs extends Object {
 		DialogFactory.doDialog(new CautionIcon(), message, " Stop ");
 	}
 	
-	public static void tellAboutNoMemoryAvailable() {
+	public static void sayAboutNoMemoryAvailable() {
 		DialogFactory.doDialog(
 			new PalmStopIcon(),
 			"Not enough memory available",
@@ -64,11 +64,11 @@ public final class UsefulMessageDialogs extends Object {
 		);
 	}
 	
-	public static void tellAboutError(String errorText) {
+	public static void sayAboutError(String errorText) {
 		UsefulMessageDialogs.doErrorDialog(errorText);
 	}
 	
-	public static void tellAboutError(int errorNumber, String errorText) {
+	public static void sayAboutError(int errorNumber, String errorText) {
 		StringBuffer errorDescription = new StringBuffer();
 		errorDescription.append('#').append(Integer.toString(errorNumber));
 		
@@ -79,7 +79,7 @@ public final class UsefulMessageDialogs extends Object {
 		UsefulMessageDialogs.doErrorDialog(errorDescription.toString());
 	}
 	
-	public static void tellAboutInternalError(String message) {
+	public static void sayAboutInternalError(String message) {
 		DialogFactory.doDialog(
 			new NoteIcon(),
 			"Internal Error: " + message

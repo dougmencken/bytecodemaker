@@ -259,7 +259,7 @@ implements ItemListener, WindowListener {
 //			super.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 //		} catch (OutOfMemoryError noRAM) {
 //			super.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-//			UsefulMessageDialogs.tellAboutNoMemoryAvailable(true);
+//			UsefulMessageDialogs.sayAboutNoMemoryAvailable(true);
 //			
 //			if (stackWindow != null) {
 //				this.stackWindow.dispose();

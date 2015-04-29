@@ -113,7 +113,7 @@ implements ActionListener, PropertyChangeListener {
 			frame.setResizable(false);
 			frame.setVisible(true);
 		} catch (Exception exc) {
-			UsefulMessageDialogs.tellAboutInternalError(
+			UsefulMessageDialogs.sayAboutInternalError(
 				exc.getClass().getName() + ": " + exc.getMessage()
 			);
 		}
@@ -225,7 +225,7 @@ class JavaConstantPoolCustomizerMenuBar extends MenuBar implements ActionListene
 				// add constant
 				ConstantPoolManager poolManager = owner.theClass.getPoolManager();
 				if (!poolManager.addConstant(newJavaConstantPoolElement)) {
-					UsefulMessageDialogs.doInformationDialog("No constant has been created.");
+					UsefulMessageDialogs.doInfoDialog("No constant has been created.");
 				} else {
 					owner.addToConstantsList(newJavaConstantPoolElement.toString());
 				}

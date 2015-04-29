@@ -25,7 +25,7 @@ public final class BMMain extends Object {
 	public static void main(String[] args) {
 		//--------- testAndDebug();
 		if (!BMEnvironment.isOnMacOS() && !BMEnvironment.isOnMacOSX()) {
-			UsefulMessageDialogs.doInformationDialog(
+			UsefulMessageDialogs.doInfoDialog(
 				"Mac OS X or Mac OS is required to run this version of Bytecode Maker."
 			);
 			BMEnvironment.quit();

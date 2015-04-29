@@ -215,7 +215,7 @@ implements ActionListener, AdjustmentListener, PropertyChangeListener {
 				frame.setResizable(false);
 				frame.setVisible(true);
 			} catch (Exception exc) {
-				UsefulMessageDialogs.tellAboutInternalError(
+				UsefulMessageDialogs.sayAboutInternalError(
 					exc.getClass().getName() + ": " + exc.getMessage()
 				);
 			}

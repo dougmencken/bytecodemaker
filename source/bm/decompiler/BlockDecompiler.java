@@ -51,7 +51,7 @@ public class BlockDecompiler extends Object implements Decompiler {
 		this.bytecodes = block.getBytecodes();
 		
 		if ((this.bytecodes == null) || (this.bytecodes.length == 0)) {
-			UsefulMessageDialogs.tellAboutInternalError(
+			UsefulMessageDialogs.sayAboutInternalError(
 				"BlockDecompiler: attempt to decompile 'null' or empty bytecode block"
 			);
 			return;
@@ -78,7 +78,7 @@ public class BlockDecompiler extends Object implements Decompiler {
 				decompileBlock(method.getStackCalculator(), startPC, endPC, declaredVars);
 			} catch (InternalError err) {
 				String message = err.getMessage();
-				UsefulMessageDialogs.tellAboutInternalError(message);
+				UsefulMessageDialogs.sayAboutInternalError(message);
 				throw new InternalError(message);
 			}
 		}

@@ -330,7 +330,7 @@ public class JavaClass extends Object implements Externalizable {
 				}
 				
 				if (!this.getSuperclassName().equals("java.lang.Object")) {
-					UsefulMessageDialogs.tellAboutError(
+					UsefulMessageDialogs.sayAboutError(
 						12, BMErrorStrings.getErrorString(12)
 					);
 					this.setSuperclassName("java.lang.Object");

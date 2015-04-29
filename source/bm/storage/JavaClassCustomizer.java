@@ -531,13 +531,13 @@ class ClassCustomizerPanel extends Panel implements JavaClassCustomizerPart {
 		}
 		
 		if ((className.indexOf(' ') != -1) || (superclassName.indexOf(' ') != -1)) {
-			UsefulMessageDialogs.tellAboutError(8, BMErrorStrings.getErrorString(8));
+			UsefulMessageDialogs.sayAboutError(8, BMErrorStrings.getErrorString(8));
 			return false;
 		}
 		
 		if (!ClassUtilities.isJavaIdentifier(className) ||
 			 !ClassUtilities.isJavaIdentifier(superclassName)) {
-			UsefulMessageDialogs.tellAboutError(9, BMErrorStrings.getErrorString(9));
+			UsefulMessageDialogs.sayAboutError(9, BMErrorStrings.getErrorString(9));
 			return false;
 		}
 		
@@ -558,7 +558,7 @@ class ClassCustomizerPanel extends Panel implements JavaClassCustomizerPart {
 					boolean isValid = true;
 					
 					if (!ClassUtilities.isJavaIdentifier(result)) {
-						UsefulMessageDialogs.tellAboutError(9, BMErrorStrings.getErrorString(9));
+						UsefulMessageDialogs.sayAboutError(9, BMErrorStrings.getErrorString(9));
 						isValid = false;
 					}
 					
@@ -792,12 +792,12 @@ class InterfaceCustomizerPanel extends Panel implements JavaClassCustomizerPart 
 		}
 		
 		if (interfaceName.indexOf(' ') != -1) {
-			UsefulMessageDialogs.tellAboutError(8, BMErrorStrings.getErrorString(8));
+			UsefulMessageDialogs.sayAboutError(8, BMErrorStrings.getErrorString(8));
 			return false;
 		}
 		
 		if (!ClassUtilities.isJavaIdentifier(interfaceName)) {
-			UsefulMessageDialogs.tellAboutError(9, BMErrorStrings.getErrorString(9));
+			UsefulMessageDialogs.sayAboutError(9, BMErrorStrings.getErrorString(9));
 			return false;
 		}
 		
@@ -813,7 +813,7 @@ class InterfaceCustomizerPanel extends Panel implements JavaClassCustomizerPart 
 				boolean isValid = true;
 				
 				if (!ClassUtilities.isJavaIdentifier(result)) {
-					UsefulMessageDialogs.tellAboutError(9, BMErrorStrings.getErrorString(9));
+					UsefulMessageDialogs.sayAboutError(9, BMErrorStrings.getErrorString(9));
 					isValid = false;
 				}
 				

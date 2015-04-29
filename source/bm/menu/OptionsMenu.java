@@ -81,25 +81,25 @@ public final class OptionsMenu extends Menu implements BMMenu {
 			
 			if (cp_optimizer.isOptimized()) {
 				currentClass.setConstants(optimizedConstants);
-				UsefulMessageDialogs.doInformationDialog("Constant Pool: Optimization complete");
+				UsefulMessageDialogs.doInfoDialog("Constant Pool: Optimization complete");
 				
 				// update frames
 				//ClassFrame.getCurrentFrame().update();
 				//JavaConstantPoolCustomizer.getCurrentFrame().update();
 			} else {
-				UsefulMessageDialogs.doInformationDialog("Constant Pool: No optimizations made");
+				UsefulMessageDialogs.doInfoDialog("Constant Pool: No optimizations made");
 			}*/
-			UsefulMessageDialogs.doInformationDialog("Constant Pool: No optimizations made - IN PROGRESS");
+			UsefulMessageDialogs.doInfoDialog("Constant Pool: No optimizations made - IN PROGRESS");
 		}
 		if ((result & OptimizationSetupDialog.OPTIMIZE_BYTECODES) != 0) {
 			/* REMOVED BytecodeOptimizer bc_optimizer = new BytecodeOptimizer();
 			bc_optimizer.optimizeAll(currentClass.getMethods());
 			if (bc_optimizer.isOptimized()) {
-				UsefulMessageDialogs.doInformationDialog("Bytecodes: Optimization complete");
+				UsefulMessageDialogs.doInfoDialog("Bytecodes: Optimization complete");
 			} else {
-				UsefulMessageDialogs.doInformationDialog("Bytecodes: No optimizations made");
+				UsefulMessageDialogs.doInfoDialog("Bytecodes: No optimizations made");
 			}*/
-			UsefulMessageDialogs.doInformationDialog("Bytecodes: No optimizations made - IN PROGRESS");
+			UsefulMessageDialogs.doInfoDialog("Bytecodes: No optimizations made - IN PROGRESS");
 		}
 	}
 	
