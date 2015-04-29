@@ -1,7 +1,7 @@
 // ===========================================================================
-//	MessageDialogMaker.java (part of douglas.mencken.tools package)
-//		public class MessageDialogMaker
-//		class ButtonSetActionListener
+// MessageDialogMaker.java (part of douglas.mencken.tools package)
+//	public class MessageDialogMaker
+//	class ButtonSetActionListener
 // ===========================================================================
 
 package douglas.mencken.tools;
@@ -16,7 +16,7 @@ import douglas.mencken.util.WindowUtilities;
  *	<code>MessageDialogMaker</code>
  *	All methods here are 'static'.
  *
- *	@version 0.80f2
+ *	@version 1.1
  */
 
 public class MessageDialogMaker extends Object {
@@ -41,13 +41,20 @@ public class MessageDialogMaker extends Object {
 	}
 	
 	public static Dialog makeMessageDialog(Frame parent, Icon icon, String message, Button[] buttons) {
+		if (parent == null) {
+			throw new IllegalArgumentException("parent cannot be null");
+		}
 		if ((buttons == null) || (buttons.length == 0)) {
-			throw new IllegalArgumentException(
-				"buttons cannot be null or empty"
-			);
+			throw new IllegalArgumentException("buttons cannot be null or empty");
 		}
 		
-		final Dialog theNewOne = new Dialog(parent, "", true);
+		Dialog theDialog = null;
+		try {
+			theDialog = new Dialog(parent, "", true);
+		} catch (HeadlessException headless) { return null; }
+		if (theDialog == null) return null;
+		
+		final Dialog theNewOne = theDialog;
 		theNewOne.setBackground(Color.white);
 		theNewOne.setLayout(new BorderLayout());
 		

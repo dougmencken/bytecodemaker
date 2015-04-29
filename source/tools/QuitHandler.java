@@ -1,5 +1,5 @@
 // ===========================================================================
-//	QuitHandler.java (part of douglas.mencken.tools package)
+// QuitHandler.java (part of douglas.mencken.tools package)
 // ===========================================================================
 
 package douglas.mencken.tools;
@@ -14,7 +14,7 @@ import douglas.mencken.beans.LabelWindow;
 /**
  *	<code>QuitHandler</code>
  *
- *	@version 1.1
+ *	@version 1.2
  */
 
 public class QuitHandler extends Object
@@ -31,10 +31,11 @@ implements ActionListener, MRJQuitHandler {
 		System.setOut(null);
 		System.setErr(null);
 		
-		LabelWindow quitWindow = new LabelWindow(
-			"Cleaning up...", new Font("Sand", Font.PLAIN, 18)
-		);
-		quitWindow.setVisible(true);
+		if (System.getProperty("java.awt.headless", "false").equals("false")) {
+			new LabelWindow(
+				"Cleaning up...", new Font("Sand", Font.PLAIN, 18)
+			).setVisible(true);
+		}
 		
 		Runtime.getRuntime().runFinalizersOnExit(true);
 		System.exit(EXIT_SUCCESS);

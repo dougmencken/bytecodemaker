@@ -1,23 +1,24 @@
 // ===========================================================================
-//	InvisibleFrame.java (part of douglas.mencken.util package)
+// InvisibleFrame.java (part of douglas.mencken.util package)
 // ===========================================================================
 
 package douglas.mencken.util;
 
 import java.awt.Frame;
 import java.awt.Window;
+import java.awt.HeadlessException;
 
 /**
  *	InvisibleFrame is an invisible Frame to be
  *	the owner for Dialogs and Windows.
  *
- *	@version 1.07f2
+ *	@version 1.1
  */
 
 public class InvisibleFrame extends Frame {
 	
-	public InvisibleFrame() {
-		super("");
+	public InvisibleFrame() throws HeadlessException {
+		super("invisible frame");
 	}
 	
 	/**

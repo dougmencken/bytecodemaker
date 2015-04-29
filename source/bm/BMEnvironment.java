@@ -1,5 +1,5 @@
 // ===========================================================================
-//	BMEnvironment.java (part of douglas.mencken.bm package)
+// BMEnvironment.java (part of douglas.mencken.bm package)
 // ===========================================================================
 
 package douglas.mencken.bm;
@@ -22,7 +22,7 @@ import douglas.mencken.bm.menu.*;
  *	The utility class <code>BMEnvironment</code>.
  *	(static methods only)
  *
- *	@version 1.31
+ *	@version 1.4
  */
 
 public class BMEnvironment extends Object {
@@ -38,11 +38,15 @@ public class BMEnvironment extends Object {
 	private BMEnvironment() { super(); }
 	
 	public static boolean isOnMacOS() {
-		return System.getProperty("os.name").equals("Mac OS");
+		return System.getProperty("os.name", "unknown").equals("Mac OS");
 	}
 
 	public static boolean isOnMacOSX() {
-		return System.getProperty("os.name").equals("Mac OS X");
+		return System.getProperty("os.name", "unknown").equals("Mac OS X");
+	}
+	
+	public static boolean isHeadfulSystem() {
+		return System.getProperty("java.awt.headless", "false").equals("false");
 	}
 	
 	/**

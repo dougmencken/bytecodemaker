@@ -1,5 +1,5 @@
 // ===========================================================================
-//	DialogFactory.java (part of douglas.mencken.tools package)
+// DialogFactory.java (part of douglas.mencken.tools package)
 // ===========================================================================
 
 package douglas.mencken.tools;
@@ -11,7 +11,7 @@ import douglas.mencken.util.InvisibleFrame;
 /**
  *	<code>DialogFactory</code>
  *
- *	@version 1.05f
+ *	@version 1.1
  */
 
 public final class DialogFactory extends Object {
@@ -21,17 +21,27 @@ public final class DialogFactory extends Object {
 	private static InvisibleFrame intermediaryParent;
 	
 	static {
-		intermediaryParent = new InvisibleFrame();
+		intermediaryParent = null;
+		try {
+			intermediaryParent = new InvisibleFrame();
+		} catch (HeadlessException hless) {
+			/* System.err.println("on headless system!"); */
+		}
 	}
 	
 	public static void doDialog(Icon icon, String message, String buttonLabel) {
-		Dialog dialog = MessageDialogMaker.makeMessageDialog(
-			intermediaryParent,
-			icon,
-			message,
-			new Button(buttonLabel)
-		);
-		dialog.setVisible(true);
+		Dialog dialog = null;
+		if (intermediaryParent != null) {
+			dialog = MessageDialogMaker.makeMessageDialog(
+				intermediaryParent,
+				icon,
+				message,
+				new Button(buttonLabel)
+			);
+		}
+		if (dialog != null) {
+			dialog.setVisible(true);
+		}
 	}
 	
 	public static void doDialog(Icon icon, String message) {
@@ -43,34 +53,50 @@ public final class DialogFactory extends Object {
 	}
 	
 	public static int doTwoButtonsDialog(Icon icon, String message, String l1, String l2) {
-		Dialog dialog = MessageDialogMaker.makeMessageDialog(
-			intermediaryParent,
-			icon,
-			message,
-			new Button[] { new Button(l1), new Button(l2) }
-		);
-		dialog.setVisible(true);
+		Dialog dialog = null;
+		if (intermediaryParent != null) {
+			dialog = MessageDialogMaker.makeMessageDialog(
+				intermediaryParent,
+				icon,
+				message,
+				new Button[] { new Button(l1), new Button(l2) }
+			);
+		}
+		if (dialog != null) {
+			dialog.setVisible(true);
+		}
 		
 		return MessageDialogMaker.getLastPressedButtonNumber();
 	}
 	
-	public static int doThreeButtonsDialog(	Icon icon, String message,
-											String l1, String l2, String l3) {
-		Dialog dialog = MessageDialogMaker.makeMessageDialog(
-			intermediaryParent,
-			icon,
-			message,
-			new Button[] { new Button(l1), new Button(l2), new Button(l3) }
-		);
-		dialog.setVisible(true);
+	public static int doThreeButtonsDialog(Icon icon, String message, String l1, String l2, String l3) {
+		Dialog dialog = null;
+		if (intermediaryParent != null) {
+			dialog = MessageDialogMaker.makeMessageDialog(
+				intermediaryParent,
+				icon,
+				message,
+				new Button[] { new Button(l1), new Button(l2), new Button(l3) }
+			);
+		}
+		if (dialog != null) {
+			dialog.setVisible(true);
+		}
 		
 		return MessageDialogMaker.getLastPressedButtonNumber();
 	}
 	
 	public static String askForOneString(String in) {
-		AskForOneStringDialog dialog = new AskForOneStringDialog(intermediaryParent, in);
-		dialog.setVisible(true);
-		return dialog.getString();
+		AskForOneStringDialog dialog = null;
+		if (intermediaryParent != null) {
+			dialog = new AskForOneStringDialog(intermediaryParent, in);
+		}
+		if (dialog != null) {
+			dialog.setVisible(true);
+			return dialog.getString();
+		} else {
+			return "null <dialog>";
+		}
 	}
 	
 }
