@@ -14,12 +14,15 @@ import douglas.mencken.beans.LabelWindow;
 /**
  *	<code>QuitHandler</code>
  *
- *	@version 1.01f3
+ *	@version 1.1
  */
 
 public class QuitHandler extends Object
 implements ActionListener, MRJQuitHandler {
-	
+
+	public static final int EXIT_SUCCESS = 0;
+	public static final int EXIT_FAILURE = -1;
+
 	public QuitHandler() {
 		MRJApplicationUtils.registerQuitHandler(this);
 	}
@@ -34,7 +37,7 @@ implements ActionListener, MRJQuitHandler {
 		quitWindow.setVisible(true);
 		
 		Runtime.getRuntime().runFinalizersOnExit(true);
-		System.exit(0);
+		System.exit(EXIT_SUCCESS);
 	}
 	
 	public void actionPerformed(ActionEvent e) {
