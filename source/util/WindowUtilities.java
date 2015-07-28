@@ -1,5 +1,5 @@
 // ===========================================================================
-//	WindowUtilities.java (part of douglas.mencken.util package)
+// WindowUtilities.java (part of douglas.mencken.util package)
 // ===========================================================================
 
 package douglas.mencken.util;
@@ -10,7 +10,7 @@ import java.awt.event.*;
 /**
  *	<code>WindowUtilities</code>
  *
- *	@version 1.07f2
+ *	@version 1.08
  */
 
 public final class WindowUtilities extends Object {
@@ -34,8 +34,8 @@ public final class WindowUtilities extends Object {
 	 *			   <i>"OK"<i> for OK button, <i>"CANCEL"<i> for Cancel button.
 	 */
 	public static Panel createOKCancelButtonPanel(	ActionListener listener,
-													Dimension panelSize,
-													Component additionalComponent) {
+							Dimension panelSize,
+							Component additionalComponent) {
 		Panel buttonPanel = new Panel(null);
 		if (panelSize != null) {
 			buttonPanel.setSize(panelSize);
@@ -70,8 +70,7 @@ public final class WindowUtilities extends Object {
 		return buttonPanel;
 	}
 	
-	public static Point[] getPreferredOKCancelButtonLocations(Container container,
-															  Button ok, Button cancel) {
+	public static Point[] getPreferredOKCancelButtonLocations(Container container, Button ok, Button cancel) {
 		Dimension containerSize = container.getSize();
 		Dimension okButtonSize = ok.getSize();
 		Dimension cancelButtonSize = cancel.getSize();
@@ -142,8 +141,7 @@ public final class WindowUtilities extends Object {
 		window.pack();
 	}
 	
-	public static Rectangle getPreferredDialogBounds(Panel panel, boolean withImage,
-													 Component component) {
+	public static Rectangle getPreferredDialogBounds(Panel panel, boolean withImage, Component component) {
 		// width
 		int mw = (withImage) ? 32 : 0;
 		int width = panel.getSize().width + mw;
@@ -171,7 +169,7 @@ public final class WindowUtilities extends Object {
 		int x = Math.round(center.x - (width/2) - mx);
 		int y = center.y - 125;
 		
-		return new Rectangle(x, y, width, height + 32);
+		return new Rectangle(x, y, width + 32, height + 32 + 32);
 	}
 	
 }

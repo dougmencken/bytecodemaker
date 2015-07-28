@@ -17,13 +17,13 @@ import douglas.mencken.bm.storage.prefs.BMPreferencesManager;
 /**
  *	Bytecode Maker's main entry point.
  *
- *	@version 1.06
+ *	@version 1.1
  */
 
 public final class BMMain extends Object {
 	
 	public static void main(String[] args) {
-		//testAndDebug();
+		//--------- testAndDebug();
 		if (!BMEnvironment.isOnMacOS() && !BMEnvironment.isOnMacOSX()) {
 			UsefulMessageDialogs.doInformationDialog(
 				"Mac OS X or Mac OS is required to run this version of Bytecode Maker."
@@ -42,12 +42,13 @@ public final class BMMain extends Object {
 		BMMenuBar mbar = new BMMenuBar();
 		BMEnvironment.initialize((MRJOpenDocumentHandler)mbar);
 		
-		ClassFrame frame = new ClassFrame();
-		frame.setMenuBar(mbar);
-		frame.setVisible(true);
+		ClassFrame classFrame = new ClassFrame();
+		classFrame.setMenuBar(mbar);
+		classFrame.setVisible(true);
 
 		if (BMPreferencesManager.getShowMemoryMonitorAtStartup()) {
 			mbar.getWindowMenu().showHideMemoryMonitor();
+			classFrame.toFront();
 		}
 	}
 	
