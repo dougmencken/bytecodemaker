@@ -4,8 +4,9 @@
 
 package douglas.mencken.util;
 
-import java.awt.Menu;
 import java.awt.MenuItem;
+import java.awt.CheckboxMenuItem;
+import java.awt.Menu;
 import java.awt.MenuShortcut;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -13,7 +14,7 @@ import java.awt.event.KeyEvent;
 /**
  *	<code>MenuUtilities</code>
  *
- *	@version 1.0
+ *	@version 1.1
  */
 
 public final class MenuUtilities extends Object {
@@ -28,15 +29,16 @@ public final class MenuUtilities extends Object {
 	 *     label ("-anything" for separator, ">title" for sub-menu)
 	 *       , shortcut key
 	 *           , action command
-	 *               , "f" or "false" disables the item
+	 *               , "f" disables the item | "x" for CheckboxMenuItem
 	 *     ....
 	 *
 	 * Example:
 	 *     MenuUtilities.fillMenuByDesc(new String[] {
-	 *         "New...",  "N", "NEW",   "",
-	 *         "Open...", "O", "OPEN",  "",
-	 *         "Close",   "W", "CLOSE", "f"
-	 *	}, this, this);
+	 *         "New...",   "N",  "NEW",   "",
+	 *         "Open...",  "O",  "OPEN",  "",
+	 *         "Close",    "W",  "CLOSE", "f",
+	 *         "Check Me", null, "CHECK", "x"
+	 *     }, this, this);
 	 */
 	public static final void fillMenuByDesc(String[] desc, Menu theMenu, ActionListener theListener) {
 		if ((desc == null) || (theMenu == null)) return;
@@ -58,36 +60,43 @@ public final class MenuUtilities extends Object {
 				descLabel = "Item " + descLabel;
 			}
 			
+			if (descAbility == null) descAbility = "";
+			char abilityChar = (descAbility.length() == 0) ? 0 : descAbility.charAt(0);
+			
 			if (descLabel.charAt(0) == '>') {
 				/* it is Menu (sub-menu) */
 				Menu item = new Menu(descLabel.substring(1));
-				if ((descAbility != null) && (descAbility.length() != 0)) {
-					if (descAbility.charAt(0) == 'f') {
-						item.setEnabled(false);
-					}
+				if (abilityChar == 'f') {
+					item.setEnabled(false);
 				}
 				theMenu.add(item);
 			} else {
 				/* it is MenuItem */
 				if (descLabel.charAt(0) == '-') {
-					/* it is separator */
+					/* separator */
 					theMenu.addSeparator();
 				} else {
-					/* it is plain item */
 					MenuShortcut shortcut = null;
 					if ((descShortcut != null) && (descShortcut.length() != 0)) {
 						shortcut = new MenuShortcut(MenuUtilities.charToKeyEventCode(descShortcut.charAt(0)));
 					}
-					MenuItem item = new MenuItem(descLabel, shortcut);
+					
+					MenuItem item = null;
+					if (abilityChar == 'x') {
+						/* checkbox item */
+						item = new CheckboxMenuItem(descLabel);
+						if (shortcut != null) item.setShortcut(shortcut);
+					} else {
+						/* plain item */
+						item = new MenuItem(descLabel, shortcut);
+						if (abilityChar == 'f') {
+							item.setEnabled(false);
+						}
+					}
 					if ((descActionCmd != null) && (descActionCmd.length() != 0)) {
 						item.setActionCommand(descActionCmd);
 						if (theListener != null) {
 							item.addActionListener(theListener);
-						}
-					}
-					if ((descAbility != null) && (descAbility.length() != 0)) {
-						if (descAbility.charAt(0) == 'f') {
-							item.setEnabled(false);
 						}
 					}
 					theMenu.add(item);
@@ -121,6 +130,7 @@ public final class MenuUtilities extends Object {
 			case '-': return KeyEvent.VK_MINUS;
 			case ';': return KeyEvent.VK_SEMICOLON;
 			case '=': return KeyEvent.VK_EQUALS;
+			case '`': return KeyEvent.VK_BACK_QUOTE;
 			
 			case '0': return KeyEvent.VK_0;
 			case '1': return KeyEvent.VK_1;
