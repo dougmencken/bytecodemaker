@@ -1,5 +1,5 @@
 // ===========================================================================
-//	EditMenu.java (part of douglas.mencken.bm.menu package)
+// EditMenu.java (part of douglas.mencken.bm.menu package)
 // ===========================================================================
 
 package douglas.mencken.bm.menu;
@@ -8,17 +8,31 @@ import java.awt.*;
 import java.awt.event.*;
 import douglas.mencken.tools.ClipboardFrame;
 import douglas.mencken.tools.ClipboardHandler;
+import douglas.mencken.util.MenuUtilities;
 import douglas.mencken.bm.storage.prefs.BMPreferencesManager;
 import douglas.mencken.bm.BMEnvironment;
 
 /**
- *	<code>EditMenu</code>
+ *	Menu <b>Edit</b> for Bytecode Maker.
  *
- *	@version 1.35f4
+ *	@version 1.4
  */
 
 public final class EditMenu extends Menu
 implements BMMenu, WindowListener {
+	
+	private static final String[] MENU_DESCR = {
+		"Undo", "Z", "EDIT_UNDO_REDO", "f",
+		"-", null, null, null,
+		"Cut", "X", "EDIT_CUT", "f",
+		"Copy", "C", "EDIT_COPY", "f",
+		"Paste", "V", "EDIT_PASTE", "f",
+		"Clear", "", "EDIT_CLEAR", "f",
+		"-", null, null, null,
+		"Preferences", ";", "PREFERENCES", "",
+		"-", null, null, null,
+		"Show/Hide Clipboard", "", "SHOW_HIDE_CLIPBOARD", ""
+	};
 	
 	private ClipboardFrame clipboardWindow;
 	
@@ -28,53 +42,23 @@ implements BMMenu, WindowListener {
 	private MenuItem paste;
 	private MenuItem clear;
 	private MenuItem prefs;
-	private MenuItem showClipboard;
+	private MenuItem showHideClipboard;
 	
 	public EditMenu() {
 		super("Edit");
-		
-		undoRedo = new MenuItem("Undo", new MenuShortcut(KeyEvent.VK_Z));
-		undoRedo.setActionCommand("EDIT_UNDO_REDO");
-		undoRedo.addActionListener(this);
-		super.add(undoRedo);
-		
-		super.addSeparator(); 
-		
-		cut = new MenuItem("Cut", new MenuShortcut(KeyEvent.VK_X));
-		cut.setActionCommand("EDIT_CUT");
-		cut.addActionListener(this);
-		super.add(cut);
-		
-		copy = new MenuItem("Copy", new MenuShortcut(KeyEvent.VK_C));
-		copy.setActionCommand("EDIT_COPY");
-		copy.addActionListener(this);
-		super.add(copy);
-		
-		paste = new MenuItem("Paste", new MenuShortcut(KeyEvent.VK_V));
-		paste.setActionCommand("EDIT_PASTE");
-		paste.addActionListener(this);
-		super.add(paste);
-		
-		clear = new MenuItem("Clear");
-		clear.setActionCommand("EDIT_CLEAR");
-		clear.addActionListener(this);
-		super.add(clear);
-		
-		super.addSeparator(); 
-		
-		prefs = new MenuItem("Preferences", new MenuShortcut(KeyEvent.VK_SEMICOLON));
-		prefs.setActionCommand("PREFERENCES");
-		prefs.addActionListener(this);
-		super.add(prefs);
-		
-		super.addSeparator();
-		
 		this.clipboardWindow = new ClipboardFrame(this);
+		MenuUtilities.fillMenuByDesc(EditMenu.MENU_DESCR, this, this);
 		
-		showClipboard = new MenuItem("Show Clipboard");
-		showClipboard.setActionCommand("SHOW_CLIPBOARD");
-		showClipboard.addActionListener(this);
-		super.add(showClipboard);
+		this.undoRedo = MenuUtilities.findItemByLabel(this, EditMenu.MENU_DESCR[0*4]);
+		
+		this.cut = MenuUtilities.findItemByLabel(this, EditMenu.MENU_DESCR[2*4]);
+		this.copy = MenuUtilities.findItemByLabel(this, EditMenu.MENU_DESCR[3*4]);
+		this.paste = MenuUtilities.findItemByLabel(this, EditMenu.MENU_DESCR[4*4]);
+		this.clear = MenuUtilities.findItemByLabel(this, EditMenu.MENU_DESCR[5*4]);
+		
+		this.prefs = MenuUtilities.findItemByLabel(this, EditMenu.MENU_DESCR[7*4]);
+		
+		this.showHideClipboard = MenuUtilities.findItemByLabel(this, EditMenu.MENU_DESCR[9*4]);
 		
 		this.updateMenu();
 	}
@@ -93,13 +77,13 @@ implements BMMenu, WindowListener {
 		} else if (command.equals("EDIT_CLEAR")) {
 			this.clear();
 		} else if (command.equals("PREFERENCES")) {
-			this.preferences();
-		} else if (command.equals("SHOW_CLIPBOARD")) {
-			this.showClipboard();
+			this.doPreferences();
+		} else if (command.equals("SHOW_HIDE_CLIPBOARD")) {
+			this.toggleClipboard();
 		}
 	}
 	
-/*** UNDO/REDO IN PROGRESS ***/
+// ---- /*** IN PROGRESS ***/ ---- //
 	private void undoRedo() {
 		if (undoRedo.getLabel().equals("Undo")) {
 			undoRedo.setLabel("Redo");
@@ -110,23 +94,19 @@ implements BMMenu, WindowListener {
 		}
 	}
 	
+// ---- /*** IN PROGRESS ***/ ---- //
 	private void cut() {}
 	private void copy() {}
 	private void paste() {}
 	private void clear() {}
 	
-	private void preferences() {
+	private void doPreferences() {
 		BMPreferencesManager.showPreferencesDialog();
 	}
 	
-	private void showClipboard() {
-		if (showClipboard.getLabel().startsWith("Show")) {
-			clipboardWindow.setVisible(true);
-			showClipboard.setLabel("Hide Clipboard");
-		} else {
-			clipboardWindow.setVisible(false);
-			showClipboard.setLabel("Show Clipboard");
-		}
+	private void toggleClipboard() {
+		this.clipboardWindow.setVisible(!this.clipboardWindow.isVisible());
+		this.updateMenu();
 	}
 	
 	public void windowActivated(WindowEvent e) {}
@@ -136,14 +116,21 @@ implements BMMenu, WindowListener {
 	public void windowOpened(WindowEvent e) {}
 	public void windowClosed(WindowEvent e) {}
 	
-	public void windowClosing(WindowEvent e) {
-		if (e.getWindow() == clipboardWindow) {
-			clipboardWindow.dispose();
-			showClipboard.setLabel("Show Clipboard");
+	public void windowClosing(WindowEvent evt) {
+		if (evt.getWindow() == this.clipboardWindow) {
+			this.clipboardWindow.setVisible(false);
+			this.updateMenu();
 		}
 	}
 	
 	public void updateMenu() {
+		if (this.clipboardWindow.isVisible()) {
+			this.showHideClipboard.setLabel("Hide Clipboard");
+		} else {
+			this.showHideClipboard.setLabel("Show Clipboard");
+		}
+		
+		// FIXME: current class as switch to enable all edit commands
 		if (BMEnvironment.getCurrentClass() == null) {
 			this.undoRedo.setLabel("Undo");
 			this.undoRedo.setEnabled(false);
