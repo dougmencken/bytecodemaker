@@ -1,5 +1,5 @@
 // ===========================================================================
-//	ToolsMenu.java (part of douglas.mencken.bm.menu package)
+// ToolsMenu.java (part of douglas.mencken.bm.menu package)
 // ===========================================================================
 
 package douglas.mencken.bm.menu;
@@ -13,7 +13,7 @@ import douglas.mencken.util.ArrayUtilities;
 import douglas.mencken.tools.PlugIns;
 
 /**
- *	<code>ToolsMenu</code>
+ *	Menu <b>Tools</b> for Bytecode Maker.
  *	
  *	<pre>
  *	Tools
@@ -28,7 +28,7 @@ import douglas.mencken.tools.PlugIns;
  *		...
  *	</pre>
  *
- *	@version 1.32f3
+ *	@version 1.4
  */
 
 public class ToolsMenu extends Menu implements BMMenu {
@@ -52,7 +52,8 @@ public class ToolsMenu extends Menu implements BMMenu {
 	
 	public void updateMenu() {
 		if (plugins == null) {
-			super.setEnabled(false);
+			super.setEnabled(false); /* may be unsupported */
+			super.add(new MenuItem("(Oops, no tools)"));
 		} else {
 			super.removeAll();
 			

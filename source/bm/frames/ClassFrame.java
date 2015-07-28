@@ -1,5 +1,5 @@
 // ===========================================================================
-//	ClassFrame.java (part of douglas.mencken.bm.frames package)
+// ClassFrame.java (part of douglas.mencken.bm.frames package)
 // ===========================================================================
 
 package douglas.mencken.bm.frames;
@@ -22,7 +22,7 @@ import douglas.mencken.bm.menu.FileMenu;
 /**
  *	<code>ClassFrame</code>
  *
- *	@version	1.41f3
+ *	@version 1.5
  */
 
 public class ClassFrame extends Frame /*TitledRectWindow*/
@@ -229,11 +229,10 @@ implements WindowListener, PropertyChangeListener {
 	}
 	
 	public static ClassFrame getCurrentFrame() {
-		if (currentFrame == null) {
-			currentFrame = new ClassFrame();
+		if (ClassFrame.currentFrame == null) {
+			ClassFrame.currentFrame = new ClassFrame();
 		}
-		
-		return currentFrame;
+		return ClassFrame.currentFrame;
 	}
 	
 }
