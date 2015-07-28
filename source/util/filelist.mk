@@ -22,4 +22,5 @@ source/util/TempFileContentsManager.java \
 source/util/TemporaryFileOnDisk.java \
 source/util/WindowCloser.java \
 source/util/WindowTracker.java \
-source/util/WindowUtilities.java
+source/util/WindowUtilities.java \
+source/util/MenuUtilities.java

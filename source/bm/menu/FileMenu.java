@@ -1,5 +1,5 @@
 // ===========================================================================
-//	FileMenu.java (part of douglas.mencken.bm.menu package)
+// FileMenu.java (part of douglas.mencken.bm.menu package)
 // ===========================================================================
 
 package douglas.mencken.bm.menu;
@@ -13,6 +13,7 @@ import douglas.mencken.io.*;
 import douglas.mencken.util.event.CancelEvent;
 import douglas.mencken.util.ClassUtilities;
 import douglas.mencken.util.FileUtilities;
+import douglas.mencken.util.MenuUtilities;
 
 import douglas.mencken.beans.support.NewBeanCustomizerDialog;
 
@@ -29,13 +30,26 @@ import douglas.mencken.bm.storage.prefs.BMPreferencesManager;
 import douglas.mencken.bm.BMEnvironment;
 
 /**
- *	Menu <b>File</b>.
+ *	Menu <b>File</b> for Bytecode Maker.
  *
- *	@version 1.6
+ *	@version 1.7
  */
 
 public final class FileMenu extends Menu
 implements BMMenu, MRJOpenDocumentHandler {
+
+	private static final String[] MENU_DESCR = {
+		"New...", "N", "NEW", "",
+		"Open...", "O", "OPEN", "",
+		">Open Recent", null, null, "f",
+		"Close", "W", "CLOSE", "f",
+		"-", null, null, null,
+		"Save", "S", "SAVE", "f",
+		"Save As...", "", "SAVE_AS", "f",
+		"Revert...", "", "REVERT", "f",
+		"-", null, null, null,
+		"Quit", "Q", "QUIT", ""
+	};
 	
 	private MenuItem newClass;
 	private MenuItem open;
@@ -50,49 +64,16 @@ implements BMMenu, MRJOpenDocumentHandler {
 	
 	public FileMenu() {
 		super("File");
+		MenuUtilities.fillMenuByDesc(FileMenu.MENU_DESCR, this, this);
 		
-		newClass = new MenuItem("New...", new MenuShortcut(KeyEvent.VK_N));
-		newClass.setActionCommand("NEW");
-		newClass.addActionListener(this);
-		super.add(newClass);
+		this.newClass = MenuUtilities.findItemByLabel(this, FileMenu.MENU_DESCR[0*4]);
+		this.open = MenuUtilities.findItemByLabel(this, FileMenu.MENU_DESCR[1*4]);
+		this.openRecent = (Menu)MenuUtilities.findItemByLabel(this, FileMenu.MENU_DESCR[2*4]);
+		this.close = MenuUtilities.findItemByLabel(this, FileMenu.MENU_DESCR[3*4]);
 		
-		open = new MenuItem("Open...", new MenuShortcut(KeyEvent.VK_O));
-		open.setActionCommand("OPEN");
-		open.addActionListener(this);
-		super.add(open);
-		
-		openRecent = new Menu("Open Recent");
-		openRecent.setEnabled(false);
-		super.add(openRecent);
-		
-		close = new MenuItem("Close", new MenuShortcut(KeyEvent.VK_W));
-		close.setActionCommand("CLOSE");
-		close.addActionListener(this);
-		super.add(close);
-		
-		super.addSeparator();
-		
-		save = new MenuItem("Save", new MenuShortcut(KeyEvent.VK_S));
-		save.setActionCommand("SAVE");
-		save.addActionListener(this);
-		super.add(save);
-		
-		saveAs = new MenuItem("Save As...");
-		saveAs.setActionCommand("SAVE_AS");
-		saveAs.addActionListener(this);
-		super.add(saveAs);
-		
-		revert = new MenuItem("Revert...");
-		revert.setActionCommand("REVERT");
-		revert.addActionListener(this);
-		super.add(revert);
-		
-		super.addSeparator();
-		
-		MenuItem quitItem = new MenuItem("Quit", new MenuShortcut(KeyEvent.VK_Q));
-		quitItem.setActionCommand("QUIT");
-		quitItem.addActionListener(this);
-		super.add(quitItem);
+		this.save = MenuUtilities.findItemByLabel(this, FileMenu.MENU_DESCR[5*4]);
+		this.saveAs = MenuUtilities.findItemByLabel(this, FileMenu.MENU_DESCR[6*4]);
+		this.revert = MenuUtilities.findItemByLabel(this, FileMenu.MENU_DESCR[7*4]);
 		
 		this.updateMenu();
 	}
