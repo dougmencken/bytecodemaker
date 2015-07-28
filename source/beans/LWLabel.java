@@ -116,7 +116,7 @@ public class LWLabel extends Component {
 	public Dimension getPreferredSize() {
 		FontMetrics fm = super.getFontMetrics(super.getFont());
 		return new Dimension(
-			fm.stringWidth(this.text) + 10,
+			fm.stringWidth("mn" + this.text + "nm"),
 			fm.getMaxAscent() + fm.getMaxDescent()
 		);
 	}
