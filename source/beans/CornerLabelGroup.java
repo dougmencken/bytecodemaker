@@ -1,14 +1,17 @@
-// ===========================================================================
-//	CornerLabelGroup.java (part of douglas.mencken.beans package)
-//		version 1.0.1
-//	
-// ===========================================================================
+/*
+ * This program is free software: you can redistribute it and/or modify it 
+ * under the terms of the GNU General Public License as published by 
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ */
 
 package douglas.mencken.beans;
 
 /**
  * The <code>CornerLabelGroup</code> class is used to group together 
  * a set of <code>CornerLabel</code> components.
+ *
+ * @version 1.01
  */
 
 public class CornerLabelGroup extends Object {

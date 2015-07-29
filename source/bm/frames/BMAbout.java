@@ -1,6 +1,9 @@
-// ===========================================================================
-// BMAbout.java (part of douglas.mencken.bm.frames package)
-// ===========================================================================
+/*
+ * This program is free software: you can redistribute it and/or modify it 
+ * under the terms of the GNU General Public License as published by 
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ */
 
 package douglas.mencken.bm.frames;
 
@@ -21,7 +24,7 @@ import douglas.mencken.bm.BMEnvironment;
 /**
  *	<code>BMAbout</code>
  *
- *	@version 1.04f
+ *	@version 1.1
  */
 
 public class BMAbout extends Dialog
@@ -42,22 +45,28 @@ implements ActionListener, MRJAboutHandler {
 		LWLabel versionLabel = new LWLabel(BMAbout.getVersionString(), LWLabel.LEFT);
 		
 		LWLabel copyrightLabel = new LWLabel(
-			"(c) 1997-2003, 2015 Douglas Mencken.",
+			"(c) 1997-2003, 2015 Douglas Mencken",
 			FontUtilities.createFont(FontUtilities.GENEVA_9),
 			LWLabel.LEFT
 		);
 		
-		LWLabel allRightsLabel = new LWLabel(
-			"All rights reserved.",
+		/* LWLabel allRightsLabel = new LWLabel(
+			"All rights reserved",
+			FontUtilities.createFont(FontUtilities.GENEVA_9),
+			LWLabel.LEFT
+		); */
+		LWLabel gplLabel = new LWLabel(
+			"This is free software, licensed under GNU GPL v3+",
 			FontUtilities.createFont(FontUtilities.GENEVA_9),
 			LWLabel.LEFT
 		);
+		gplLabel.setSize(gplLabel.getPreferredSize().width + 20, gplLabel.getPreferredSize().height + 20);
 		
 		Panel infoPanel = new Panel(new GridLayout(4, 1));
 		infoPanel.add(versionLabel);
 		infoPanel.add(new LWLabel());
 		infoPanel.add(copyrightLabel);
-		infoPanel.add(allRightsLabel);
+		infoPanel.add(gplLabel);
 		
 		GridBagLayout gridbag = new GridBagLayout();
 		super.setLayout(gridbag);
@@ -90,10 +99,10 @@ implements ActionListener, MRJAboutHandler {
 		super.add(button);
 		
 		super.setBackground(Color.white);
-		super.setSize(300, 80 + button.getPreferredSize().height);
+		super.setSize(320, 80 + button.getPreferredSize().height);
 		
 		Point pos = WindowUtilities.getCenterLocation(this);
-		super.setLocation(pos.x, pos.y - 70);
+		super.setLocation(pos.x, pos.y - 80);
 		super.setResizable(false);
 	}
 	
