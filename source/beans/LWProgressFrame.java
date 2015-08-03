@@ -18,7 +18,7 @@ import douglas.mencken.util.event.*;
 /**
  *	<code>LWProgressFrame</code>
  *
- *	@version 1.15f
+ *	@version 1.2
  */
 
 public class LWProgressFrame extends Frame implements ActionListener {
@@ -151,14 +151,14 @@ public class LWProgressFrame extends Frame implements ActionListener {
 		super.paintAll(super.getGraphics());
 	}
 	
-	public void setValue(int valueCount, int value) {
-		pbar.setValue(valueCount, value);
+	public void changeValue(int valueCount, int value) {
+		pbar.changeValue(valueCount, value);
 		super.toFront();
 		super.paintAll(super.getGraphics());
 	}
 	
-	public void setValue(int barStart, int barEnd, int valueCount, int value) {
-		pbar.setValue(barStart, barEnd, valueCount, value);
+	public void changeValue(int barStart, int barEnd, int valueCount, int value) {
+		pbar.changeValue(barStart, barEnd, valueCount, value);
 		super.toFront();
 		super.paintAll(super.getGraphics());
 	}

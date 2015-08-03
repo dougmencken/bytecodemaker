@@ -12,7 +12,7 @@ import java.awt.*;
 /**
  *	<code>LWProgressBar</code>
  *
- *	@version 1.3
+ *	@version 1.4
  */
 
 public class LWProgressBar extends Component {
@@ -62,44 +62,72 @@ public class LWProgressBar extends Component {
 	public Dimension getPreferredSize() {
 		return super.getSize();
 	}
-	
+
 	public double getPercentComplete() {
 		double percent =
 			(double)(this.currentValue - this.minimumValue) /
 			(double)(this.maximumValue - this.minimumValue);
 		
 		return percent;
-    }
-    
+	}
+
 	public void setValue(int newValue) {
-		if ((newValue < this.minimumValue) || (newValue > this.maximumValue)) {
-			throw new IllegalArgumentException("out of range");
+		if (newValue < this.minimumValue) {
+			newValue = this.minimumValue;
+		} else if (newValue > this.maximumValue) {
+			newValue = this.maximumValue;
 		}
 		
 		this.currentValue = newValue;
 		super.repaint();
 	}
 	
-	public void setValue(int valueCount, int value) {
-		this.setValue(this.minimumValue, this.maximumValue, valueCount, value);
+	public void changeValue(int valueCount, int value) {
+		this.changeValue(this.minimumValue, this.maximumValue, valueCount, value);
 	}
 	
-	public void setValue(int barStart, int barEnd, int valueCount, int value) {
-		if ((barStart < this.minimumValue) || (barEnd > this.maximumValue)) {
-			throw new IllegalArgumentException("out of range");
-		}
+	public void changeValue(int barStart, int barEnd, int valueCount, int value) {
+		if (barStart < this.minimumValue)
+			barStart = this.minimumValue;
+		if (barEnd > this.maximumValue)
+			barEnd = this.maximumValue;
 		
 		float koef = (float)(barEnd - barStart) / (float)valueCount;
 		this.setValue((int)(barStart + koef*value));
 	}
+
+	public void resetValue() {
+		this.currentValue = this.minimumValue;
+		super.repaint();
+	}
+
+	public void advanceValue() {
+		if (this.currentValue < this.maximumValue) {
+			this.currentValue++;
+		}
+	}
+
+	public void advanceOnePercent() {
+		if (this.currentValue >= this.maximumValue) return;
+		double newPercent = this.getPercentComplete() + 0.01d;
+		this.setValue((int)Math.round(newPercent*((double)(this.maximumValue - this.minimumValue)) + this.minimumValue));
+	}
 	
 	public void setMinimum(int newMinValue) {
+		if (newMinValue >= this.maximumValue)
+			newMinValue = this.maximumValue - 1;
 		this.minimumValue = newMinValue;
+		if (this.currentValue < newMinValue)
+			this.currentValue = newMinValue;
 		super.repaint();
 	}
 	
 	public void setMaximum(int newMaxValue) {
+		if (newMaxValue <= this.minimumValue)
+			newMaxValue = this.minimumValue + 1;
 		this.maximumValue = newMaxValue;
+		if (this.currentValue > newMaxValue)
+			this.currentValue = newMaxValue;
 		super.repaint();
 	}
 	

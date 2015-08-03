@@ -23,7 +23,7 @@ import douglas.mencken.bm.BMEnvironment;
 /**
  *	<code>ClassDecompiler</code>
  *
- *	@version 1.01f0
+ *	@version 1.1
  */
 
 public class ClassDecompiler extends Object
@@ -203,7 +203,7 @@ implements Decompiler, CancelListener {
 				}
 				
 				if (pframe != null) {
-					pframe.setValue(barStart, barEnd, count, i);
+					pframe.changeValue(barStart, barEnd, count, i);
 				}
 				if (cancelFlag) return;
 			}
