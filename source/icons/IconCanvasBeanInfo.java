@@ -14,7 +14,7 @@ import java.lang.reflect.*;
 /**
  *	<code>IconCanvasBeanInfo</code>
  *
- *	@version	1.04
+ *	@version	1.1
  */
 
 public class IconCanvasBeanInfo extends SimpleBeanInfo {
@@ -22,9 +22,9 @@ public class IconCanvasBeanInfo extends SimpleBeanInfo {
 	public Image getIcon(int iconKind) {
 		switch (iconKind) {
 			case ICON_COLOR_16x16:
-				return loadImage("IconCanvas_Color16.gif");
+				return super.loadImage("img/IconCanvas_Color16.gif");
 			case ICON_MONO_16x16:
-				return loadImage("IconCanvas_Mono16.gif");
+				return super.loadImage("img/IconCanvas_Mono16.gif");
 				
 			default:
 				return null;
@@ -91,12 +91,12 @@ public class IconCanvasBeanInfo extends SimpleBeanInfo {
 				"addFocusListener",
 				"removeFocusListener"
 			);
-			
-            ed[0].setDisplayName("mouse");
-            ed[1].setDisplayName("focus");
-        } catch (IntrospectionException e) {}
-        
-        return ed;
-    }
-    
+
+			ed[0].setDisplayName("mouse");
+			ed[1].setDisplayName("focus");
+		} catch (IntrospectionException e) {}
+
+		return ed;
+	}
+
 }

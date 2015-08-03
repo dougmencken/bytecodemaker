@@ -13,19 +13,24 @@ import java.awt.*;
 /**
  *	<code>IconListEditor</code>
  *
- *	@version	1.10f3
+ *	@version	1.2
  */
 
 public class IconListEditor extends PropertyEditorSupport {
 	
-	private transient Icon icon = null;
-	
+	private transient Icon icon;
+
+	public IconListEditor() {
+		super();
+		this.icon = new EmptyIcon(16);
+	}
+
 	public String[] getTags() {
 		return new String[] {
-			"none",
-			"CautionIcon",
+			"EmptyIcon",
 			"NoteIcon",
 			"PalmStopIcon",
+			"CautionIcon",
 			"QuestionIcon",
 			"InfoIcon",
 			"StopIcon",
@@ -41,15 +46,11 @@ public class IconListEditor extends PropertyEditorSupport {
 	}
 	
 	public String getAsText() {
-		if (icon != null) {
-			return icon.getName();
-		} else {
-			return "none";
-		}
+		return (this.icon != null) ? this.icon.getName() : "";
 	}
 	
 	public void setAsText(String text) throws IllegalArgumentException {
-		if (!text.equals("none")) {
+		if ((text != null) && (!text.equals(""))) {
 			try {
 				Class cls = Class.forName("douglas.mencken.icons." + text);
 				this.icon = (Icon)(cls.newInstance());
@@ -59,7 +60,7 @@ public class IconListEditor extends PropertyEditorSupport {
 				);
 			}
 		} else {
-			this.icon = null;
+			this.icon = new EmptyIcon(16);
 		}
 		
 		super.firePropertyChange();

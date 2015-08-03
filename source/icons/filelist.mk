@@ -1,4 +1,5 @@
 filelist-icons += \
+source/icons/EmptyIcon.java \
 source/icons/CautionIcon.java \
 source/icons/CleaningUpIcon.java \
 source/icons/DownArrowIcon.java \

@@ -9,20 +9,25 @@ package douglas.mencken.icons;
 
 import java.awt.*;
 import java.io.*;
+import java.beans.PropertyEditorManager;
 
 /**
  *	<code>IconCanvas</code>
  *
- *	@version	1.10
+ *	@version	1.2
  */
 
 public class IconCanvas extends Canvas implements Externalizable {
 	
 	private transient Icon theIcon;
-	protected static int externalVersion = 0x00000120;	// 1.2.0
-	
+	protected static int externalVersion = 0x00000120;	// 1.2
+
+	static {
+		PropertyEditorManager.registerEditor(Icon.class, IconListEditor.class);
+	}
+
 	public IconCanvas() {
-		this(null);
+		this(new EmptyIcon(16));
 	}
 	
 	public IconCanvas(Icon icon) {
@@ -64,23 +69,23 @@ public class IconCanvas extends Canvas implements Externalizable {
 		if (icon == this.theIcon) return;
 		
 		if (icon != null) {
-			this.theIcon = new Icon(icon);
+			this.theIcon = icon;
 		} else {
-			this.theIcon = null;
+			this.theIcon = new EmptyIcon(16);
 		}
 		
-		updateSize();
-		repaint();
+		this.updateSize();
+		super.repaint();
 	}
 	
 	public Icon getIcon() {
-		return new Icon(theIcon);
+		return this.theIcon;
 	}
 	
 	public void writeExternal(ObjectOutput out) throws IOException {
 		out.writeInt(externalVersion);
 		
-		out.writeUTF((theIcon == null) ? "none" : theIcon.getName());
+		out.writeUTF(theIcon.getName()); // theIcon cannot be null
 		Rectangle r = super.getBounds();
 		out.writeInt(r.x);
 		out.writeInt(r.y);
@@ -95,15 +100,11 @@ public class IconCanvas extends Canvas implements Externalizable {
 		}
 		
 		String className = in.readUTF();
-		if (className.equals("none")) {
-			this.theIcon = null;
-		} else {
-			try {
-				Class iconClass = Class.forName("douglas.mencken.icons." + className);
-				this.theIcon = (Icon)(iconClass.newInstance());
-			} catch (Exception e) {
-				this.theIcon = null;
-			}
+		try {
+			Class iconClass = Class.forName("douglas.mencken.icons." + className);
+			this.theIcon = (Icon)(iconClass.newInstance());
+		} catch (Exception e) {
+			this.theIcon = new EmptyIcon(16);
 		}
 		
 		int x = in.readInt();
@@ -112,18 +113,14 @@ public class IconCanvas extends Canvas implements Externalizable {
 		int height = in.readInt();
 		super.setBounds(x, y, width, height);
 		
-		repaint();
+		super.repaint();
 	}
 	
 	private void updateSize() {
-		if (theIcon == null) {
-			super.setSize(16, 16);
-		} else {
-			super.setSize(
-				theIcon.getImage().getWidth(this) + 10,
-				theIcon.getImage().getHeight(this) + 10
-			);
-		}
+		super.setSize(
+			theIcon.getImage().getWidth(this) + 10,
+			theIcon.getImage().getHeight(this) + 10
+		);
 	}
 	
 }

@@ -9,12 +9,12 @@ package douglas.mencken.icons;
 
 import java.awt.*;
 import java.awt.event.*;
-import douglas.mencken.icons.Icon;
+import java.beans.PropertyEditorManager;
 
 /**
  *	<code>IconButton</code>
  *
- *	@version 1.2.4f
+ *	@version 1.3
  */
 
 public class IconButton extends Component implements MouseListener {
@@ -26,9 +26,13 @@ public class IconButton extends Component implements MouseListener {
 	private boolean pressed = false;
 	private boolean dragExit = false;
 	private int imagePos;
-	
+
+	static {
+		PropertyEditorManager.registerEditor(Icon.class, IconListEditor.class);
+	}
+
 	public IconButton() {
-		this(null, Color.lightGray);
+		this(new EmptyIcon(), Color.lightGray);
 	}
 	
 	public IconButton(Icon icon) {
@@ -39,11 +43,11 @@ public class IconButton extends Component implements MouseListener {
 		this.icon = icon;
 		super.setSize(getMinimumSize());
 		
-		setActionCommand((icon == null) ? "IconButton" : icon.getName());
-		addMouseListener(this);
+		this.setActionCommand(super.getClass().getName());
+		super.addMouseListener(this);
 		
-		setForeground(color);
-		repaint();
+		super.setForeground(color);
+		super.repaint();
 	}
 	
 	public Icon getIcon() {
@@ -53,7 +57,7 @@ public class IconButton extends Component implements MouseListener {
 	public void setIcon(Icon icon) {
 		if (icon != this.icon) {
 			this.icon = icon;
-			repaint();
+			super.repaint();
 		}
 	}
 	
@@ -66,18 +70,14 @@ public class IconButton extends Component implements MouseListener {
 	}
 	
 	public Dimension getMinimumSize() {
-		if (icon != null) {
-			return new Dimension(
-				icon.getImage().getWidth(this) + 8,
-				icon.getImage().getHeight(this) + 8
-			);
-		} else {
-			return new Dimension(8, 8);
-		}
+		return new Dimension(
+			this.icon.getImage().getWidth(this) + 8,
+			this.icon.getImage().getHeight(this) + 8
+		);
 	}
 	
 	public Dimension getPreferredSize() {
-		return new Dimension(getSize());
+		return new Dimension(super.getSize());
 	}
 	
 	public void setBounds(int x, int y, int width, int height) {
@@ -145,7 +145,7 @@ public class IconButton extends Component implements MouseListener {
 	
 	public void paint(Graphics g) {
 		super.paint(g);
-		Dimension r = getSize();
+		Dimension r = super.getSize();
 		
 		g.setColor(getBackground());
 		g.drawLine(0, 0, 0, 0);
