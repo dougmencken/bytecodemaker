@@ -26,17 +26,17 @@ public class RoundButton extends Component implements MouseListener {
 	private boolean dragExit = false;
 	
 	public RoundButton() { 
-		this("", Color.black, Color.white);
+		this("(o)", Color.black, Color.white);
 	}
 	
 	public RoundButton(Color foreground, Color background) { 
-		this("", foreground, background);
+		this("(o)", foreground, background);
 	}
 	
 	public RoundButton(String label) {
 		this(label, Color.black, Color.white);
 	}
-	
+
 	public RoundButton(String label, Color foreground, Color background) {
 		this.label = label;
 		this.actionCommand = label;
@@ -47,17 +47,17 @@ public class RoundButton extends Component implements MouseListener {
 		super.setForeground(foreground);
 		super.setBackground(background);
 		
-		addMouseListener(this);
-		setSize(getPreferredSize());
-		repaint();
+		super.addMouseListener(this);
+		super.setSize(this.getPreferredSize());
+		super.repaint();
 	}
 	
 	public String getLabel() { return label; }
 	
 	public void setLabel(String label) {
 		this.label = label;
-		invalidate();
-		repaint();
+		super.invalidate();
+		super.repaint();
 	}
 	
 	public String getActionCommand() { return actionCommand; }
@@ -67,7 +67,7 @@ public class RoundButton extends Component implements MouseListener {
 	}
 	
 	public void update(Graphics g) {
-		paint(g);
+		this.paint(g);
 	}
 	
 	// Note that to avoid deadlocks, paint is *not* synchronized
