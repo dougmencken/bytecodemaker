@@ -20,7 +20,7 @@ import douglas.mencken.bm.storage.prefs.BMPreferencesManager;
 /**
  *	Bytecode Maker's main entry point.
  *
- *	@version 1.1
+ *	@version 1.2
  */
 
 public final class BMMain extends Object {
@@ -36,6 +36,8 @@ public final class BMMain extends Object {
 			}
 			BMEnvironment.quit();
 		}
+		
+		System.setProperty("apple.awt.application.name", "Bytecode Maker");
 		
 		BMPreferencesManager.readPreferences();
 		
