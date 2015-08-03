@@ -44,6 +44,23 @@ bytecode-maker: libs icons beans tools $(MK_JARDEST)/bytecodemaker.jar
 compile: libs icons beans tools bytecode-maker
 	@echo "Build finished. To run: 'make run'."
 
+bigjar: bigJar.jar
+	@echo "Big Jar done."
+
+$(MK_LOGDEST)/filelist-all.log: $(filelist-lib) $(filelist-icons) $(filelist-beans) $(filelist-tools) $(filelist-bm)
+	@mkdir -p $(MK_CLASSDEST) $(MK_LOGDEST)
+	$(COMPILER) -source 1.3 -d $(MK_CLASSDEST) -classpath $(MK_CLASSPATH) $?
+	@echo $^ | tr ' ' '\n' > $(MK_LOGDEST)/filelist-all.log
+
+bigJar.jar: $(MK_LOGDEST)/filelist-all.log
+	@cat $(manifest-icons) $(manifest-beans) $(manifest-bm) | sed "/Manifest-Version/d" > allinone.mf
+	@cp -r $(img-dir-icons) $(MK_CLASSDEST)/douglas/mencken/icons/
+	@cd $(MK_CLASSDEST) && $(ARCHIVER) cfm bigJar.jar ../allinone.mf ./
+	@mv $(MK_CLASSDEST)/bigJar.jar ./
+	rm allinone.mf
+	rm -r $(MK_CLASSDEST)
+	rm $(MK_LOGDEST)/filelist-all.log
+
 $(MK_LOGDEST)/filelist-lib.log: $(filelist-lib)
 	@mkdir -p $(MK_CLASSDEST) $(MK_LOGDEST)
 	$(COMPILER) -source 1.3 -d $(MK_CLASSDEST) -classpath $(MK_CLASSPATH) $?
