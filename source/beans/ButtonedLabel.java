@@ -9,13 +9,14 @@ package douglas.mencken.beans;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyEditorManager;
 
 /**
  *	Multi-line text label with small box buttons.
  *	(Four button placements are supported.)
  *	Also paints one or more lines at the bottom.
  *
- *	@version	1.1
+ *	@version	1.2
  */
 
 public class ButtonedLabel extends Component
@@ -33,6 +34,9 @@ implements MouseListener, MouseMotionListener {
 	/** <pre>(        [button1][button2]        )</pre> */
 	public static final int BUTTONS_CENTER		= 3;
 	
+	static {
+		PropertyEditorManager.registerEditor(String[].class, StringArrayEditor.class);
+	}
 	
 	protected String[] labels;
 	protected String[] buttonLabels;
@@ -59,9 +63,9 @@ implements MouseListener, MouseMotionListener {
 	/**
 	 *	The default constructor.
 	 *	<p>
-	 *	Default button placement:	<code>BUTTONS_LEFT</code><br>
-	 *	Default labels:				<code>null</code> (no labels)<br>
-	 *	Default buttons:			<b>"OK"</b> and <b>"Cancel"</b><br>
+	 *	Default button placement: <code>BUTTONS_LEFT</code><br>
+	 *	Default labels:           <code>null</code> (no labels)<br>
+	 *	Default buttons:          <b>"OK"</b> and <b>"Cancel"</b><br>
 	 */
 	public ButtonedLabel() {
 		this(ButtonedLabel.BUTTONS_LEFT, null, new String[] { "OK", "Cancel" });
@@ -78,18 +82,18 @@ implements MouseListener, MouseMotionListener {
 	public ButtonedLabel(int buttonPlacement, String[] labels, String[] buttons) {
 		super();
 		this.buttonPlacement = buttonPlacement;
-		this.labels = labels;
-		this.buttonLabels = buttons;
-		this.buttonFont = new Font("Monaco", Font.PLAIN, 9);
+		this.labels = (labels != null) ? labels : new String[] {};
+		this.buttonLabels = (buttons != null) ? buttons : new String[] {};
+		this.buttonFont = new Font("SansSerif", Font.PLAIN, 10);
+		this.actionCommand = super.getClass().getName();
 		
 		super.addMouseListener(this);
 		super.addMouseMotionListener(this);
 		
-		super.setFont(new Font("Geneva", Font.PLAIN, 10));
+		super.setFont(new Font("Serif", Font.PLAIN, 12));
 		super.setSize(this.getPreferredSize());
 		super.repaint();
 	}
-	
 	
 	public String getActionCommand() { return this.actionCommand; }
 	
@@ -111,7 +115,7 @@ implements MouseListener, MouseMotionListener {
 	}
 	
 	public String[] getLabels() {
-		return this.labels;
+		return (this.labels != null) ? this.labels : new String[] {};
 	}
 	
 	public void setLabels(String[] labels) {
@@ -120,7 +124,7 @@ implements MouseListener, MouseMotionListener {
 	}
 	
 	public String[] getButtons() {
-		return this.buttonLabels;
+		return (this.buttonLabels != null) ? this.buttonLabels : new String[] {};
 	}
 	
 	public void setButtons(String[] buttons) {
@@ -128,11 +132,11 @@ implements MouseListener, MouseMotionListener {
 		super.repaint();
 	}
 	
-	public int getButtonPlacementMode() {
+	public int getButtonPlacement() {
 		return this.buttonPlacement;
 	}
 	
-	public void setButtonPlacementMode(int buttonPlacement) {
+	public void setButtonPlacement(int buttonPlacement) {
 		this.buttonPlacement = buttonPlacement;
 		super.repaint();
 	}
@@ -156,9 +160,9 @@ implements MouseListener, MouseMotionListener {
 	}
 	
 	/**
-     *	Gets the preferred <code>Dimension</code> indicating this
-     *	<code>ButtonedLabel</code>'s preferred size.
-     */
+	 *	Gets the preferred <code>Dimension</code> indicating this
+	 *	<code>ButtonedLabel</code>'s preferred size.
+	 */
 	public Dimension getPreferredSize() {
 		int prefx = 100;
 		int prefy = 1;
@@ -201,10 +205,10 @@ implements MouseListener, MouseMotionListener {
 	 */
 	public int calculateButtonsWidth() {
 		if (this.buttonLabelWidths == null) {
-			this.calculateButtonLabels();
+			this.calculateButtonDimensions();
 		}
 		
-		int width = -9;
+		int width = -8;
 		
 		int bl_count = this.buttonLabelWidths.length;
 		for (int i = 0; i < bl_count; i++) {
@@ -241,19 +245,20 @@ implements MouseListener, MouseMotionListener {
 		}
 	}
 	
-	private void calculateButtonLabels() {
+	private void calculateButtonDimensions() {
 		int w = super.getSize().width;
 		int h = super.getSize().height;
-		
-		if (this.buttonLabels != null) {
-			int buttonsCount = this.buttonLabels.length;
+
+		String[] buttons = this.getButtons(); // cannot be null
+		int buttonsCount = buttons.length;
+		if (buttonsCount != 0) {
 			this.buttonLabelWidths = new int[buttonsCount];
 			this.buttonLabelXPos = new int[buttonsCount];
 			
 			// buttonLabelWidths
 			FontMetrics fm = super.getFontMetrics(this.buttonFont);
 			for (int i = 0; i < buttonsCount; i++) {
-				this.buttonLabelWidths[i] = fm.stringWidth(this.buttonLabels[i]);
+				this.buttonLabelWidths[i] = fm.stringWidth(buttons[i]);
 			}
 			
 			// buttonLabelXPos
@@ -292,9 +297,7 @@ implements MouseListener, MouseMotionListener {
 					
 					// right buttons
 					if (buttonsCount >= 2) {
-						int rindex = ((buttonsCount % 2) == 0) ?
-													buttonsCount - 1 :
-													buttonsCount - 2;
+						int rindex = ((buttonsCount % 2) == 0) ? (buttonsCount - 1) : (buttonsCount - 2);
 						pos = w - this.buttonLabelWidths[rindex] - 4;
 						this.buttonLabelXPos[rindex] = pos;
 						for (int i = (rindex - 2); i >= 0; i -= 2) {
@@ -346,7 +349,7 @@ implements MouseListener, MouseMotionListener {
 	 */
 	public void paint(Graphics g) {
 		super.paint(g);
-		this.calculateButtonLabels();
+		this.calculateButtonDimensions();
 		
 		int w = super.getSize().width;
 		int h = super.getSize().height;
@@ -357,7 +360,7 @@ implements MouseListener, MouseMotionListener {
 		g.setColor(super.getForeground());
 		
 		// - labels -
-		if (this.labels != null) {
+		if ((this.labels != null) && (this.labels.length != 0)) {
 			int labelsCount = this.labels.length;
 			int max_ascent = super.getFontMetrics(super.getFont()).getMaxAscent();
 			g.setFont(super.getFont());
@@ -374,7 +377,7 @@ implements MouseListener, MouseMotionListener {
 		}
 		
 		// - buttons -
-		if (this.buttonLabels != null) {
+		if ((this.buttonLabels != null) && (this.buttonLabels.length != 0)) {
 			FontMetrics fm = super.getFontMetrics(this.buttonFont);
 			int max_ascent = fm.getMaxAscent();
 			int max_descent = fm.getMaxDescent();

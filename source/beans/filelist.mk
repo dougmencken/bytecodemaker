@@ -24,6 +24,7 @@ source/beans/RoundButton.java \
 source/beans/TextView.java \
 source/beans/TextViewFrame.java \
 source/beans/TextViewOutputStream.java \
-source/beans/TextViewSelectableLine.java
+source/beans/TextViewSelectableLine.java \
+source/beans/StringArrayEditor.java
 
 manifest-beans := source/beans/beans.mf
