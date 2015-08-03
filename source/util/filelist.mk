@@ -4,7 +4,7 @@
 include $(PRJPATH)/source/util/netscape/filelist.mk
 include $(PRJPATH)/source/util/event/filelist.mk
 
-filelist += \
+filelist-lib += \
 source/util/ArrayUtilities.java \
 source/util/DecHexConverter.java \
 source/util/ByteTransformer.java \

@@ -3,39 +3,81 @@ MAINCLASS       ?= douglas.mencken.bm.BMMain
 
 MK_CLASSDEST    ?= ./class
 MK_LOGDEST      ?= ./log
-MK_CLASSPATH    ?= $(MK_CLASSDEST):./jars/MRJToolkitStubs.jar
+MK_JARDEST      ?= ./jars
+MK_CLASSPATH    ?= $(MK_CLASSDEST):$(MK_JARDEST)/MRJToolkitStubs.jar
 
 HOME_OF_JAVA    ?= /usr/openjdk7u2-macppc-fcs-2012-03-14
 
 COMPILER        := JAVA_HOME=$(HOME_OF_JAVA) $(HOME_OF_JAVA)/bin/javac
-COMPILE_OPTIONS := -source 1.3 -d $(MK_CLASSDEST) -classpath $(MK_CLASSPATH)
+ARCHIVER        := JAVA_HOME=$(HOME_OF_JAVA) $(HOME_OF_JAVA)/bin/jar
 
 include ./filelist-lib.mk
+include $(PRJPATH)/source/icons/filelist.mk
+include $(PRJPATH)/source/beans/filelist.mk
+include $(PRJPATH)/source/tools/filelist.mk
 include ./filelist-bm.mk
 
-.PHONY: all compile libs run clean
+.DEFAULT_GOAL	:= default
 
-libs: $(MK_LOGDEST)/filelist-lib.log
-	@echo "Libraries done. Filelist is '$(MK_LOGDEST)/filelist-lib.log'."
+.PHONY: all compile bytecode-maker tools beans icons libs run clean
 
-compile: $(MK_LOGDEST)/filelist-lib.log $(MK_LOGDEST)/filelist-bm.log
-	@echo "Build finished. Filelists are '$(MK_LOGDEST)/filelist-lib.log', '$(MK_LOGDEST)/filelist-bm.log'. To run: 'make run'."
+default: all
 
 all: compile
 	@echo "All done."
 
-$(MK_LOGDEST)/filelist-lib.log: $(filelist)
+libs: $(MK_LOGDEST)/filelist-lib.log
+	@echo "Libraries done. Filelist is '$(MK_LOGDEST)/filelist-lib.log'."
+
+icons: $(MK_JARDEST)/icons-dougmencken.jar
+	@echo "Icons done. Jar is '$(MK_JARDEST)/icons-dougmencken.jar'."
+
+beans: libs icons $(MK_JARDEST)/beans-dougmencken.jar
+	@echo "Beans done. Jar is '$(MK_JARDEST)/beans-dougmencken.jar'."
+
+tools: libs icons beans $(MK_LOGDEST)/filelist-tools.log
+	@echo "Tools done. Filelist is '$(MK_LOGDEST)/filelist-tools.log'."
+
+bytecode-maker: libs icons beans tools $(MK_JARDEST)/bytecodemaker.jar
+	@echo "Bytecode Maker done. Jar is '$(MK_JARDEST)/bytecodemaker.jar'."
+
+compile: libs icons beans tools bytecode-maker
+	@echo "Build finished. To run: 'make run'."
+
+$(MK_LOGDEST)/filelist-lib.log: $(filelist-lib)
 	@mkdir -p $(MK_CLASSDEST) $(MK_LOGDEST)
-	$(COMPILER) $(COMPILE_OPTIONS) $?
+	$(COMPILER) -source 1.3 -d $(MK_CLASSDEST) -classpath $(MK_CLASSPATH) $?
 	@echo $^ | tr ' ' '\n' > $(MK_LOGDEST)/filelist-lib.log
 
-$(MK_LOGDEST)/filelist-bm.log: $(filelist-bm)
+$(MK_JARDEST)/icons-dougmencken.jar: $(filelist-icons)
 	@mkdir -p $(MK_CLASSDEST) $(MK_LOGDEST)
-	$(COMPILER) $(COMPILE_OPTIONS) $?
-	@echo $^ | tr ' ' '\n' > $(MK_LOGDEST)/filelist-bm.log
+	$(COMPILER) -source 1.3 -d $(MK_CLASSDEST) -classpath $(MK_CLASSPATH) $?
+	@cp -r $(img-dir-icons) $(MK_CLASSDEST)/douglas/mencken/icons/
+	@cd $(MK_CLASSDEST) && $(ARCHIVER) cfm icons-dougmencken.jar ../$(manifest-icons) douglas/mencken/icons/
+	@mv $(MK_CLASSDEST)/icons-dougmencken.jar $(MK_JARDEST)/
+	$(ARCHIVER) tf $(MK_JARDEST)/icons-dougmencken.jar > /dev/null && rm -r $(MK_CLASSDEST)/douglas/mencken/icons
 
-$(MK_LOGDEST)/run.log: $(MK_LOGDEST)/filelist-lib.log $(MK_LOGDEST)/filelist-bm.log
-	JAVA_HOME=$(HOME_OF_JAVA) $(HOME_OF_JAVA)/bin/java -classpath $(MK_CLASSPATH) $(MAINCLASS) | tee $(MK_LOGDEST)/run.log
+$(MK_JARDEST)/beans-dougmencken.jar: $(filelist-beans)
+	@mkdir -p $(MK_CLASSDEST) $(MK_LOGDEST)
+	$(COMPILER) -source 1.3 -d $(MK_CLASSDEST) -classpath $(MK_CLASSPATH):$(MK_JARDEST)/icons-dougmencken.jar $?
+	@cd $(MK_CLASSDEST) && $(ARCHIVER) cfm beans-dougmencken.jar ../$(manifest-beans) douglas/mencken/beans/
+	@mv $(MK_CLASSDEST)/beans-dougmencken.jar $(MK_JARDEST)/
+	$(ARCHIVER) tf $(MK_JARDEST)/beans-dougmencken.jar > /dev/null && rm -r $(MK_CLASSDEST)/douglas/mencken/beans
+
+$(MK_LOGDEST)/filelist-tools.log: $(filelist-tools)
+	@mkdir -p $(MK_CLASSDEST) $(MK_LOGDEST)
+	$(COMPILER) -source 1.3 -d $(MK_CLASSDEST) -classpath $(MK_CLASSPATH):$(MK_JARDEST)/icons-dougmencken.jar:$(MK_JARDEST)/beans-dougmencken.jar $?
+	@echo $^ | tr ' ' '\n' > $(MK_LOGDEST)/filelist-tools.log
+
+$(MK_JARDEST)/bytecodemaker.jar: $(filelist-bm)
+	@mkdir -p $(MK_CLASSDEST) $(MK_LOGDEST)
+	$(COMPILER) -source 1.3 -d $(MK_CLASSDEST) -classpath $(MK_CLASSPATH):$(MK_JARDEST)/icons-dougmencken.jar:$(MK_JARDEST)/beans-dougmencken.jar $?
+	@cd $(MK_CLASSDEST) && $(ARCHIVER) cfm bytecodemaker.jar ../$(manifest-bm) douglas/mencken/bm/
+	@mv $(MK_CLASSDEST)/bytecodemaker.jar $(MK_JARDEST)/
+	$(ARCHIVER) tf $(MK_JARDEST)/bytecodemaker.jar >/dev/null && rm -r $(MK_CLASSDEST)/douglas/mencken/bm
+
+$(MK_LOGDEST)/run.log: compile
+	JAVA_HOME=$(HOME_OF_JAVA) $(HOME_OF_JAVA)/bin/java -classpath $(MK_CLASSPATH):$(MK_JARDEST)/icons-dougmencken.jar:$(MK_JARDEST)/beans-dougmencken.jar:$(MK_JARDEST)/bytecodemaker.jar $(MAINCLASS) | tee $(MK_LOGDEST)/run.log
 
 run: $(MK_LOGDEST)/run.log
 	@echo "Results are in '$(MK_LOGDEST)/run.log'. Before re-running: 'rm $(MK_LOGDEST)/run.log' or 'make clean'."
@@ -43,3 +85,6 @@ run: $(MK_LOGDEST)/run.log
 clean:
 	rm -fr $(MK_LOGDEST)
 	rm -fr $(MK_CLASSDEST)
+	rm -f $(MK_JARDEST)/beans-dougmencken.jar
+	rm -f $(MK_JARDEST)/icons-dougmencken.jar
+	rm -f $(MK_JARDEST)/bytecodemaker.jar

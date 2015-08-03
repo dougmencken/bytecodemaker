@@ -1,6 +1,6 @@
 include $(PRJPATH)/source/beans/support/filelist.mk
 
-filelist += \
+filelist-beans += \
 source/beans/BorderBox.java \
 source/beans/ButtonedLabel.java \
 source/beans/CornerLabel.java \
@@ -26,3 +26,4 @@ source/beans/TextViewFrame.java \
 source/beans/TextViewOutputStream.java \
 source/beans/TextViewSelectableLine.java
 
+manifest-beans := source/beans/beans.mf

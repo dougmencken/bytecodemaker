@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+
+Name: douglas/mencken/bm/storage/JavaClass.class
+Java-Bean: True
+
+Name: douglas/mencken/bm/storage/JavaConstantPool.class
+Java-Bean: True
+
+Name: douglas/mencken/bm/storage/JavaField.class
+Java-Bean: True
+
+Name: douglas/mencken/bm/storage/JavaMethod.class
+Java-Bean: True
+
+Name: douglas/mencken/bm/storage/JavaBytecodeBlock.class
+Java-Bean: True

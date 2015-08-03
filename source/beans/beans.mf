@@ -1,28 +1,28 @@
 Manifest-Version: 1.0
 
-Name: vcodes/beans/LWButton.class
+Name: douglas/mencken/beans/LWButton.class
 Java-Bean: True
 
-Name: vcodes/beans/LWCheckbox.class
+Name: douglas/mencken/beans/LWCheckbox.class
 Java-Bean: True
 
-Name: vcodes/beans/LWLabel.class
+Name: douglas/mencken/beans/LWLabel.class
 Java-Bean: True
 
-Name: vcodes/beans/CornerLabel.class
+Name: douglas/mencken/beans/CornerLabel.class
 Java-Bean: True
 
-Name: vcodes/beans/RoundButton.class
+Name: douglas/mencken/beans/RoundButton.class
 Java-Bean: True
 
-Name: vcodes/beans/ButtonedLabel.class
+Name: douglas/mencken/beans/ButtonedLabel.class
 Java-Bean: True
 
-Name: vcodes/beans/GroupBox.class
+Name: douglas/mencken/beans/GroupBox.class
 Java-Bean: True
 
-Name: vcodes/beans/BorderBox.class
+Name: douglas/mencken/beans/BorderBox.class
 Java-Bean: True
 
-Name: vcodes/beans/LWProgressBar.class
+Name: douglas/mencken/beans/LWProgressBar.class
 Java-Bean: True

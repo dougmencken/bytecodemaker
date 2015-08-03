@@ -11,3 +11,4 @@ filelist-bm += \
 source/bm/BMEnvironment.java \
 source/bm/BMMain.java
 
+manifest-bm := source/bm/manifest.mf

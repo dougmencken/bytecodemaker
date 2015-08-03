@@ -1,7 +1,7 @@
 # ###################################################################
 # filelist.mk - unique for each directory
 
-filelist += \
+filelist-lib += \
 source/io/ASCIIFilter.java \
 source/io/AutoTypeCreatorFixer.java \
 source/io/ByteArrayIStream.java \

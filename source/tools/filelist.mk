@@ -1,6 +1,6 @@
 include $(PRJPATH)/source/tools/zip/filelist.mk
 
-filelist += \
+filelist-tools += \
 source/tools/AskForOneStringDialog.java \
 source/tools/AttributeSupport.java \
 source/tools/ClipboardFrame.java \

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 
-Name: vcodes/icons/IconCanvas.class
+Name: douglas/mencken/icons/IconCanvas.class
 Java-Bean: True
 
-Name: vcodes/icons/IconButton.class
+Name: douglas/mencken/icons/IconButton.class
 Java-Bean: True

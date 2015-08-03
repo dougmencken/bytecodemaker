@@ -1,4 +1,4 @@
-filelist += \
+filelist-icons += \
 source/icons/CautionIcon.java \
 source/icons/CleaningUpIcon.java \
 source/icons/DownArrowIcon.java \
@@ -21,3 +21,6 @@ source/icons/SaveIcon.java \
 source/icons/StopIcon.java \
 source/icons/UpArrowIcon.java
 
+manifest-icons := source/icons/icons.mf
+
+img-dir-icons := source/icons/img
