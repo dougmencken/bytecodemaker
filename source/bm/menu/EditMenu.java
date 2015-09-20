@@ -133,7 +133,7 @@ implements BMMenu, WindowListener {
 			this.showHideClipboard.setLabel("Show Clipboard");
 		}
 		
-		// FIXME: current class as switch to enable all edit commands
+		// FIXME: using current class as switch to enable all edit commands
 		if (BMEnvironment.getCurrentClass() == null) {
 			this.undoRedo.setLabel("Undo");
 			this.undoRedo.setEnabled(false);

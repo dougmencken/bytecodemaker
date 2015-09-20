@@ -12,16 +12,13 @@ import java.awt.event.*;
 import douglas.mencken.tools.UsefulMessageDialogs;
 
 import douglas.mencken.bm.storage.JavaClass;
-// LOCAL-TO-PACKAGE import douglas.mencken.bm.storage.JavaConstantPoolElement;
 import douglas.mencken.bm.frames.*;
-// REMOVED import douglas.mencken.bm.action.BytecodeOptimizer;
-// REMOVED import douglas.mencken.bm.action.ConstantPoolOptimizer;
 import douglas.mencken.bm.BMEnvironment;
 
 /**
  *	<code>OptionsMenu</code>
  *
- *	@version 1.37f1
+ *	@version 1.4
  */
 
 public final class OptionsMenu extends Menu implements BMMenu {
@@ -77,7 +74,7 @@ public final class OptionsMenu extends Menu implements BMMenu {
 		
 		int result = osd.getResult();
 		if ((result & OptimizationSetupDialog.OPTIMIZE_CONSTANT_POOL) != 0) {
-			/* REMOVED ConstantPoolOptimizer cp_optimizer = new ConstantPoolOptimizer();
+			/* ConstantPoolOptimizer cp_optimizer = new ConstantPoolOptimizer();
 			Object[] optimizedConstants = cp_optimizer.optimizeAll(
 				currentClass.getPoolManager().getConstants()
 			);
@@ -92,22 +89,22 @@ public final class OptionsMenu extends Menu implements BMMenu {
 			} else {
 				UsefulMessageDialogs.doInfoDialog("Constant Pool: No optimizations made");
 			}*/
-			UsefulMessageDialogs.doInfoDialog("Constant Pool: No optimizations made - IN PROGRESS");
+			UsefulMessageDialogs.doInfoDialog("Constant Pool: No optimizations made");
 		}
 		if ((result & OptimizationSetupDialog.OPTIMIZE_BYTECODES) != 0) {
-			/* REMOVED BytecodeOptimizer bc_optimizer = new BytecodeOptimizer();
+			/* BytecodeOptimizer bc_optimizer = new BytecodeOptimizer();
 			bc_optimizer.optimizeAll(currentClass.getMethods());
 			if (bc_optimizer.isOptimized()) {
 				UsefulMessageDialogs.doInfoDialog("Bytecodes: Optimization complete");
 			} else {
 				UsefulMessageDialogs.doInfoDialog("Bytecodes: No optimizations made");
 			}*/
-			UsefulMessageDialogs.doInfoDialog("Bytecodes: No optimizations made - IN PROGRESS");
+			UsefulMessageDialogs.doInfoDialog("Bytecodes: No optimizations made");
 		}
 	}
 	
 	private void verify() {
-		// ... IMPLEMENT in Bytecode Maker 0.6.0
+		// ... IMPLEMENT ME ...
 	}
 	
 	public void updateMenu() {

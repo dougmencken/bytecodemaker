@@ -13,7 +13,7 @@ import java.awt.event.ActionListener;
 /**
  *	<code>BMMenu</code>
  *
- *	@version 1.04f
+ *	@version 1.1
  */
 
 public interface BMMenu extends ActionListener {

@@ -27,6 +27,7 @@ import douglas.mencken.tools.zip.*;
 
 import douglas.mencken.bm.engine.RandomAccessJavaClass;
 import douglas.mencken.bm.storage.JavaClass;
+import douglas.mencken.bm.storage.JavaClassMaker;
 import douglas.mencken.bm.frames.ClassFrame;
 
 import douglas.mencken.bm.storage.prefs.BMPreferencesManager;
@@ -35,7 +36,7 @@ import douglas.mencken.bm.BMEnvironment;
 /**
  *	Menu <b>File</b> for Bytecode Maker.
  *
- *	@version 1.7
+ *	@version 1.71
  */
 
 public final class FileMenu extends Menu
@@ -187,19 +188,18 @@ implements BMMenu, MRJOpenDocumentHandler {
 	}
 	
 	private void newClass() {
-		NewBeanCustomizerDialog newDialog = new NewBeanCustomizerDialog(
-			"Class", JavaClass.class
-		);
-		newDialog.setVisible(true);
+		NewBeanCustomizerDialog customizer =
+			new NewBeanCustomizerDialog("Class", JavaClass.class);
+		customizer.setVisible(true);
 		
-		if (newDialog.getBean() != null) {
-			JavaClass newJavaClass = (JavaClass)newDialog.getBean();
-/////////////			JavaClass.addDefaultConstructor(newJavaClass);
+		if (customizer.getBean() != null) {
+			JavaClass newClass = (JavaClass)customizer.getBean();
+			JavaClassMaker.addDefaultConstructor(newClass);
 			LogMonitor.showCurrent();
 			
-			if (newJavaClass != null) {
-				BMEnvironment.setCurrentClass(newJavaClass);
-				ClassFrame.getCurrentFrame().setClass(newJavaClass);
+			if (newClass != null) {
+				BMEnvironment.setCurrentClass(newClass);
+				ClassFrame.getCurrentFrame().setClass(newClass);
 			}
 		}
 		
@@ -353,7 +353,7 @@ implements BMMenu, MRJOpenDocumentHandler {
 					success = true;
 				} catch (IOException ioe) {
 					UsefulMessageDialogs.doErrorDialog(
-						"FileMenu.openFile() caught " +
+						"FileMenu.readBytes ~ caught " +
 						ClassUtilities.getClassName(ioe.getClass().getName()) + 
 						": " + ioe.getMessage()
 					);
@@ -374,7 +374,7 @@ implements BMMenu, MRJOpenDocumentHandler {
 					UsefulMessageDialogs.doWarningDialog("Unknown zip file format");
 				}
 			} else {
-				// ... SHOW TEXT EDITOR etc.
+				/* ... TODO: text editor for text files ... */
 			}
 		}
 		

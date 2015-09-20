@@ -22,11 +22,11 @@ import douglas.mencken.bm.frames.*;
 /**
  *	Menu <b>Window</b> for Bytecode Maker.
  *
- *	@version 1.1
+ *	@version 1.11
  */
 
 public final class WindowMenu extends Menu
-implements BMMenu, WindowListener {
+implements BMMenu, ItemListener, WindowListener {
 	
 	private WindowTracker windowTracker = new WindowTracker();
 	
@@ -53,13 +53,13 @@ implements BMMenu, WindowListener {
 	};
 	
 	private static final String[] CLASS_SUBMENU_DESCR = {
-		"Constant Pool", "1", "C_POOL_W", "x",
-		"Fields", "2", "FIELDS_W", "x",
-		"Methods", "3", "METHODS_W", "x",
-		"Attributes", "4", "ATTRS_W", "x",
+		"Constant Pool", "1", "", "x",
+		"Fields", "2", "", "x",
+		"Methods", "3", "", "x",
+		"Attributes", "4", "", "x",
 		"-", null, null, null,
-		"Class Dump", "D", "CLASS_DUMP", "x",
-		"Decompiled Source", "R", "CLASS_SOURCE", "x"
+		"Class Dump", "D", "", "x",
+		"Decompiled Source", "R", "", "x"
 	};
 	
 	public WindowMenu() {
@@ -67,7 +67,7 @@ implements BMMenu, WindowListener {
 		MenuUtilities.fillMenuByDesc(WindowMenu.MENU_DESCR, this, this);
 		
 		this.currentClass = (Menu)MenuUtilities.findItemByLabel(this, WindowMenu.MENU_DESCR[0*4]);
-		this.fillClassSubmenu(this.currentClass, this);
+		this.fillClassSubmenu(this.currentClass, this, this);
 		
 		this.memoryMonitor = MenuUtilities.findItemByLabel(this, WindowMenu.MENU_DESCR[2*4]);
 		this.threadMonitor = MenuUtilities.findItemByLabel(this, WindowMenu.MENU_DESCR[3*4]);
@@ -85,7 +85,7 @@ implements BMMenu, WindowListener {
 			this.currentClass.setLabel(className);
 		}
 		
-		this.currentClass.setEnabled(current != null /* true */);
+		this.currentClass.setEnabled(current != null);
 		this.updateClassSubmenu();
 		
 		this.memoryMonitor.setLabel(
@@ -136,8 +136,8 @@ implements BMMenu, WindowListener {
 		}
 	}
 	
-	private void fillClassSubmenu(Menu submenu, ActionListener actionListener) {
-		MenuUtilities.fillMenuByDesc(WindowMenu.CLASS_SUBMENU_DESCR, submenu, actionListener);
+	private void fillClassSubmenu(Menu submenu, ActionListener actionListener, ItemListener itemListener) {
+		MenuUtilities.fillMenuByDesc(WindowMenu.CLASS_SUBMENU_DESCR, submenu, actionListener, itemListener);
 		
 		this.constantPoolWindow = (CheckboxMenuItem)MenuUtilities.findItemByLabel(submenu, WindowMenu.CLASS_SUBMENU_DESCR[0*4]);
 		this.fieldsWindow = (CheckboxMenuItem)MenuUtilities.findItemByLabel(submenu, WindowMenu.CLASS_SUBMENU_DESCR[1*4]);
@@ -153,13 +153,11 @@ implements BMMenu, WindowListener {
 		if (visible) {
 			this.windowTracker.closeWindow("pool window");
 		} else {
-/*************
-			JavaConstantPoolCustomizer window = new JavaConstantPoolCustomizer(this);
+			JavaConstantPoolFrame window = new JavaConstantPoolFrame(this);
 			window.setLocation(100, 5);
 			window.addWindowListener(this);
 			window.setClass(BMEnvironment.getCurrentClass());
 			this.windowTracker.showWindow("pool window", window, false);
-*******************/
 		}
 		
 		this.updateMenu();
@@ -298,35 +296,41 @@ implements BMMenu, WindowListener {
 		this.updateMenu();
 	}
 	
-	public void windowClosed(WindowEvent evt) {}
-	public void windowOpened(WindowEvent evt) {}
-	public void windowIconified(WindowEvent evt) {}
-	public void windowDeiconified(WindowEvent evt) {}
-	public void windowActivated(WindowEvent evt) {}
-	public void windowDeactivated(WindowEvent evt) {}
+	public void windowClosed(WindowEvent clev) {}
+	public void windowOpened(WindowEvent opev) {}
+	public void windowIconified(WindowEvent icev) {}
+	public void windowDeiconified(WindowEvent deicev) {}
+	public void windowActivated(WindowEvent actev) {}
+	public void windowDeactivated(WindowEvent deactev) {}
 	
 	public void actionPerformed(ActionEvent evt) {
-		ClassFrame.getCurrentFrame().toFront();
-		
 		String command = evt.getActionCommand();
-		if (command.equals("C_POOL_W")) {
-			this.showHideConstantPoolWindow();
-		} else if (command.equals("FIELDS_W")) {
-			this.showHideFieldsWindow();
-		} else if (command.equals("METHODS_W")) {
-			this.showHideMethodsWindow();
-		} else if (command.equals("ATTRS_W")) {
-			this.showHideAttributesWindow();
-		} else if (command.equals("CLASS_DUMP")) {
-			this.showHideClassDumpWindow();
-		} else if (command.equals("CLASS_SOURCE")) {
-			this.showHideClassSourceWindow();
-		} else if (command.equals("MEMORY_MONITOR")) {
+		if (command.equals("MEMORY_MONITOR")) {
 			this.showHideMemoryMonitor();
 		} else if (command.equals("THREAD_MONITOR")) {
 			this.showHideThreadMonitor();
 		} else if (command.equals("CYCLE_WINDOWS")) {
 			// **** ... STILL IN PROGRESS ... **** //
+		}
+	}
+	
+	public void itemStateChanged(ItemEvent iev) {
+		Object item = iev.getItem();
+		if (item instanceof String) {
+			String str = (String)item;
+			if (str.equals(this.constantPoolWindow.getLabel())) {
+				this.showHideConstantPoolWindow();
+			} else if (str.equals(this.fieldsWindow.getLabel())) {
+				this.showHideFieldsWindow();
+			} else if (str.equals(this.methodsWindow.getLabel())) {
+				this.showHideMethodsWindow();
+			} else if (str.equals(this.attributesWindow.getLabel())) {
+				this.showHideAttributesWindow();
+			} else if (str.equals(this.classDump.getLabel())) {
+				this.showHideClassDumpWindow();
+			} else if (str.equals(this.classSource.getLabel())) {
+				this.showHideClassSourceWindow();
+			}
 		}
 	}
 	
