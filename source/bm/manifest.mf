@@ -3,7 +3,7 @@ Manifest-Version: 1.0
 Name: douglas/mencken/bm/storage/JavaClass.class
 Java-Bean: True
 
-Name: douglas/mencken/bm/storage/JavaConstantPool.class
+Name: douglas/mencken/bm/storage/JavaConstantPoolElement.class
 Java-Bean: True
 
 Name: douglas/mencken/bm/storage/JavaField.class

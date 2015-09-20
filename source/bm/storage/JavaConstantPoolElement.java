@@ -15,13 +15,12 @@ import douglas.mencken.exceptions.InvalidClassFormatError;
 
 /**
  *	<code>JavaConstantPoolElement</code>
- *	(local to package)
  *
- *	@version 2.06f3
+ *	@version 2.1
  */
 
-class JavaConstantPoolElement extends Object implements Externalizable {
-	
+public class JavaConstantPoolElement extends Object implements Externalizable {
+
 	protected transient int number;
 	protected int tag;
 	
@@ -145,7 +144,7 @@ class JavaConstantPoolElement extends Object implements Externalizable {
 		this.tag = in.readUnsignedByte();
 		
 		switch (this.tag) {
-			case /* UTF8 */ 1:
+			case /* 1: UTF8 */ JavaConstantPool.CONSTANT_UTF8:
 			{
 				int length = in.readUnsignedShort();
 				byte[] chars = new byte[length];
@@ -155,49 +154,49 @@ class JavaConstantPoolElement extends Object implements Externalizable {
 				break;
 			}
 			
-			case /* Unicode */ 2:
-				throw new InvalidClassFormatError("Unicode constant (2)");
+			case /* 2: Unicode */ JavaConstantPool.CONSTANT_INTERNAL_Unicode:
+				throw new InvalidClassFormatError("Unicode constant");
 			
-			case /* Integer */ 3:
+			case /* 3: Integer */ JavaConstantPool.CONSTANT_Integer:
 			{
 				String intValue = Integer.toString(in.readInt());
 				this.setContents(intValue);
 				break;
 			}
 			
-			case /* Float */ 4:
+			case /* 4: Float */ JavaConstantPool.CONSTANT_Float:
 			{
 				String floatValue = Float.toString(in.readFloat());
 				this.setContents(floatValue);
 				break;
 			}
 			
-			case /* Long */ 5:
+			case /* 5: Long */ JavaConstantPool.CONSTANT_Long:
 			{
 				String longValue = Long.toString(in.readLong());
 				this.setContents(longValue);
 				break;
 			}
 			
-			case /* Double */ 6:
+			case /* 6: Double */ JavaConstantPool.CONSTANT_Double:
 			{
 				String doubleValue = Double.toString(in.readDouble());
 				this.setContents(doubleValue);
 				break;
 			}
 			
-			case /* Classref */ 7:
-			case /* Stringref */ 8:
+			case /* 7: Classref */ JavaConstantPool.CONSTANT_Classref:
+			case /* 8: Stringref */ JavaConstantPool.CONSTANT_Stringref:
 			{
 				this.ref1 = in.readUnsignedShort();
 				this.ref2 = 0;
 				break;
 			}
 			
-			case /* Fieldref */ 9:
-			case /* Methodref */ 10:
-			case /* InterfaceMethodref */ 11:
-			case /* NameAndType */ 12:
+			case /* 9: Fieldref */ JavaConstantPool.CONSTANT_Fieldref:
+			case /* 10: Methodref */ JavaConstantPool.CONSTANT_Methodref:
+			case /* 11: InterfaceMethodref */ JavaConstantPool.CONSTANT_InterfaceMethodref:
+			case /* 12: NameAndType */ JavaConstantPool.CONSTANT_NameAndType:
 			{
 				this.ref1 = in.readUnsignedShort();
 				this.ref2 = in.readUnsignedShort();
@@ -214,7 +213,8 @@ class JavaConstantPoolElement extends Object implements Externalizable {
 	 *	in <b>TWO</b> adjoining constant pool cells (64-bit).
 	 */
 	boolean isDoubleSize() {
-		return ((this.tag == /* Long */ 5) || (this.tag == /* Double */ 6));
+		return (	(this.tag == /* Long */ JavaConstantPool.CONSTANT_Long) ||
+				(this.tag == /* Double */ JavaConstantPool.CONSTANT_Double) );
 	}
 	
 	/**
@@ -222,7 +222,9 @@ class JavaConstantPoolElement extends Object implements Externalizable {
 	 *	another constants.
 	 */
 	boolean isBasicType() {
-		return (this.tag <= 6);
+		/* 1 to 6 */
+		return	(this.tag >= JavaConstantPool.CONSTANT_UTF8) &&
+			(this.tag <= JavaConstantPool.CONSTANT_Double);
 	}
 	
 	/**
@@ -269,7 +271,7 @@ class JavaConstantPoolElement extends Object implements Externalizable {
 		if ((obj != null) && (obj instanceof JavaConstantPoolElement)) {
 			JavaConstantPoolElement constant = (JavaConstantPoolElement)obj;
 			if (constant.tag == this.tag) {
-				if ((this.tag >= 1 /* UTF8 */) && (this.tag <= 6 /* Double */)) {
+				if (this.isBasicType()) {
 					if (constant.getContents().equals(this.getContents())) {
 						return true;
 					}
@@ -308,7 +310,8 @@ class JavaConstantPoolElement extends Object implements Externalizable {
 		}
 		
 		s.append(" (");
-		if ((this.tag >= 1) && (this.tag <= 12)) {
+		if ( (this.tag >= JavaConstantPool.CONSTANT_UTF8) &&
+				(this.tag <= JavaConstantPool.CONSTANT_NameAndType) ) {
 			s.append(JavaConstantPool.CONSTANT_TAGS[this.tag]);
 			if (this.ref1 != 0) {
 				s.append(", @");
@@ -320,10 +323,10 @@ class JavaConstantPoolElement extends Object implements Externalizable {
 			}
 			s.append(')');
 		} else {
-			s.append("* unknown tag *");
+			s.append("* unknown tag (" + this.tag + ") *");
 		}
 		
-		if (appendContents || (this.isBasicType())) {
+		if (appendContents && this.isBasicType()) {
 			String contents = this.getContents();
 			if ((contents.length() != 0) ) {
 				s.append(": " + contents);

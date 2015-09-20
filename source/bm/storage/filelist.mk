@@ -13,9 +13,8 @@ source/bm/storage/JavaClassIndexedMember.java \
 source/bm/storage/JavaClassMaker.java \
 source/bm/storage/JavaClassMember.java \
 source/bm/storage/JavaConstantPool.java \
-source/bm/storage/JavaConstantPoolBeanInfo.java \
-source/bm/storage/JavaConstantPoolCustomizer.java \
 source/bm/storage/JavaConstantPoolElement.java \
+source/bm/storage/JavaConstantPoolElementEditor.java \
 source/bm/storage/JavaField.java \
 source/bm/storage/JavaFieldBeanInfo.java \
 source/bm/storage/JavaFieldCustomizer.java \
