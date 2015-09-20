@@ -17,7 +17,7 @@ import douglas.mencken.bm.storage.constants.BMErrorStrings;
 /**
  *	<code>JavaClass</code>
  *	
- *	@version 2.0d12
+ *	@version 2.1
  */
 
 public class JavaClass extends Object implements Externalizable {
@@ -83,15 +83,13 @@ public class JavaClass extends Object implements Externalizable {
 		super();
 		this.init(0, 0, 0);
 		
-		try {
-			JavaClass newClass = JavaClassMaker.makeJavaClass(
-				"public synchronized class UntitledClass extends java.lang.Object"
-			);
-			this.accessModifiers = newClass.accessModifiers;
-			this.classRef = newClass.classRef;
-			this.superclassRef = newClass.superclassRef;
-			this.constantPool = newClass.constantPool;
-		} catch (Exception exc) { /* impossible */ throw new InternalError(); }
+		JavaClass newClass = JavaClassMaker.makeJavaClassByDeclaration(
+			"public synchronized class UntitledClass extends java.lang.Object"
+		);
+		this.accessModifiers = newClass.accessModifiers;
+		this.classRef = newClass.classRef;
+		this.superclassRef = newClass.superclassRef;
+		this.constantPool = newClass.constantPool;
 	}
 	
 	/**
@@ -199,16 +197,10 @@ public class JavaClass extends Object implements Externalizable {
 	}
 	
 	// To search for a new constant instead of changing current,
-	// use
-	//
-	// if (this.constantPool != null) {
-	//		return this.constantPool.findClassrefConstantByContents(
-	//			ClassUtilities.fromCommas(newSuper)
-	//		).getNumber();
-	// }
+	// use constantPool.findConstantByReferences
 	public void setSuperclassName(String newSuper) {
 		if (this.constantPool != null) {
-			//JavaConstantPoolElement superName = this.constantPool.getConstantBySuperref(
+			//JavaConstantPoolElement superName = this.constantPool.findConstantBySuperref(
 			//	this.superclassRef
 			//);
 			//superName.setContents(newSuper);
@@ -243,7 +235,7 @@ public class JavaClass extends Object implements Externalizable {
 	
 	/**
 	 *	@return		a fully qualified name of interface number 'n'
-	 *				implemented in this class.
+	 *			implemented in this class.
 	 */
 	public String getInterface(int n) {
 		int count = this.interfaceRefs.length;

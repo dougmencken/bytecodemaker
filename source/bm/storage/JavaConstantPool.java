@@ -27,13 +27,14 @@ import douglas.mencken.bm.engine.ConstantPoolLocksmith;
  *			2)	Fieldref, Methodref, InterfaceMethodref are used
  *				in bytecode stream only.
  *
- *	@version 2.04f1
+ *	@version 2.1
  */
 
 public class JavaConstantPool extends Object
 implements JavaClassMember, Externalizable {
 	
 	public static final int CONSTANT_UTF8 = 1;
+	public static final int CONSTANT_INTERNAL_Unicode = 2;
 	public static final int CONSTANT_Integer = 3;
 	public static final int CONSTANT_Float = 4;
 	public static final int CONSTANT_Long = 5;
@@ -194,19 +195,12 @@ implements JavaClassMember, Externalizable {
 		this(1, null);
 	}
 	
-	/**
-	 *	(public)
-	 */
-	public Object[] getConstants() {
+	public JavaConstantPoolElement[] getConstants() {
 		return this.constantPoolElements;
 	}
 	
-	/**
-	 *	(protected)
-	 */
 	protected void setConstants(JavaConstantPoolElement[] constants) {
-		this.constantPoolElements =
-					(constants != null) ? constants : new JavaConstantPoolElement[0];
+		this.constantPoolElements = (constants != null) ? constants : new JavaConstantPoolElement[0];
 		this.updateUTF8ConstantNumbers();
 		this.renumberConstants();
 		
@@ -215,20 +209,19 @@ implements JavaClassMember, Externalizable {
 		}
 	}
 	
-	/**
-	 *	(public)
-	 */
-	public void setConstants(Object[] objects) {
-		int count = objects.length;
-		JavaConstantPoolElement[] constants = new JavaConstantPoolElement[count];
-		
-		for (int i = 0; i < count; i++) {
-			constants[i] = (objects[i] == null) ?
-								null : (JavaConstantPoolElement)objects[i];
-		}
-		
-		this.setConstants(constants);
-	}
+// 	/**
+// 	 *	(public)
+// 	 */
+// 	public void setConstants(Object[] objects) {
+// 		int count = objects.length;
+// 		JavaConstantPoolElement[] constants = new JavaConstantPoolElement[count];
+// 		
+// 		for (int i = 0; i < count; i++) {
+// 			constants[i] = (objects[i] == null) ? null : (JavaConstantPoolElement)objects[i];
+// 		}
+// 		
+// 		this.setConstants(constants);
+// 	}
 	
 	public int getConstantCount() {
 		return this.constantPoolElements.length - 1;
@@ -247,8 +240,8 @@ implements JavaClassMember, Externalizable {
 			}
 		}
 	}
-	
-    /**
+
+	/**
 	 *	Reads constants from the ObjectInput.
 	 */
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -309,8 +302,8 @@ implements JavaClassMember, Externalizable {
 			{
 				String[] field = this.resolveConstant(number);
 				return	/* type */ field[2] + ' ' +
-						/* class name */ ClassUtilities.toCommas(field[0]) + '.' +
-						/* name */ field[1];
+					/* class name */ ClassUtilities.toCommas(field[0]) + '.' +
+					/* name */ field[1];
 			}
 			case CONSTANT_Methodref:
 			case CONSTANT_InterfaceMethodref:
@@ -319,8 +312,8 @@ implements JavaClassMember, Externalizable {
 				String[] type_params = ClassUtilities.descriptionToTypeAndParameters(method[2]);
 				
 				return	/* type */ type_params[0] + ' ' +
-						/* class name */ ClassUtilities.toCommas(method[0]) + '.' +
-						/* name */ method[1] + '(' + /* params */ type_params[1] + ')';
+					/* class name */ ClassUtilities.toCommas(method[0]) + '.' +
+					/* name */ method[1] + '(' + /* params */ type_params[1] + ')';
 			}
 			
 			case CONSTANT_NameAndType:
@@ -357,50 +350,46 @@ implements JavaClassMember, Externalizable {
 	}
 	
 	public int addBasicTypeConstant(int tag, String contents) {
-		if ((tag >= 1) && (tag <= 6)) {
+		if ( (tag >= JavaConstantPool.CONSTANT_UTF8) && (tag <= JavaConstantPool.CONSTANT_Double) ) {
 			JavaConstantPoolElement newConstant = new JavaConstantPoolElement(tag, contents);
 			return this.addConstant(newConstant);
 		} else {
-			throw new IllegalArgumentException("invalid tag");
+			throw new IllegalArgumentException("wrong tag " + tag + " for addBasicTypeConstant(int, String)");
 		}
 	}
 	
 	public int addRefTypeConstant(int tag, int ref) {
-		if ((tag == 7) || (tag == 8)) {
+		if ( (tag == JavaConstantPool.CONSTANT_Classref) || (tag == JavaConstantPool.CONSTANT_Stringref) ) {
 			JavaConstantPoolElement newConstant = new JavaConstantPoolElement(tag, ref);
-			try {
-				this.checkReferences(newConstant);
-			} catch (Exception exc) {
-				throw new IllegalArgumentException(exc.getMessage());
+			String checkResult = this.checkReferences(newConstant);
+			if (!checkResult.equals("ok")) {
+				throw new IllegalArgumentException(checkResult);
 			}
 			
 			return this.addConstant(newConstant);
 		} else {
-			throw new IllegalArgumentException("invalid tag");
+			throw new IllegalArgumentException("wrong tag " + tag + " for addRefTypeConstant(int, int)");
 		}
 	}
 	
 	public int addRefTypeConstant(int tag, int ref1, int ref2) {
-		if ((tag >= 9) && (tag <= 12)) {
+		if ( (tag >= JavaConstantPool.CONSTANT_Fieldref) && (tag <= JavaConstantPool.CONSTANT_NameAndType) ) {
 			JavaConstantPoolElement newConstant = new JavaConstantPoolElement(tag, ref1, ref2);
-			try {
-				this.checkReferences(newConstant);
-			} catch (Exception exc) {
-				throw new IllegalArgumentException(exc.getMessage());
+			String checkResult = this.checkReferences(newConstant);
+			if (!checkResult.equals("ok")) {
+				throw new IllegalArgumentException(checkResult);
 			}
 			
 			return this.addConstant(newConstant);
 		} else {
-			throw new IllegalArgumentException("invalid tag");
+			throw new IllegalArgumentException("wrong tag " + tag + " for addRefTypeConstant(int, int, int)");
 		}
 	}
 	
 	/**
 	 *	@return		the number of constant in new pool.
-	 *
-	 *	(protected)
 	 */
-	protected int addConstant(JavaConstantPoolElement newConstant) {
+	public int addConstant(JavaConstantPoolElement newConstant) {
 		int count = this.constantPoolElements.length;
 		int equalConstantNumber = 0;
 		
@@ -503,10 +492,9 @@ implements JavaClassMember, Externalizable {
 	 *	For Fieldref, Methodref, InterfaceMethodref returns three strings: class name, name, type.
 	 */
 	public String[] resolveConstant(int ref) {
-		try {
-			this.checkReferences(ref);
-		} catch (Exception exc) {
-			throw new InvalidClassFormatError(exc.getMessage());
+		String checkResult = this.checkReferences(ref);
+		if (!checkResult.equals("ok")) {
+			throw new InvalidClassFormatError(checkResult);
 		}
 		
 		JavaConstantPoolElement constant = this.constantPoolElements[ref];
@@ -515,13 +503,13 @@ implements JavaClassMember, Externalizable {
 		int ref2 = constant.getReference2();
 		
 		switch (tag) {
-			case CONSTANT_Classref:
-			case CONSTANT_Stringref:
+			case JavaConstantPool.CONSTANT_Classref:
+			case JavaConstantPool.CONSTANT_Stringref:
 			{
 				return new String[] { this.constantPoolElements[ref1].getContents() };
 			}
 			
-			case CONSTANT_NameAndType:
+			case JavaConstantPool.CONSTANT_NameAndType:
 			{
 				return new String[] {
 					this.constantPoolElements[ref1].getContents(),
@@ -529,9 +517,9 @@ implements JavaClassMember, Externalizable {
 				};
 			}
 			
-			case CONSTANT_Fieldref:
-			case CONSTANT_Methodref:
-			case CONSTANT_InterfaceMethodref:
+			case JavaConstantPool.CONSTANT_Fieldref:
+			case JavaConstantPool.CONSTANT_Methodref:
+			case JavaConstantPool.CONSTANT_InterfaceMethodref:
 			{
 				JavaConstantPoolElement const1 /* Classref */ = this.constantPoolElements[ref1];
 				JavaConstantPoolElement const2 /* NameAndType */ = this.constantPoolElements[ref2];
@@ -544,67 +532,86 @@ implements JavaClassMember, Externalizable {
 			}
 		}
 		
-		throw new InternalError();
+		throw new IllegalArgumentException(
+			"cannot resolve " + JavaConstantPool.CONSTANT_TAGS[tag] + " constant #" + ref );
 	}
 	
-	protected void checkReferences(JavaConstantPoolElement constant) throws Exception {
+	/**
+	 *	@return		"ok" on success, error string otherwise
+	 */
+	private String checkReferences(JavaConstantPoolElement constant) {
 		int tag = constant.getTag();
 		String stringTag = JavaConstantPool.CONSTANT_TAGS[tag];
-		
-		if ((tag < 7) || (tag > 12)) {
-			throw new IllegalArgumentException("invalid tag: " + tag);
-		}
-		
+
 		int ref1 = constant.getReference();
 		int ref2 = constant.getReference2();
 		
 		switch (tag) {
-			case CONSTANT_Classref:
-			case CONSTANT_Stringref:
-			{
-				if (!this.constantPoolElements[ref1].isBasicType()) {
-					throw new Exception(stringTag + ": reference too deep");
-				}
-			}
-			
-			case CONSTANT_NameAndType:
+			case JavaConstantPool.CONSTANT_Classref:
+			case JavaConstantPool.CONSTANT_Stringref:
 			{
 				JavaConstantPoolElement const1 = this.constantPoolElements[ref1];
-				JavaConstantPoolElement const2 = this.constantPoolElements[ref2];
-				
-				if (!const1.isBasicType() || !const2.isBasicType()) {
-					throw new Exception(stringTag + ": reference(s) too deep");
+				if (const1 == null) return "reference @" + ref1 + " points to null";
+				if (!const1.isBasicType()) {
+					return "reference @" + ref1 + " is too deep for " + stringTag;
 				}
+				
+				break;
 			}
 			
-			case CONSTANT_Fieldref:
-			case CONSTANT_Methodref:
-			case CONSTANT_InterfaceMethodref:
+			case JavaConstantPool.CONSTANT_NameAndType:
 			{
-				JavaConstantPoolElement const1 /* Classref */ =
-									this.constantPoolElements[ref1];
-				JavaConstantPoolElement const2 /* NameAndType */ =
-									this.constantPoolElements[ref2];
+				JavaConstantPoolElement const1 = this.constantPoolElements[ref1];
+				if (const1 == null) return "1st reference @" + ref1 + " points to null for " + stringTag;
+				JavaConstantPoolElement const2 = this.constantPoolElements[ref2];
+				if (const2 == null) return "2nd reference @" + ref2 + " points to null for " + stringTag;
+				
+				if (!const1.isBasicType() || !const2.isBasicType()) {
+					return "reference(s) too deep for " + stringTag;
+				}
+				
+				break;
+			}
+			
+			case JavaConstantPool.CONSTANT_Fieldref:
+			case JavaConstantPool.CONSTANT_Methodref:
+			case JavaConstantPool.CONSTANT_InterfaceMethodref:
+			{
+				JavaConstantPoolElement const1 /* Classref */ = this.constantPoolElements[ref1];
+				if (const1 == null) return "1st reference @" + ref1 + " points to null for " + stringTag;
+				JavaConstantPoolElement const2 /* NameAndType */ = this.constantPoolElements[ref2];
+				if (const2 == null) return "2nd reference @" + ref2 + " points to null for " + stringTag;
 				
 				if (const1.getTag() != CONSTANT_Classref) {
-					throw new Exception(stringTag + ": bad reference (Classref required)");
+					return "unexpected reference @" + ref1 + " (Classref is required) for " + stringTag;
 				}
 				if (const2.getTag() != CONSTANT_NameAndType) {
-					throw new Exception(stringTag + ": bad reference (NameAndType required)");
+					return "unexpected reference @" + ref2 + " (NameAndType is required) for " + stringTag;
 				}
 				
-				this.checkReferences(const1.getNumber());
-				this.checkReferences(const2.getNumber());
+				String okay1 = this.checkReferences(const1.getNumber());
+				String okay2 = this.checkReferences(const2.getNumber());
+				if ( !( okay1.equals("ok") && okay2.equals("ok") ) ) {
+					return	"sub-reference check failed" +
+						" [ okay1 = \"" + okay1 + "\", okay2 = \"" + okay2 + "\" ]";
+				}
+				
+				break;
 			}
+			
+			default:
+				return "wrong tag " + tag + " ( " + stringTag + " ) for checkReferences";
 		}
+		
+		return "ok";
 	}
 	
 	/**
-	 *	Throws an exception in case of no success.
+	 *	@return		"ok" on success, error message otherwise
 	 */
-	public void checkReferences(int number) throws Exception {
+	private String checkReferences(int number) {
 		JavaConstantPoolElement constant = this.constantPoolElements[number];
-		this.checkReferences(constant);
+		return this.checkReferences(constant);
 	}
 	
 	protected JavaConstantPoolElement findEqualConstant(final JavaConstantPoolElement constant) {
@@ -624,25 +631,13 @@ implements JavaClassMember, Externalizable {
 		return null;
 	}
 	
-	public int findUTF8ConstantByContents(String contents) {
-		return this.findConstantByContentsAndTag(contents, CONSTANT_UTF8);
-	}
-	
-	public int findClassrefConstantByContents(String contents) {
-		return this.findConstantByContentsAndTag(contents, CONSTANT_Classref);
-	}
-	
-	public int findNameAndTypeConstantByContents(String contents) {
-		return this.findConstantByContentsAndTag(contents, CONSTANT_NameAndType);
-	}
-	
-	public int findConstantByContentsAndTag(String contents, int tag) {
+	public int findConstantByContents(String contents) {
 		int count = this.constantPoolElements.length;
 		
 		for (int i = 1; i < count; i++) {
 			JavaConstantPoolElement current = this.constantPoolElements[i];
 			if (current != null) {
-				if (current.getTag() == tag) {
+				if (current.isBasicType()) {
 					if (current.getContents().equals(contents)) {
 						return current.getNumber();
 					}
@@ -653,19 +648,27 @@ implements JavaClassMember, Externalizable {
 		return 0;
 	}
 	
-	public int findConstantByContents(String contents) {
+	public int findConstantByContentsAndTag(String contents, int tag) {
 		int count = this.constantPoolElements.length;
 		
 		for (int i = 1; i < count; i++) {
 			JavaConstantPoolElement current = this.constantPoolElements[i];
 			if (current != null) {
-				if (current.getContents().equals(contents)) {
-					return current.getNumber();
+				if (current.isBasicType()) {
+					if (current.getTag() == tag) {
+						if (current.getContents().equals(contents)) {
+							return current.getNumber();
+						}
+					}
 				}
 			}
 		}
 		
 		return 0;
+	}
+	
+	public int findUTF8ConstantByContents(String contents) {
+		return this.findConstantByContentsAndTag(contents, JavaConstantPool.CONSTANT_UTF8);
 	}
 	
 	public int findConstantByReferences(int ref1, int ref2) {
@@ -674,9 +677,29 @@ implements JavaClassMember, Externalizable {
 		for (int i = 1; i < count; i++) {
 			JavaConstantPoolElement current = this.constantPoolElements[i];
 			if (current != null) {
-				if ((current.getReference() == ref1) &&
-						(current.getReference2() == ref2)) {
-					return current.getNumber();
+				if (!current.isBasicType()) {
+					if ( (current.getReference() == ref1) &&
+							(current.getReference2() == ref2) ) {
+						return current.getNumber();
+					}
+				}
+			}
+		}
+		
+		return 0;
+	}
+	
+	public int findNameAndTypeConstantByReferences(int nameRef, int typeRef) {
+		int count = this.constantPoolElements.length;
+		
+		for (int i = 1; i < count; i++) {
+			JavaConstantPoolElement current = this.constantPoolElements[i];
+			if (current != null) {
+				if (current.getTag() == JavaConstantPool.CONSTANT_NameAndType) {
+					if ( (current.getReference() == nameRef) &&
+							(current.getReference2() == typeRef) ) {
+						return current.getNumber();
+					}
 				}
 			}
 		}
@@ -694,17 +717,17 @@ implements JavaClassMember, Externalizable {
 	
 	/**
 	 *	Searches for a first constant with tag 'tag', excluding number 'n'.
-	 *	Returns 'null' in case of no success.
+	 *	Returns 0 in case of no success.
 	 */
 	public int findFirstConstantWithTag(int tag, int n) {
 		int count = this.constantPoolElements.length;
 		
 		for (int i = 1; i < count; i++) {
 			if (i != n) {
-				JavaConstantPoolElement current = this.constantPoolElements[i];
-				if (current != null) {
-					if (current.getTag() == tag) {
-						return current.getNumber();
+				JavaConstantPoolElement el = this.constantPoolElements[i];
+				if (el != null) {
+					if (el.getTag() == tag) {
+						return el.getNumber();
 					}
 				}
 			}

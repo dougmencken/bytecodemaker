@@ -18,21 +18,21 @@ import douglas.mencken.bm.storage.constants.BMErrorStrings;
 /**
  *	<code>JavaClassMaker</code>
  *
- *	@version	0.84b1
- *	@since		Bytecode Maker 0.6.0
+ *	@version	0.9
+ *	@since		Bytecode Maker A.6
  */
 
 public class JavaClassMaker extends Object {
-	
+
 	/**
-	 *	This class cannot be instantiated.
+	 *	This utility class cannot be instantiated.
 	 */
 	private JavaClassMaker() { super(); }
 	
 	/**
 	 *	(static method)
 	 */
-	public static JavaClass makeJavaClass(String declaration) throws Exception {
+	public static JavaClass makeJavaClassByDeclaration(String declaration) {
 		String[] tokens = StringUtilities.tokenize(declaration);
 		int tokenCount = tokens.length;
 		
@@ -45,15 +45,14 @@ public class JavaClassMaker extends Object {
 		
 		if (keyword_class_idx == -1) {
 			UsefulMessageDialogs.sayAboutError(1, BMErrorStrings.getErrorString(1));
-			throw new Exception("Error #1");
+			throw new IllegalArgumentException("Error #1: " + BMErrorStrings.getErrorString(1));
 		}
 		
 		for (int i = 0; i < keyword_class_idx; i++) {
 			for (int j = i+1; j < keyword_class_idx; j++) {
 				if (tokens[i].equals(tokens[j])) {
-					// Error #3: Repeated modifier.
 					UsefulMessageDialogs.sayAboutError(3, BMErrorStrings.getErrorString(3));
-					throw new Exception("Error #3");
+					throw new IllegalArgumentException("Error #3: " + BMErrorStrings.getErrorString(3));
 				}
 			}
 		}
@@ -75,7 +74,7 @@ public class JavaClassMaker extends Object {
 			} else if (tokens[i].equals("class")) {
 				if (isInterface) {
 					UsefulMessageDialogs.sayAboutError(6, BMErrorStrings.getErrorString(6));
-					throw new Exception("Error #6");
+					throw new IllegalArgumentException("Error #6: " + BMErrorStrings.getErrorString(6));
 				}
 			} else if (tokens[i].equals("interface")) {
 				isInterface = true;
@@ -89,10 +88,10 @@ public class JavaClassMaker extends Object {
 						tokens[i].equals("native") ||
 						tokens[i].equals("strict")) {
 					UsefulMessageDialogs.sayAboutError(2, BMErrorStrings.getErrorString(2));
-					throw new Exception("Error #2");
+					throw new IllegalArgumentException("Error #2: " + BMErrorStrings.getErrorString(2));
 				} else {
 					UsefulMessageDialogs.sayAboutError(4, BMErrorStrings.getErrorString(4));
-					throw new Exception("Error #4");
+					throw new IllegalArgumentException("Error #4: " + BMErrorStrings.getErrorString(4));
 				}
 			}
 		}
@@ -107,10 +106,8 @@ public class JavaClassMaker extends Object {
 					superclassName = tokens[keyword_class_idx+3];
 				} else {
 					if (!tokens[keyword_class_idx+2].equals("implements")) {
-						UsefulMessageDialogs.sayAboutError(
-							5, BMErrorStrings.getErrorString(5)
-						);
-						throw new Exception("Error #5");
+						UsefulMessageDialogs.sayAboutError(5, BMErrorStrings.getErrorString(5));
+						throw new IllegalArgumentException("Error #5: " + BMErrorStrings.getErrorString(5));
 					}
 				}
 			}
@@ -150,18 +147,24 @@ public class JavaClassMaker extends Object {
 		JavaConstantPool pool = new JavaConstantPool(1);
 		
 		// add class' name constant
-		int nameNumber = pool.addBasicTypeConstant(/* UTF8 */ 1, ClassUtilities.fromCommas(name));
-		int nameRefNumber = pool.addRefTypeConstant(/* Classref */ 7, nameNumber);
+		int nameNumber = pool.addBasicTypeConstant(
+					/* 1: UTF8 */ JavaConstantPool.CONSTANT_UTF8,
+					ClassUtilities.fromCommas(name) );
+		int nameRefNumber = pool.addRefTypeConstant(
+					/* 7: Classref */ JavaConstantPool.CONSTANT_Classref,
+					nameNumber );
 		
 		int supernameNumber = 0;
 		int supernameRefNumber = 0;
 		
 		// add superclass' name constant
-		if ((supername != null) && (supername.length() > 0)) {
+		if ( (supername != null) && (supername.length() > 0) ) {
 			supernameNumber = pool.addBasicTypeConstant(
-				/* UTF8 */ 1, ClassUtilities.fromCommas(supername)
-			);
-			supernameRefNumber = pool.addRefTypeConstant(/* Classref */ 7, supernameNumber);
+					/* 1: UTF8 */ JavaConstantPool.CONSTANT_UTF8,
+					ClassUtilities.fromCommas(supername) );
+			supernameRefNumber = pool.addRefTypeConstant(
+					/* 7: Classref */ 7,
+					supernameNumber );
 		}
 		
 		// construct new class
@@ -219,7 +222,7 @@ public class JavaClassMaker extends Object {
 	/**
 	 *	(static method)
 	 */
-	public static JavaClass addDefaultConstructor(JavaClass clazz) {
+	public static void addDefaultConstructor(JavaClass clazz) {
 		if (!clazz.isInterface()) {
 			JavaMethod _init_ = JavaMethodMaker.makeJavaMethod(
 				clazz, /* method index */ 0, Modifier.PUBLIC, "<init>", "()V"
@@ -236,17 +239,18 @@ public class JavaClassMaker extends Object {
 			
 			if (superclassRef != 0) {
 				JavaConstantPool pool = clazz.getConstantPool();
-				int nameAndTypeConstantNumber = pool.findConstantByContents("void <init>()");
+				int nameref = pool.findUTF8ConstantByContents("<init>");
+				int typeref = pool.findUTF8ConstantByContents("()V");
+				int nameAndTypeRef = pool.findNameAndTypeConstantByReferences(nameref, typeref);
 				
 				int methodrefNumber = pool.addRefTypeConstant(
-					/* Methodref */ 10, superclassRef, nameAndTypeConstantNumber
+					/* Methodref */ 10, superclassRef, nameAndTypeRef
 				);
 				
-				byte[] nums = ByteTransformer.extractBytesFromShort(methodrefNumber);
-				
 				// [ 42] aload_0
-				// [183] invokenonvirtual <Methodref (16 bit)>
+				// [183] invokenonvirtual < Methodref (16-bit) >
 				// [177] return
+				byte[] nums = ByteTransformer.extractBytesFromShort(methodrefNumber);
 				code = new byte[] { 42, (byte)183, nums[0], nums[1], (byte)177 };
 				
 				// IT CAN'T BE CHANGED!!! IT IS RECALCULATED EACH TIME etc.
@@ -256,8 +260,6 @@ public class JavaClassMaker extends Object {
 			_init_.setCode(code);
 			clazz.addMethod(_init_);
 		}
-		
-		return clazz;
 	}
 	
 }

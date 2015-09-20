@@ -23,8 +23,8 @@ import douglas.mencken.bm.storage.constants.BMErrorStrings;
 /**
  *	<code>JavaClassCustomizer</code>
  *
- *	@version	1.05f1
- *	@since		Bytecode Maker 0.5.8
+ *	@version	1.1
+ *	@since		Bytecode Maker A.6
  */
 
 public class JavaClassCustomizer extends LWTabbedPane
@@ -78,10 +78,10 @@ implements Customizer, ItemListener {
 	}
 	
 	public Dimension getPreferredSize() {
-		//	width:	+4 for border;
-		//	height:	+commonComponent.height for common component,
-		//			+18 for tabs and other,
-		//			+2 for border, +10 for some space
+		//	width:	+ 4 for border;
+		//	height:	+ commonComponent.height for common component,
+		//		+ 18 for tabs and other,
+		//		+ 2 for border, +10 for some space
 		int width = JavaClassCustomizerPart.JAVA_CLASS_CUSTOMIZER_PART_SIZE.width;
 		int height = JavaClassCustomizerPart.JAVA_CLASS_CUSTOMIZER_PART_SIZE.height;
 		
@@ -524,7 +524,7 @@ class ClassCustomizerPanel extends Panel implements JavaClassCustomizerPart {
 		String superclassName = superclassNameField.getText();
 		
 		if (className.length() == 0) {
-			UsefulMessageDialogs.doWarningDialog("You must specify the name of new class");
+			UsefulMessageDialogs.doWarningDialog("Please specify the name of new class");
 			return false;
 		}
 		
@@ -785,7 +785,7 @@ class InterfaceCustomizerPanel extends Panel implements JavaClassCustomizerPart 
 		String interfaceName = interfaceNameField.getText();
 		
 		if (interfaceName.length() == 0) {
-			UsefulMessageDialogs.doWarningDialog("You must specify the name of new interface");
+			UsefulMessageDialogs.doWarningDialog("Please specify the name of new interface");
 			return false;
 		}
 		

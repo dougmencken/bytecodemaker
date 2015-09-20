@@ -17,9 +17,9 @@ import douglas.mencken.util.InvisibleFrame;
 /**
  *	<code>NewBeanCustomizerDialog</code>
  *
- *	@version	1.01f
+ *	@version	1.1
  */
- 
+
 public class NewBeanCustomizerDialog extends Dialog
 implements ActionListener, PropertyChangeListener {
 	
@@ -54,8 +54,16 @@ implements ActionListener, PropertyChangeListener {
 			c.addPropertyChangeListener(this);
 			
 			customizer = (Component)c;
-		} catch (Exception exc) {
-			Toolkit.getDefaultToolkit().beep();
+		} catch (IntrospectionException introExc) {
+			throw new InternalError("IntrospectionException: " + introExc.getMessage());
+		} catch (InstantiationException instaExc) {
+			throw new InternalError("InstantiationException" + instaExc.getMessage());
+		} catch (IllegalAccessException accessEx) {
+			throw new InternalError("IllegalAccessException" + accessEx.getMessage());
+		}
+		if (customizer == null) {
+			/* Toolkit.getDefaultToolkit().beep(); */
+			throw new IllegalArgumentException("Can't get customizer for " + beanClass);
 		}
 		
 		int buttonPanelHeight = WindowUtilities.BUTTON_DIMENSION.height*2 + 5;
