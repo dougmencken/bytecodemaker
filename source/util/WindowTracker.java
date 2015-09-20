@@ -17,7 +17,7 @@ import java.util.Hashtable;
 /**
  *	<code>WindowTracker</code>
  *
- *	@version 1.12f0
+ *	@version 1.2
  */
 
 public class WindowTracker extends Object implements WindowListener {
@@ -33,7 +33,12 @@ public class WindowTracker extends Object implements WindowListener {
 	}
 	
 	public boolean isVisible(String key) {
-		return this.windowTable.containsKey(key);
+		if (this.windowTable.containsKey(key)) {
+			Object theWindow = this.windowTable.get(key);
+			return ((Window)theWindow).isVisible();
+		}
+		
+		return false;
 	}
 	
 	public void showWindow(String key, Window window) {
@@ -41,12 +46,16 @@ public class WindowTracker extends Object implements WindowListener {
 	}
 	
 	public void showWindow(String key, Window window, boolean usePreviousBounds) {
-		Object oldWindow = windowTable.get(key);
-		Object bounds = boundsTable.get(key);
+		Object curWindow = this.windowTable.get(key);
+		Object bounds = this.boundsTable.get(key);
 		
-		if ((oldWindow != null) && ((Window)oldWindow).isVisible()) {
-			// window with this key exists & visible - just bring it to front
-			((Window)oldWindow).toFront();
+		if (curWindow != null) {
+			if ( ((Window)curWindow).isVisible() ) {
+				// window with this key exists & visible ~ just bring it to front
+				((Window)curWindow).toFront();
+			} else {
+				((Window)curWindow).setVisible(true);
+			}
 		} else {
 			if ((bounds == null) || (!usePreviousBounds)) {
 				this.boundsTable.put(key, window.getBounds());
@@ -61,8 +70,8 @@ public class WindowTracker extends Object implements WindowListener {
 	}
 	
 	/**	Note:	if the window may be closed not only by clicking its
-	 *			close box (for example, from menu), add WindowListener
-	 *			to your own class:<p>
+	 *		close box (for example, from menu), add WindowListener
+	 *		to your own class:<p>
 	 *	<pre>
 	 *	public void windowClosing(WindowEvent evt) {
 	 *		windowTracker.closeWindow(evt.getWindow());
@@ -70,11 +79,11 @@ public class WindowTracker extends Object implements WindowListener {
 	 *	</pre>
 	 */
 	public void closeWindow(String key) {
-		Object oldWindow = windowTable.get(key);
-		if (oldWindow != null) {
+		Object curWindow = windowTable.get(key);
+		if (curWindow != null) {
 			// update bounds before disposing
-			this.boundsTable.put(key, ((Window)oldWindow).getBounds());
-			((Window)oldWindow).dispose();
+			this.boundsTable.put(key, ((Window)curWindow).getBounds());
+			((Window)curWindow).dispose();
 			
 			this.windowTable.remove(key);
 		}
@@ -111,6 +120,11 @@ public class WindowTracker extends Object implements WindowListener {
 	
 	public void windowClosing(WindowEvent evt) {
 		this.closeWindow(evt.getWindow());
+	}
+	
+	public String toString() {
+		return	"windowTable:" + windowTable.toString() + "," +
+			"boundsTable:" + boundsTable.toString();
 	}
 	
 }

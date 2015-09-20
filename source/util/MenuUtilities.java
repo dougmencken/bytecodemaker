@@ -12,12 +12,13 @@ import java.awt.CheckboxMenuItem;
 import java.awt.Menu;
 import java.awt.MenuShortcut;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 
 /**
  *	<code>MenuUtilities</code>
  *
- *	@version 1.1
+ *	@version 1.2
  */
 
 public final class MenuUtilities extends Object {
@@ -43,7 +44,8 @@ public final class MenuUtilities extends Object {
 	 *         "Check Me", null, "CHECK", "x"
 	 *     }, this, this);
 	 */
-	public static final void fillMenuByDesc(String[] desc, Menu theMenu, ActionListener theListener) {
+	public static final void fillMenuByDesc(String[] desc, Menu theMenu,
+						ActionListener eatAction, ItemListener eatItem) {
 		if ((desc == null) || (theMenu == null)) return;
 		
 		int entryCount = desc.length / 4;
@@ -89,23 +91,29 @@ public final class MenuUtilities extends Object {
 						/* checkbox item */
 						item = new CheckboxMenuItem(descLabel);
 						if (shortcut != null) item.setShortcut(shortcut);
+						// note: CheckboxMenuItem doesn't generate action events
+						if (eatItem != null) ((CheckboxMenuItem)item).addItemListener(eatItem);
 					} else {
 						/* plain item */
 						item = new MenuItem(descLabel, shortcut);
 						if (abilityChar == 'f') {
 							item.setEnabled(false);
 						}
-					}
-					if ((descActionCmd != null) && (descActionCmd.length() != 0)) {
-						item.setActionCommand(descActionCmd);
-						if (theListener != null) {
-							item.addActionListener(theListener);
+						if ((descActionCmd != null) && (descActionCmd.length() != 0)) {
+							item.setActionCommand(descActionCmd);
+							if (eatAction != null) {
+								item.addActionListener(eatAction);
+							}
 						}
 					}
-					theMenu.add(item);
+					if (item != null) theMenu.add(item);
 				}
 			}
 		}
+	}
+	
+	public static final void fillMenuByDesc(String[] desc, Menu theMenu, ActionListener eatAction) {
+		fillMenuByDesc(desc, theMenu, eatAction, null);
 	}
 	
 	public static final MenuItem findItemByLabel(Menu theMenu, String theLabel) {
